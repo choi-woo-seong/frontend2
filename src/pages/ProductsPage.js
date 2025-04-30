@@ -70,7 +70,7 @@ function ProductsPage() {
 
   {/* 검색 */}
   <div className="relative">
-    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
       <Search className="h-5 w-5 text-gray-400" />
     </div>
     <Input
@@ -82,30 +82,33 @@ function ProductsPage() {
 
   <hr></hr>
 
-  {/* 필터 & 정렬 */}
-  <div className="flex items-center justify-between">
-    <Button
-      variant="outline"
-      size="sm"
-      className="flex items-center text-xs px-4 py-2 rounded-full border border-gray-300 bg-white shadow-sm font-medium"
-      onClick={() => setShowFilters((v) => !v)}
-    >
-      <Filter className="h-4 w-4 mr-1 text-gray-700" />
-      필터
-    </Button>
+{/* 필터 & 정렬 */}
+<div className="flex items-center justify-between w-full mt-4 mb-6">
+  {/* 필터 버튼 - 왼쪽 */}
+  <Button
+    variant="outline"
+    size="sm"
+    className="flex items-center text-xs px-4 py-2 rounded-full border border-gray-300 bg-white shadow-sm font-medium"
+    onClick={() => setShowFilters((v) => !v)}
+  >
+    <Filter className="h-4 w-4 mr-1 text-gray-700" />
+    필터
+  </Button>
 
-    <select
-      name="sort"
-      value={filters.sort}
-      onChange={handleFilterChange}
-      className="text-xs border border-gray-300 rounded-md p-2 bg-white shadow-sm"
-    >
-      <option value="popular">인기순</option>
-      <option value="newest">최신순</option>
-      <option value="priceAsc">가격 낮은순</option>
-      <option value="priceDesc">가격 높은순</option>
-    </select>
-  </div>
+  {/* 정렬 셀렉트 - 오른쪽 */}
+  <select
+    name="sort"
+    value={filters.sort}
+    onChange={handleFilterChange}
+    className="text-xs border border-gray-300 rounded-md py-2 px-3 bg-white shadow-sm w-40"
+  >
+    <option value="popular">인기순</option>
+    <option value="newest">최신순</option>
+    <option value="priceAsc">가격 낮은순</option>
+    <option value="priceDesc">가격 높은순</option>
+  </select>
+</div>
+
 </div>
 
 

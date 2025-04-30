@@ -1,5 +1,5 @@
 import "../styles/HomePage.css"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 import {
   Search,
@@ -43,18 +43,22 @@ const products = [
 
 function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
+  // ✅ 경로 변경 시마다 로그인 상태 체크
   useEffect(() => {
     const token = localStorage.getItem("accessToken")
     setIsLoggedIn(!!token)
-  }, [])
+  }, [location])
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
       localStorage.removeItem("accessToken")
       setIsLoggedIn(false)
       alert("로그아웃 되었습니다.")
-      window.location.reload()
+      navigate("/")
+      window.location.reload() // 🔄 강제 새로고침으로 상태 반영
     }
   }
 
