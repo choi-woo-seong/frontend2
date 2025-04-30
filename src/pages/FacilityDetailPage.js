@@ -8,6 +8,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs"
 import Badge from "../components/ui/Badge"
 import { Button } from "../components/ui/Button"
 import { Star } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+
 
 const FacilityDetailPage = () => {
   const { id } = useParams()
@@ -15,6 +17,8 @@ const FacilityDetailPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isFavorite, setIsFavorite] = useState(false)
+  const navigate = useNavigate()
+
 
   // 탭 상태
   const [activeTab, setActiveTab] = useState("info")
@@ -177,78 +181,181 @@ const FacilityDetailPage = () => {
         </TabsContent>
 
         {/* 비용 안내 */}
-        <TabsContent value="cost" className="p-4 bg-white rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">비용 안내</h2>
-          <p>방문 요양: 월 200만원 ~</p>
-          <p>요양원: 일 10만원 ~</p>
-        </TabsContent>
+      {/* 비용 안내 */}
+<TabsContent value="cost" className="p-4 bg-white rounded-lg shadow">
+  <h2 className="text-xl font-semibold mb-4">이용 요금</h2>
+
+  {/* 객실 유형별 요금 */}
+  <h3 className="text-lg font-medium mb-2">객실 유형별 요금</h3>
+  <table className="w-full text-sm mb-4 border border-gray-200 rounded">
+    <thead className="bg-gray-50">
+      <tr>
+        <th className="px-4 py-2 text-left">객실 유형</th>
+        <th className="px-4 py-2 text-right">비용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="border-t">
+        <td className="px-4 py-2">일반실 (4인실)</td>
+        <td className="px-4 py-2 text-right">월 180만원</td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">준특실 (2인실)</td>
+        <td className="px-4 py-2 text-right">월 250만원</td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">특실 (1인실)</td>
+        <td className="px-4 py-2 text-right">월 350만원</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {/* 추가 비용 */}
+  <h3 className="text-lg font-medium mb-2">추가 비용</h3>
+  <table className="w-full text-sm mb-4 border border-gray-200 rounded">
+    <thead className="bg-gray-50">
+      <tr>
+        <th className="px-4 py-2 text-left">항목</th>
+        <th className="px-4 py-2 text-right">비용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="border-t">
+        <td className="px-4 py-2">간병비</td>
+        <td className="px-4 py-2 text-right">월 150만원</td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">식대</td>
+        <td className="px-4 py-2 text-right">월 30만원</td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">프로그램 참여비</td>
+        <td className="px-4 py-2 text-right">월 20만원</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {/* 보험 적용 안내 */}
+  <p className="text-sm text-gray-600">
+    보험 적용: 장기요양보험 적용 가능 (등급에 따라 차등 지원)
+  </p>
+
+  {/* 상세비용정보 보기 버튼 */}
+  <div className="mt-4">
+    <Button
+      className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+      onClick={() => {
+        /* 상세비용정보 페이지로 이동 */
+        navigate(`/facility/${id}/cost-detail`)
+      }}
+    >
+      상세 비용 정보 보기
+    </Button>
+  </div>
+</TabsContent>
+
 
         {/* 리뷰 탭 */}
-        <TabsContent value="review" className="p-4 bg-white rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">리뷰</h2>
-          {/* 리뷰 리스트 */}
-          <div className="space-y-4 mb-4">
-            {facility.reviews.map(r => (
-              <div key={r.id} className="border-b pb-2">
-                <div className="flex items-center mb-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                  <span className="text-sm ml-2">{r.user}</span>
-                  <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
-                </div>
-                <p>{r.content}</p>
-              </div>
-            ))}
-          </div>
-          {/* 리뷰 폼 */}
-          {showReviewForm ? (
-            <div className="p-4 mb-4 bg-gray-50 rounded">
-              <h4 className="font-medium mb-2">리뷰 작성하기</h4>
-              <div className="flex mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`cursor-pointer h-6 w-6 ${
-                      i < newReviewRating ? "text-yellow-400" : "text-gray-300"
-                    }`}
-                    onClick={() => setNewReviewRating(i + 1)}
-                  />
-                ))}
-              </div>
-              <textarea
-                className="w-full border p-2 mb-2 rounded"
-                rows={3}
-                placeholder="리뷰를 작성하세요"
-                value={newReviewContent}
-                onChange={e => setNewReviewContent(e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Button
-                  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
-                  onClick={handleReviewSubmit}
-                >
-                  등록
-                </Button>
-                <Button
-                  className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
-                  onClick={() => setShowReviewForm(false)}
-                >
-                  취소
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <Button variant="outline" size="sm" onClick={() => setShowReviewForm(true)}>
-              리뷰 작성
-            </Button>
-          )}
-        </TabsContent>
+       
+
+<TabsContent value="review" className="p-4 bg-white rounded-lg shadow">
+  <h2 className="text-xl font-semibold mb-4">리뷰</h2>
+
+  {/* 평균 평점 계산 및 표시 */}
+  {facility.reviews.length > 0 && (() => {
+    // 전체 평점 합계
+    const total = facility.reviews.reduce((sum, r) => sum + r.rating, 0)
+    // 평균 평점
+    const avg = total / facility.reviews.length
+    return (
+      <div className="flex items-center mb-4">
+        {/* 별점 아이콘 */}
+        <div className="flex">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-5 w-5 mr-1 ${
+                i < Math.round(avg)
+                  ? "text-yellow-400 fill-yellow-400"   // 평균 점수 이상 별은 채움
+                  : "text-gray-300"                    // 나머지는 회색
+              }`}
+            />
+          ))}
+        </div>
+        {/* 평균 점수 숫자 */}
+        <span className="ml-2 text-lg font-medium">{avg.toFixed(1)}</span>
+        {/* 리뷰 개수 */}
+        <span className="ml-1 text-gray-500">({facility.reviews.length}개)</span>
+      </div>
+    )
+  })()}
+
+  {/* 리뷰 리스트 */}
+  <div className="space-y-4 mb-4">
+    {facility.reviews.map(r => (
+      <div key={r.id} className="border-b pb-2">
+        <div className="flex items-center mb-1">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-4 w-4 ${
+                i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+              }`}
+            />
+          ))}
+          <span className="text-sm ml-2">{r.user}</span>
+          <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
+        </div>
+        <p>{r.content}</p>
+      </div>
+    ))}
+  </div>
+
+  {/* 리뷰 작성 폼 */}
+  {showReviewForm ? (
+    <div className="p-4 mb-4 bg-gray-50 rounded">
+      <h4 className="font-medium mb-2">리뷰 작성하기</h4>
+      <div className="flex mb-2">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`cursor-pointer h-6 w-6 ${
+              i < newReviewRating ? "text-yellow-400" : "text-gray-300"
+            }`}
+            onClick={() => setNewReviewRating(i + 1)}
+          />
+        ))}
+      </div>
+      <textarea
+        className="w-full border p-2 mb-2 rounded"
+        rows={3}
+        placeholder="리뷰를 작성하세요"
+        value={newReviewContent}
+        onChange={e => setNewReviewContent(e.target.value)}
+      />
+      <div className="flex gap-2">
+        <Button
+          className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+          onClick={handleReviewSubmit}
+        >
+          등록
+        </Button>
+        <Button
+          className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
+          onClick={() => setShowReviewForm(false)}
+        >
+          취소
+        </Button>
+      </div>
+    </div>
+  ) : (
+    <Button variant="outline" size="sm" onClick={() => setShowReviewForm(true)}>
+      리뷰 작성
+    </Button>
+  )}
+</TabsContent>
+
+
 
         {/* 문의 탭 */}
         <TabsContent value="question" className="p-4 bg-white rounded-lg shadow">
