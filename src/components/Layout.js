@@ -58,7 +58,7 @@ const Layout = ({children}) => {
         .startsWith("/admin")
 
     // 관리자 페이지일 경우 다른 레이아웃 사용
-    if (isAdmin && isAdminPage) {
+    if (isAdmin || isAdminPage) {
         return (
             <div className="flex flex-col min-h-screen">
                 {/* 관리자 헤더 */}

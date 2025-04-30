@@ -4,16 +4,14 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import { AlertCircle } from "lucide-react"
-import { useAuth } from "../../hooks/use-auth"
-
-// UI 컴포넌트
+import axios from "axios"
 import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
 import Checkbox from "../ui/Checkbox"
 import './login.css'
 
-
+const API_BASE_URL = process.env.REACT_APP_API_URL
 
 function LoginForm() {
   const navigate = useNavigate()
@@ -25,9 +23,7 @@ function LoginForm() {
 
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const { login } = useAuth()
 
-  // 입력 변경 핸들러
   const handleChange = (e) => {
     const { name, value } = e.target
     setLoginData({
@@ -36,7 +32,6 @@ function LoginForm() {
     })
   }
 
-  // 체크박스 변경 핸들러
   const handleCheckboxChange = (checked) => {
     setLoginData({
       ...loginData,
@@ -44,11 +39,9 @@ function LoginForm() {
     })
   }
 
-  // 로그인 처리
   const handleLogin = async (e) => {
     e.preventDefault()
 
-    // 유효성 검사
     if (!loginData.userId || !loginData.password) {
       setError("아이디와 비밀번호를 모두 입력해주세요.")
       return
@@ -58,33 +51,31 @@ function LoginForm() {
     setError(null)
 
     try {
-      const result = await login({
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         userId: loginData.userId,
         password: loginData.password,
       })
 
-      if (result.success) {
-        // 로그인 성공
-        if (result.isAdmin) {
-          alert("관리자 로그인 성공!!!");
-          navigate("/admin/dashboard")
-        } else {
-          alert("로그인 성공!!!");
-          navigate("/")
-        }
+      const { token, admin } = response.data
+      if (token) {
+        localStorage.setItem("accessToken", token)
+        if (admin) navigate("/admin/dashboard")
+        else navigate("/")
       } else {
-        setError(result.message || "로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
+        setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
       }
     } catch (err) {
-      setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
+      console.error("로그인 에러:", err)
+      setError(err.response?.data?.message || "로그인에 실패했습니다.")
     } finally {
       setIsLoading(false)
     }
   }
 
-  // 소셜 로그인 처리
+  // 소셜 로그인 리디렉션
   const handleSocialLogin = (provider) => {
-    alert(`${provider} 로그인 시도`)
+    // 백엔드에 등록된 OAuth2 시작 엔드포인트로 이동
+    window.location.href = `${API_BASE_URL.replace('/api','')}/oauth2/authorization/${provider}`
   }
 
   return (
@@ -149,32 +140,30 @@ function LoginForm() {
           <span className="px-2 bg-white text-gray-500">또는</span>
         </div>
       </div>
+
       <div className="login-social space-y-3">
-  <button
-    type="button"
-    onClick={() => handleSocialLogin("kakao")}
-    className="login-social-btn kakao-btn w-full flex items-center justify-center space-x-2 py-2.5 border border-yellow-400 bg-yellow-400 rounded-md hover:bg-yellow-500 transition-colors"
-  >
-    <img src="/images/카카오.png" alt="Kakao" className="kakao-img" />
-    <span className="font-medium text-gray-800">카카오로 로그인</span>
-  </button>
+        <button
+          type="button"
+          onClick={() => handleSocialLogin("kakao")}
+          className="login-social-btn kakao-btn w-full flex items-center justify-center space-x-2 py-2.5 border border-yellow-400 bg-yellow-400 rounded-md hover:bg-yellow-500 transition-colors"
+        >
+          <img src="/images/카카오.png" alt="Kakao" className="kakao-img" />
+          <span className="font-medium text-gray-800">카카오로 로그인</span>
+        </button>
 
-  <button
-    type="button"
-    onClick={() => handleSocialLogin("google")}
-    className="login-social-btn google-btn w-full"
-  >
-    <img src="/images/구글.png" alt="Google" className="google-img" />
-    <span className="font-medium text-gray-800">구글로 로그인</span>
-  </button>
-</div>
-
-
-
+        <button
+          type="button"
+          onClick={() => handleSocialLogin("google")}
+          className="login-social-btn google-btn w-full flex items-center justify-center space-x-2 py-2.5 border border-gray-300 bg-white rounded-md hover:bg-gray-100 transition-colors"
+        >
+          <img src="/images/구글.png" alt="Google" className="google-img" />
+          <span className="font-medium text-gray-800">구글로 로그인</span>
+        </button>
+      </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
-          아직 계정이 없으신가요?{" "}
+          아직 계정이 없으신가요?{' '}
           <Link to="/signup" className="text-blue-500 hover:underline">
             회원가입
           </Link>
@@ -184,4 +173,4 @@ function LoginForm() {
   )
 }
 
-export default LoginForm;
+export default LoginForm

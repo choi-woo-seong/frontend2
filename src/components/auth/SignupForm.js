@@ -39,6 +39,36 @@ function SignupForm() {
 
   const [verificationCode, setVerificationCode] = useState("")
 
+  const handleCompleteSignup = async () => {
+    const isPasswordValid = formData.password.length >= 8
+    const isConfirmValid = formData.password === formData.confirmPassword
+  
+    setValidation({
+      ...validation,
+      password: isPasswordValid,
+      confirmPassword: isConfirmValid,
+    })
+  
+    if (isPasswordValid && isConfirmValid) {
+      try {
+        // ✅ 서버로 회원가입 데이터 전송
+        await axios.post(`${API_BASE_URL}/auth/signup`, {
+          userId: formData.userId,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+        })
+
+        console.log(formData)
+  
+        setCurrentStep(SignupStep.Complete) // 회원가입 성공하면 완료 단계로 이동
+      } catch (error) {
+        console.error("회원가입 실패:", error)
+        alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.")
+      }
+    }
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -176,16 +206,7 @@ function SignupForm() {
         <Button onClick={handlePrevStep} type="button" className="w-1/2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100">이전</Button>
         <Button
           type="button"
-          onClick={() => {
-            const isPasswordValid = formData.password.length >= 8
-            const isConfirmValid = formData.password === formData.confirmPassword
-            setValidation({
-              ...validation,
-              password: isPasswordValid,
-              confirmPassword: isConfirmValid,
-            })
-            if (isPasswordValid && isConfirmValid) setCurrentStep(SignupStep.Complete)
-          }}
+          onClick={handleCompleteSignup}
           className="w-1/2 bg-blue-500 text-white hover:bg-blue-600"
         >
           가입 완료

@@ -18,6 +18,7 @@ import GovernmentProgramsPage from "./pages/GovernmentProgramsPage";
 import VideosPage from "./pages/VideosPage";
 import SearchPage from "./pages/SearchPage";
 import CareGradeTestPage from "./pages/CareGradeTestPage";
+import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler"
 
 // 관리자 페이지
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/products/:id" element={<ProductDetailPage />} />
                 <Route path="/products/:id/question" element={<ProductDetailPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/facility/:id" element={<FacilityDetailPage />} />
