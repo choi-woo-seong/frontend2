@@ -1,0 +1,50 @@
+.notice-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb; /* 연한 회색 */
+  padding: 1rem 1rem;
+  font-size: 0.875rem; /* text-sm */
+  color: #111827; /* 거의 검정 */
+}
+
+.notice-content {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notice-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notice-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70vw; /* 너무 길어질 때 말줄임 */
+  font-weight: 500;
+}
+
+.notice-more {
+  font-size: 0.75rem; /* text-xs */
+  color: #6b7280; /* gray-500 */
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.notice-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.notice-tag {
+  color: #6B7280;       /* Tailwind gray-500 */
+  font-size: 0.875rem;  /* text-sm */
+  margin-right: 0.25rem;
+}
+

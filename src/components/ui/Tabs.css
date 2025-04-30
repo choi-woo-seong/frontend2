@@ -1,0 +1,66 @@
+/* Tabs.css */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tabs-list {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted-foreground-color);
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+  margin-right: 1rem;
+}
+
+.tab:hover {
+  color: var(--foreground-color);
+}
+
+.tab:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--ring-color);
+}
+
+.tab-active {
+  color: var(--foreground-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.tabs-trigger {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tabs-trigger:hover {
+  color: #4f46e5;
+}
+
+.tabs-trigger.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+.tabs-content {
+  padding: 1rem 0;
+  padding-top: 0.5rem;
+}

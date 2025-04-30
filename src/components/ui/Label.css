@@ -1,0 +1,14 @@
+.label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: #1a202c;
+  user-select: none;
+  display: block;
+  padding-bottom: 0.25rem;
+}
+
+.label[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

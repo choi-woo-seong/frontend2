@@ -1,0 +1,127 @@
+/* 알림 기본 스타일 */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  animation: alertFadeIn 0.3s ease-out;
+}
+
+/* 알림 아이콘 */
+.alert-icon {
+  flex-shrink: 0;
+  margin-right: 12px;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+/* 알림 내용 */
+.alert-content {
+  flex: 1;
+}
+
+/* 알림 제목 */
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* 알림 설명 */
+.alert-description {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* 알림 닫기 버튼 */
+.alert-dismiss {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.alert-dismiss:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* 알림 종류별 스타일 */
+.alert-info {
+  background-color: #e0f2fe;
+  border-left: 4px solid #0ea5e9;
+  color: #0c4a6e;
+}
+
+.alert-info .alert-icon {
+  color: #0ea5e9;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  border-left: 4px solid #10b981;
+  color: #065f46;
+}
+
+.alert-success .alert-icon {
+  color: #10b981;
+}
+
+.alert-warning {
+  background-color: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  color: #78350f;
+}
+
+.alert-warning .alert-icon {
+  color: #f59e0b;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  border-left: 4px solid #ef4444;
+  color: #7f1d1d;
+}
+
+.alert-error .alert-icon {
+  color: #ef4444;
+}
+
+/* 애니메이션 */
+@keyframes alertFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  .alert {
+    padding: 12px;
+  }
+
+  .alert-icon {
+    font-size: 1rem;
+  }
+
+  .alert-title {
+    font-size: 0.875rem;
+  }
+
+  .alert-description {
+    font-size: 0.75rem;
+  }
+}

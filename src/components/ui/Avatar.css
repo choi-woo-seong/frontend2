@@ -1,0 +1,116 @@
+/* 아바타 기본 스타일 */
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #e2e8f0;
+  color: white;
+  font-weight: 500;
+}
+
+/* 아바타 이미지 */
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 아바타 이니셜 */
+.avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 아바타 크기 */
+.avatar-xs {
+  width: 24px;
+  height: 24px;
+  font-size: 0.75rem;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+  font-size: 0.875rem;
+}
+
+.avatar-md {
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+}
+
+.avatar-lg {
+  width: 48px;
+  height: 48px;
+  font-size: 1.125rem;
+}
+
+.avatar-xl {
+  width: 64px;
+  height: 64px;
+  font-size: 1.25rem;
+}
+
+/* 아바타 모양 */
+.avatar-circle {
+  border-radius: 50%;
+}
+
+.avatar-square {
+  border-radius: 4px;
+}
+
+/* 아바타 상태 표시 */
+.avatar-status {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.avatar-status-online {
+  background-color: #10b981;
+}
+
+.avatar-status-offline {
+  background-color: #6b7280;
+}
+
+.avatar-status-away {
+  background-color: #f59e0b;
+}
+
+.avatar-status-busy {
+  background-color: #ef4444;
+}
+
+/* 아바타 그룹 */
+.avatar-group {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-group .avatar {
+  margin-right: -8px;
+  border: 2px solid white;
+  transition: transform 0.2s;
+}
+
+.avatar-group .avatar:hover {
+  transform: translateY(-4px);
+  z-index: 10;
+}
+
+/* 추가 아바타 표시 */
+.avatar-more {
+  background-color: #64748b;
+}

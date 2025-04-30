@@ -1,0 +1,348 @@
+.admin-sales-management {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .admin-sales-management h1 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+  }
+  
+  /* 판매 요약 정보 스타일 */
+  .sales-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .summary-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .summary-card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .summary-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+  
+  /* 필터링 섹션 스타일 */
+  .filter-section {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .filter-row:last-child {
+    margin-bottom: 0;
+  }
+  
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+  }
+  
+  .filter-group label {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .filter-group select,
+  .search-group select,
+  .search-group input,
+  .items-per-page select,
+  .date-range input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .date-range span {
+    color: #666;
+  }
+  
+  .search-group {
+    display: flex;
+    flex-grow: 1;
+    gap: 8px;
+  }
+  
+  .search-group select {
+    width: 120px;
+  }
+  
+  .search-group input {
+    flex-grow: 1;
+  }
+  
+  .search-button {
+    background-color: #4a6cf7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .search-button:hover {
+    background-color: #3a5ce5;
+  }
+  
+  .items-per-page {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .items-per-page label {
+    font-size: 13px;
+    color: #555;
+  }
+  
+  /* 주문 테이블 스타일 */
+  .orders-table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  
+  .orders-table th,
+  .orders-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .orders-table th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .orders-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .user-info,
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .product-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .product-thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .total-amount {
+    margin-top: 5px;
+    font-weight: bold;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .badge-blue {
+    background-color: #e6f0ff;
+    color: #0066ff;
+  }
+  
+  .badge-purple {
+    background-color: #f0e6ff;
+    color: #6600ff;
+  }
+  
+  .badge-orange {
+    background-color: #fff2e6;
+    color: #ff6600;
+  }
+  
+  .badge-green {
+    background-color: #e6ffe6;
+    color: #00cc00;
+  }
+  
+  .badge-red {
+    background-color: #ffe6e6;
+    color: #ff0000;
+  }
+  
+  .badge-gray {
+    background-color: #f2f2f2;
+    color: #666666;
+  }
+  
+  .tracking-info {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .view-button,
+  .process-button,
+  .ship-button,
+  .complete-button,
+  .cancel-button {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+  }
+  
+  .view-button {
+    background-color: #f2f2f2;
+    color: #333;
+  }
+  
+  .process-button {
+    background-color: #e6f0ff;
+    color: #0066ff;
+  }
+  
+  .ship-button {
+    background-color: #fff2e6;
+    color: #ff6600;
+  }
+  
+  .complete-button {
+    background-color: #e6ffe6;
+    color: #00cc00;
+  }
+  
+  .cancel-button {
+    background-color: #ffe6e6;
+    color: #ff0000;
+  }
+  
+  .view-button:hover,
+  .process-button:hover,
+  .ship-button:hover,
+  .complete-button:hover,
+  .cancel-button:hover {
+    filter: brightness(0.95);
+  }
+  
+  .no-orders {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+  }
+  
+  /* 페이지네이션 스타일 */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 20px;
+  }
+  
+  .pagination-button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .pagination-button.active {
+    background-color: #4a6cf7;
+    color: white;
+    border-color: #4a6cf7;
+  }
+  
+  .pagination-button:hover:not(.active):not(:disabled) {
+    background-color: #f5f5f5;
+  }
+  
+  .pagination-button:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    .filter-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .filter-group,
+    .search-group,
+    .items-per-page {
+      width: 100%;
+    }
+  
+    .orders-table th,
+    .orders-table td {
+      padding: 8px;
+    }
+  }
+  

@@ -1,0 +1,32 @@
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.skeleton {
+  display: block;
+  background-color: #e5e7eb;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border-radius: 0.25rem;
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.skeleton-circular {
+  border-radius: 50%;
+}
+
+.skeleton-rectangular {
+  border-radius: 0.25rem;
+}

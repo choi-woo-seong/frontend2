@@ -1,0 +1,77 @@
+/* 툴팁 컨테이너 */
+.tooltip-container {
+  display: inline-block;
+  position: relative;
+}
+
+/* 툴팁 기본 스타일 */
+.tooltip {
+  position: fixed;
+  z-index: 9999;
+  background-color: #1f2937;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  max-width: 300px;
+  word-wrap: break-word;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+/* 툴팁 화살표 */
+.tooltip-arrow::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #1f2937;
+  transform: rotate(45deg);
+}
+
+/* 툴팁 위치별 화살표 위치 */
+.tooltip-top.tooltip-arrow::before {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+.tooltip-right.tooltip-arrow::before {
+  left: -4px;
+  top: 50%;
+  margin-top: -4px;
+}
+
+.tooltip-bottom.tooltip-arrow::before {
+  top: -4px;
+  left: 50%;
+  margin-left: -4px;
+}
+
+.tooltip-left.tooltip-arrow::before {
+  right: -4px;
+  top: 50%;
+  margin-top: -4px;
+}
+
+/* 애니메이션 */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  .tooltip {
+    max-width: 200px;
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}

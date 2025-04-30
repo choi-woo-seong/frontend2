@@ -1,0 +1,334 @@
+/* 관리자 대시보드 스타일 */
+.admin-dashboard {
+  padding: 1.5rem;
+}
+
+.admin-dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* 통계 카드 스타일 */
+.admin-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-stat-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-stat-title {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.admin-stat-detail {
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.admin-stat-growth {
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* 대시보드 콘텐츠 레이아웃 */
+.admin-dashboard-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 차트 카드 스타일 */
+.admin-chart-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.admin-section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.admin-chart-container {
+  position: relative;
+  width: 100%;
+}
+
+/* 테이블 스타일 */
+.admin-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-table th {
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #f9fafb;
+}
+
+.admin-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.admin-table-button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.admin-table-button:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* 활동 목록 스타일 */
+.admin-activity {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.admin-activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-activity-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-activity-item:last-child {
+  border-bottom: none;
+}
+
+.admin-activity-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-activity-message {
+  font-size: 0.875rem;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.admin-activity-time {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.admin-view-all-button {
+  width: 100%;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.admin-view-all-button:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* 빠른 작업 스타일 */
+.admin-quick-actions {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-quick-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.admin-quick-action-button {
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.admin-quick-action-button:hover {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* 탭 스타일 */
+.admin-tabs {
+  margin-top: 1rem;
+}
+
+.tabs-list {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.tabs-trigger {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabs-trigger:hover {
+  color: #4f46e5;
+}
+
+.tabs-trigger.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+/* 스켈레톤 로딩 스타일 */
+.admin-stat-title-skeleton {
+  height: 1rem;
+  width: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-value-skeleton {
+  height: 1.5rem;
+  width: 70%;
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-subtitle-skeleton {
+  height: 0.75rem;
+  width: 80%;
+}
+
+.admin-chart-skeleton {
+  height: 300px;
+  width: 100%;
+}
+
+.admin-activity-skeleton {
+  height: 200px;
+  width: 100%;
+}
+
+.admin-dashboard-header {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.admin-dashboard-header-tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #f3f4f6;
+  background-color: #f9fafb;
+}
+
+.admin-dashboard-tab {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.admin-dashboard-tab:hover {
+  color: #4f46e5;
+}
+
+.admin-dashboard-tab.active {
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.admin-dashboard-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background-color: #4f46e5;
+}

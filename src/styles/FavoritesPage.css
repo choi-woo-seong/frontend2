@@ -1,0 +1,239 @@
+/* 찜 목록 페이지 스타일 */
+.favorites-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.page-header {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.page-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  margin-right: 1rem;
+  color: #333;
+}
+
+.page-header h1 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.page-content {
+  flex-grow: 1;
+}
+
+.page-content .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem 0;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  border-top: 2px solid #3b82f6;
+  border-bottom: 2px solid #3b82f6;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.list-header h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.clear-all-button {
+  color: #6b7280;
+}
+
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.facility-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.facility-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.facility-content {
+  display: flex;
+  padding: 1rem;
+}
+
+.facility-image {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.facility-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.facility-info {
+  margin-left: 1rem;
+  flex: 1;
+}
+
+.facility-info h3 {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.facility-address {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.facility-tags {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.facility-grade {
+  display: inline-flex;
+  align-items: center;
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.facility-tag {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.5rem;
+}
+
+.facility-actions {
+  border-top: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-button {
+  color: #ef4444;
+}
+
+.delete-button:hover {
+  color: #b91c1c;
+}
+
+.delete-button i {
+  margin-right: 0.25rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  margin-bottom: 1rem;
+}
+
+.empty-icon i {
+  font-size: 2rem;
+  color: #9ca3af;
+}
+
+.empty-state h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.search-button {
+  background-color: #3b82f6;
+}
+
+.search-button:hover {
+  background-color: #2563eb;
+}
+.empty-search-button {
+  background-color: #007bff;/* 진한 파란색 */
+  color: white;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.empty-search-button:hover {
+  background-color: #1565c0; /* hover 시 조금 더 진한 파랑 */
+}
+
+
+/* 반응형 스타일 */
+@media (max-width: 640px) {
+  .facility-image {
+    width: 5rem;
+    height: 5rem;
+  }
+}

@@ -1,0 +1,169 @@
+/* 관리자 시설 목록 페이지 스타일 */
+.admin-facilities-list {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .admin-filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .admin-search {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .admin-search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+  }
+  
+  .admin-filter-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .admin-filter-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background-color: white;
+  }
+  
+  .admin-table-container {
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .admin-table th,
+  .admin-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .admin-table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+  
+  .admin-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .admin-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  
+  .admin-empty-state {
+    text-align: center;
+    padding: 3rem 0;
+    color: #64748b;
+  }
+  
+  /* 스켈레톤 UI 스타일 */
+  .admin-button-skeleton {
+    width: 120px;
+    height: 38px;
+    border-radius: 0.375rem;
+  }
+  
+  .admin-search-skeleton {
+    width: 100%;
+    height: 38px;
+    border-radius: 0.375rem;
+  }
+  
+  .admin-filter-skeleton {
+    width: 150px;
+    height: 38px;
+    border-radius: 0.375rem;
+  }
+  
+  .admin-table-skeleton {
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+  
+  .admin-pagination-skeleton {
+    width: 300px;
+    height: 38px;
+    border-radius: 0.375rem;
+  }
+  
+  /* 반응형 스타일 */
+  @media (max-width: 768px) {
+    .admin-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  
+    .admin-filters {
+      flex-direction: column;
+    }
+  
+    .admin-filter-group {
+      width: 100%;
+    }
+  
+    .admin-filter-select {
+      flex: 1;
+    }
+  
+    .admin-table th,
+    .admin-table td {
+      padding: 0.5rem;
+      font-size: 0.875rem;
+    }
+  
+    .admin-actions {
+      flex-direction: column;
+    }
+  }
+  
+  /* 상태 배지 스타일 */
+  .stock-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  

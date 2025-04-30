@@ -1,0 +1,43 @@
+/* src/components/BottomNavigation.css */
+
+.bottom-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #e5e7eb; /* gray-200 */
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+}
+
+.bottom-navigation-inner {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: 3.5rem; /* 56px (h-14) */
+}
+
+.bottom-navigation-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-navigation-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.bottom-navigation-text {
+  font-size: 0.75rem; /* text-xs */
+  margin-top: 0.25rem;
+}
+
+/* 활성화 여부 */
+.active {
+  color: #3b82f6; /* blue-500 */
+}
+.inactive {
+  color: #9ca3af; /* gray-400 */
+}

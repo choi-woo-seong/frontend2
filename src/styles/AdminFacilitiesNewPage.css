@@ -1,0 +1,505 @@
+.admin-facilities-new-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.admin-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+.facility-form {
+  background-color: transparent; /* 또는 이 줄을 아예 삭제해도 됨 */
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 필요 없으면 이것도 삭제 가능 */
+}
+
+
+
+.form-section {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  margin-top: 0 !important; /* 🔥 필요시 강제로 제거 */
+
+}
+.form-section1 {
+  background-color: #f9fafb; 
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  margin-top: -32px !important; /* 🔥 필요시 강제로 제거 */
+
+}
+
+.form-section h2 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: #333;
+  margin-top: 0; /* 기존 margin 제거 */
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.error-text {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.zipcode-input {
+  display: flex;
+  gap: 8px;
+}
+
+.zipcode-input input {
+  flex: 1;
+}
+
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.facility-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.image-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.image-upload-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.image-upload-button:hover {
+  background-color: #e5e7eb;
+}
+
+.hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.help-text {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px;
+}
+
+
+
+
+/* 시설 유형 드롭다운 */
+.facility-type-select {
+  margin-bottom: 24px;
+}
+
+/* 탭 메뉴 */
+.tab-menu {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.tab:hover {
+  background-color: #e5e7eb;
+}
+
+.tab.active {
+  background-color: #2563eb; /* 파란색 */
+  color: white;
+  font-weight: 500;
+}
+
+
+
+/* 인풋, 셀렉트, 텍스트에어리어 기본 높이 통일 */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #111827;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* 라벨(label) 정리 */
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* 텍스트에어리어 특화 */
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* 필수 항목(*) 강조 */
+label::after {
+  content: "";
+}
+
+/* 폼 그룹 간격 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* 폼 섹션별 구분 */
+.form-section {
+  margin-bottom: 32px;
+}
+
+/* 입력박스 그룹 가로 정렬할 때 라인 정리 */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 폼 안 버튼 간격 */
+.form-actions button {
+  min-width: 120px;
+}
+
+
+/* 기존 시설 이미지 업로드 영역 조정 */
+.image-upload-area {
+  width: 100%;
+  min-height: 140px; /* ✅ 기존 180px → 140px로 줄여서 '박스 높이'를 낮춤 */
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 16px; /* ✅ 기존 24px → 16px로 안쪽 여백도 줄임 */
+  text-align: center;
+  transition: border-color 0.3s, background-color 0.3s;
+  margin-bottom: 0; /* ✅ 하단 여백 삭제 */
+}
+
+/* 호버 시 */
+.image-upload-area:hover {
+  border-color: #2563eb;
+  background-color: #f3f4f6;
+}
+
+/* 업로드 아이콘 */
+.image-upload-icon {
+  font-size: 36px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+/* 업로드 안내 텍스트 */
+.image-upload-text {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* 이미지 미리보기 박스 */
+.image-preview-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* 개별 미리보기 아이템 */
+.image-preview-item {
+  position: relative;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #fff;
+  width: 100%;
+  height: 120px;
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 삭제 버튼 */
+.remove-image-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.page-header-full {
+  width: 100vw; /* 화면 전체 너비 */
+  background-color: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  position: relative; /* 필요시 */
+  left: 50%;
+  transform: translateX(-50%);
+}
+.page-header-full {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+  margin-top: -18px;
+  margin-bottom: 50px;
+}
+
+
+/* 탭 메뉴 전체 */
+.tab-menu {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  margin: 24px auto;
+  background-color: #f1f5f9; /* 탭 바 전체 배경 */
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* 각 탭 버튼 기본 */
+.tab {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b; /* 기본 회색 글씨 */
+  padding: 10px 0;
+  background-color: #f1f5f9; /* 기본 배경 */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+
+/* 마우스 올렸을 때 */
+.tab:hover {
+  background-color: #e2e8f0;
+}
+
+/* 선택된 탭(active) */
+.tab.active {
+  background-color: #ffffff; /* 선택된건 흰색 */
+  color: #0f172a; /* 진한 글씨 */
+  font-weight: 600;
+}
+
+/* 상단 시설유형 (요양병원 선택 부분) */
+.facility-type-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 24px auto 16px;
+}
+
+.facility-type-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.facility-type-select {
+  width: 100%;
+}
+
+
+
+
+
+.add-extra-item-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  background-color: white;
+  color: #111827; /* text-gray-900 */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-left: 270px;
+}
+
+.add-extra-item-btn:hover {
+  background-color: #f9fafb; /* gray-50 */
+}
+
+.plus-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+
+/* 버튼 기본 스타일 */
+.form-actions button {
+  height: 42px;
+  width: 120px; /* ✅ 너비를 고정해버리자 */
+  padding: 0 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+}
+
+
+/* 취소 버튼 */
+.facility-cancel-button {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+.facility-cancel-button:hover {
+  background-color: #f9fafb;
+  border-color: #cbd5e1;
+}
+
+/* 시설 등록 버튼 */
+.facility-submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+  
+}
+.facility-submit-button:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+

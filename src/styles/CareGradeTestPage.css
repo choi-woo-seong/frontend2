@@ -1,0 +1,373 @@
+/* 요양등급 테스트 페이지 스타일 */
+.care-grade-test-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* 헤더 스타일 */
+.care-grade-test-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* 메인 콘텐츠 스타일 */
+.care-grade-test-content {
+  flex-grow: 1;
+  padding: 1.5rem 1rem;
+  max-width: 768px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* 질문 카드 스타일 */
+.question-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 진행 상태 표시 스타일 */
+.progress-container {
+  margin-bottom: 1.5rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.progress-count {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.progress-bar-container {
+  height: 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* 질문 카테고리 스타일 */
+.question-category {
+  display: inline-block;
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* 질문 제목 스타일 */
+.question-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* 질문 설명 스타일 */
+.question-description {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* 답변 옵션 스타일 */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.option-button {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.option-button:hover {
+  border-color: #d1d5db;
+}
+
+.option-button.selected {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.option-check {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.option-check.checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.check-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: white;
+}
+
+.option-text {
+  flex-grow: 1;
+}
+
+.option-label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.option-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* 네비게이션 버튼 스타일 */
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.prev-button,
+.next-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prev-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.prev-button:hover:not(.disabled) {
+  background-color: #f9fafb;
+}
+
+.next-button {
+  background-color: #3b82f6;
+  border: 1px solid #3b82f6;
+  color: white;
+}
+
+.next-button:hover:not(.disabled) {
+  background-color: #2563eb;
+}
+
+.prev-button.disabled,
+.next-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 결과 카드 스타일 */
+.result-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.result-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* 점수 스타일 */
+.score-container {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.score-label {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.score-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+/* 등급 결과 스타일 */
+.grade-container {
+  background-color: #eff6ff;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.grade-label {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.grade-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #3b82f6;
+  margin-bottom: 1rem;
+}
+
+.grade-description {
+  color: #6b7280;
+}
+
+/* 주의사항 스타일 */
+.notice-container {
+  display: flex;
+  background-color: #fff7ed;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.notice-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #f59e0b;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.notice-content {
+  flex-grow: 1;
+}
+
+.notice-title {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #92400e;
+}
+
+.notice-text {
+  font-size: 0.875rem;
+  color: #92400e;
+}
+
+/* 결과 버튼 스타일 */
+.result-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.restart-button,
+.home-button {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.restart-button {
+  background-color: #3b82f6;
+  border: 1px solid #3b82f6;
+  color: white;
+}
+
+.restart-button:hover {
+  background-color: #2563eb;
+}
+
+.home-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.home-button:hover {
+  background-color: #f9fafb;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 640px) {
+  .care-grade-test-content {
+    padding: 1rem 0.75rem;
+  }
+
+  .question-card,
+  .result-card {
+    padding: 1.25rem;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .prev-button,
+  .next-button {
+    width: 100%;
+  }
+}
