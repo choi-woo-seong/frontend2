@@ -13,6 +13,7 @@ import FacilityCostPage from "./pages/FacilityCostPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import CartPage from "./pages/CartPage";
 import NoticesPage from "./pages/NoticesPage";
+import NoticeDetailPage from "./pages/NoticeDetailPage"
 import WelfareNewsPage from "./pages/WelfareNewsPage";
 import GovernmentProgramsPage from "./pages/GovernmentProgramsPage";
 import VideosPage from "./pages/VideosPage";
@@ -82,6 +83,7 @@ function App() {
                 <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/notices" element={<NoticesPage />} />
+                <Route path="/notices/:id" element={<NoticeDetailPage />} />
                 <Route path="/welfare-news" element={<WelfareNewsPage />} />
                 <Route path="/government-programs" element={<GovernmentProgramsPage />} />
                 <Route path="/videos" element={<VideosPage />} />

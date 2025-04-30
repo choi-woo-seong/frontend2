@@ -45,12 +45,7 @@ function SearchPage() {
     { label: "요양병원", imgSrc: "/images/요양병원.svg" },
     { label: "요양원", imgSrc: "/images/요양원.svg" },
     { label: "실버타운", imgSrc: "/images/실버타운.svg" },
-    { label: "양로원", imgSrc: "/images/양로원.svg" },
-    { label: "주야간보호", imgSrc: "/images/주야간보호.svg" },
-    { label: "단기보호", imgSrc: "/images/단기보호.svg" },
-    { label: "방문요양", imgSrc: "/images/방문요양.svg" },
-    { label: "방문간호", imgSrc: "/images/방문간호.svg" },
-    { label: "방문목욕", imgSrc: "/images/방문목욕.svg" },
+  
   ];
 
   useEffect(() => {

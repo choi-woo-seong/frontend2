@@ -189,9 +189,6 @@ const FacilitiesListPage = () => {
       <option value="요양원">요양원</option>
       <option value="요양병원">요양병원</option>
       <option value="실버타운">실버타운</option>
-      <option value="방문요양">방문요양</option>
-      <option value="방문간호">방문간호</option>
-      <option value="주야간보호">주야간보호</option>
     </select>
   </div>
 </div>
