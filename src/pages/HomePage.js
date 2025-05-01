@@ -1,6 +1,5 @@
 import "../styles/HomePage.css"
-import { Link, useNavigate, useLocation } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import {
   Search,
   MessageCircle,
@@ -16,6 +15,7 @@ import NoticeBar from "../components/NoticeBar"
 import VideoSection from "../components/VideoSection"
 import BottomNavigation from "../components/BottomNavigation"
 import logo from "../pages/img/logo.png"
+import { useAuth } from "../hooks/use-auth" // ✅ 전역 상태 사용
 
 const products = [
   {
@@ -42,23 +42,14 @@ const products = [
 ]
 
 function HomePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const navigate = useNavigate()
-  const location = useLocation()
-
-  // ✅ 경로 변경 시마다 로그인 상태 체크
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken")
-    setIsLoggedIn(!!token)
-  }, [location])
+  const { isLoggedIn, logout } = useAuth() // ✅ 전역 로그인 상태 사용
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      localStorage.removeItem("accessToken")
-      setIsLoggedIn(false)
+      logout() // ✅ 전역 로그아웃 함수 호출
       alert("로그아웃 되었습니다.")
-      navigate("/")
-      window.location.reload() // 🔄 강제 새로고침으로 상태 반영
+      navigate("/") // 홈으로 이동
     }
   }
 
