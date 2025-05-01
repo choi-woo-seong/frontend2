@@ -480,14 +480,57 @@ const handleRemoveMedicalEquipment = (index) => {
       </Select>
     </div>
 
-    {/* 병상 정보 (all types) */}
+    {/* 병상 정보 + 규모 분류 (all types) */}
     <div className="form-group">
       <label>병상 정보</label>
-      <div className="form-row" style={{ display: "flex", gap: "0.5rem" }}>
-        <Input name="totalBeds"       placeholder="총 병상"       value={formData.totalBeds}       onChange={handleChange} />
-        <Input name="generalBeds"     placeholder="일반 병상"     value={formData.generalBeds}     onChange={handleChange} />
-        <Input name="vipBeds"         placeholder="상급 병상"     value={formData.vipBeds}         onChange={handleChange} />
-        <Input name="isolationBeds"   placeholder="격리 병상"     value={formData.isolationBeds}   onChange={handleChange} />
+       {/* TODO: 추후 API 연동으로 'bedSizeCategory' 값을 받아와 표시하도록 변경 */}
+{formData.totalBeds && (
+  // // 예시 API 호출 (나중에 활성화하세요)
+  // useEffect(() => {
+  //   const cnt = parseInt(formData.totalBeds, 10)
+  //   fetch(`/api/bed-size-category?count=${cnt}`)
+  //     .then(res => res.json())
+  //     .then(data => setBedSizeCategory(data.category))
+  // }, [formData.totalBeds])
+
+  <span className="text-gray-500">
+    {/* API에서 받아온 값 사용: {bedSizeCategory} */}
+    {(() => {
+      const cnt = parseInt(formData.totalBeds, 10)
+      if (cnt <= 4) return "소형"
+      if (cnt <= 9) return "중형"
+      return "대형"
+    })()}
+  </span>
+)}
+
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <Input
+          name="totalBeds"
+          placeholder="총 병상"
+          value={formData.totalBeds}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-row" style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+        <Input
+          name="generalBeds"
+          placeholder="일반 병상"
+          value={formData.generalBeds}
+          onChange={handleChange}
+        />
+        <Input
+          name="vipBeds"
+          placeholder="상급 병상"
+          value={formData.vipBeds}
+          onChange={handleChange}
+        />
+        <Input
+          name="isolationBeds"
+          placeholder="격리 병상"
+          value={formData.isolationBeds}
+          onChange={handleChange}
+        />
       </div>
     </div>
 
@@ -498,17 +541,21 @@ const handleRemoveMedicalEquipment = (index) => {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label>의료진 정보</label>
             <Button
-         type="button"
-         variant="outline"
-         onClick={handleAddMedicalStaff}
-         className="add-extra-item-btn"            // ← 이 클래스 추가
-         style={{ marginBottom: "0.5rem" }}         // ← 기존 인라인 스타일
-       >
-         + 의료진 추가
-       </Button>
+              type="button"
+              variant="outline"
+              onClick={handleAddMedicalStaff}
+              className="add-extra-item-btn"
+              style={{ marginBottom: "0.5rem" }}
+            >
+              + 의료진 추가
+            </Button>
           </div>
           {formData.medicalStaff.map((staff, idx) => (
-            <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative" }}>
+            <div
+              key={idx}
+              className="form-row"
+              style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative" }}
+            >
               <Input
                 placeholder="직책"
                 value={staff.position}
@@ -542,17 +589,21 @@ const handleRemoveMedicalEquipment = (index) => {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label>의료 장비</label>
             <Button
-         type="button"
-         variant="outline"
-         onClick={handleAddMedicalEquipment}
-         className="add-extra-item-btn"            // ← 이 클래스 추가
-         style={{ marginBottom: "0.5rem" }}         // ← 기존 인라인 스타일
-       >
-         + 장비 추가
-       </Button>
+              type="button"
+              variant="outline"
+              onClick={handleAddMedicalEquipment}
+              className="add-extra-item-btn"
+              style={{ marginBottom: "0.5rem" }}
+            >
+              + 장비 추가
+            </Button>
           </div>
           {formData.medicalEquipments.map((eq, idx) => (
-            <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative", alignItems: "center" }}>
+            <div
+              key={idx}
+              className="form-row"
+              style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative", alignItems: "center" }}
+            >
               <Input
                 placeholder="장비명 입력 (예: MRI)"
                 value={eq.name}
@@ -574,6 +625,7 @@ const handleRemoveMedicalEquipment = (index) => {
     )}
   </div>
 )}
+
 
 
 <div className="form-actions" style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
