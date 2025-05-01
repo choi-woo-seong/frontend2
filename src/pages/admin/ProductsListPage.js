@@ -7,7 +7,7 @@ import Skeleton from "../../components/ui/Skeleton"
 import Badge from "../../components/ui/Badge"
 import "../../styles/AdminProductsListPage.css"
 import {FaSearch} from "react-icons/fa"
-import {Eye, Pencil, Trash2} from "lucide-react";
+import { Pencil, Trash2} from "lucide-react";
 
 /**
  * 상품 목록 페이지
@@ -341,9 +341,6 @@ const ProductsListPage = () => {
           </td>
           <td className="px-6 py-4">
             <div className="flex justify-start items-center gap-5">
-              <Button variant="ghost" size="icon" onClick={() => handleViewDetail(product.id)}>
-                <Eye className="w-5 h-5 text-blue-500" />
-              </Button>
               <Button variant="ghost" size="icon" onClick={() => handleEdit(product.id)}>
                 <Pencil className="w-5 h-5 text-orange-500" />
               </Button>

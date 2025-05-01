@@ -8,7 +8,7 @@ import Skeleton from "../../components/ui/Skeleton"
 import Badge from "../../components/ui/Badge" // 수정: 기본 내보내기로 가져오기
 import "./AdminInquiriesPage.css" // 수정: 경로 변경
 import {FaSearch} from "react-icons/fa"
-import { Eye, MessageSquare, Trash2 } from "lucide-react"
+import { MessageSquare, Trash2 } from "lucide-react"
 
 
 /**
@@ -256,14 +256,6 @@ const InquiriesPage = () => {
     <td>{formatDate(inquiry.createdAt)}</td>
     <td className="px-6 py-4">
   <div className="flex justify-start items-center gap-5">
-    {/* 상세 보기 (항상 표시) */}
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => handleViewDetail(inquiry.id)}
-    >
-      <Eye className="w-5 h-5 text-blue-500" />
-    </Button>
 
     {/* 답변하기 (답변 전일 때만 표시) */}
     {inquiry.status === "pending" && (
