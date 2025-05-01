@@ -497,9 +497,15 @@ const handleRemoveMedicalEquipment = (index) => {
         <div className="form-group">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label>의료진 정보</label>
-            <Button type="button" variant="outline" onClick={handleAddMedicalStaff}>
-              + 의료진 추가
-            </Button>
+            <Button
+         type="button"
+         variant="outline"
+         onClick={handleAddMedicalStaff}
+         className="add-extra-item-btn"            // ← 이 클래스 추가
+         style={{ marginBottom: "0.5rem" }}         // ← 기존 인라인 스타일
+       >
+         + 의료진 추가
+       </Button>
           </div>
           {formData.medicalStaff.map((staff, idx) => (
             <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative" }}>
@@ -535,9 +541,15 @@ const handleRemoveMedicalEquipment = (index) => {
         <div className="form-group">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <label>의료 장비</label>
-            <Button type="button" variant="outline" onClick={handleAddMedicalEquipment}>
-              + 장비 추가
-            </Button>
+            <Button
+         type="button"
+         variant="outline"
+         onClick={handleAddMedicalEquipment}
+         className="add-extra-item-btn"            // ← 이 클래스 추가
+         style={{ marginBottom: "0.5rem" }}         // ← 기존 인라인 스타일
+       >
+         + 장비 추가
+       </Button>
           </div>
           {formData.medicalEquipments.map((eq, idx) => (
             <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative", alignItems: "center" }}>
