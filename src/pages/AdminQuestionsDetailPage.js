@@ -1,3 +1,4 @@
+// src/pages/AdminQuestionsDetailPage.jsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -20,9 +21,8 @@ const AdminQuestionsDetailPage = () => {
       setIsLoading(true)
       try {
         // TODO: 백엔드 API 연동 - 질문 상세 정보 가져오기
-        // 임시 데이터
         const mockQuestion = {
-          id: id,
+          id,
           title: "요양원 입소 절차에 대해 문의드립니다.",
           content:
             "안녕하세요, 어머니(78세)의 요양원 입소를 고려하고 있습니다. 요양등급은 3등급이며, 입소 절차와 필요한 서류에 대해 알고 싶습니다. 또한 대략적인 비용도 알려주시면 감사하겠습니다.",
@@ -40,7 +40,6 @@ const AdminQuestionsDetailPage = () => {
           },
           answer: null,
         }
-
         setQuestion(mockQuestion)
       } catch (error) {
         console.error("질문 정보 로딩 오류:", error)
@@ -66,12 +65,7 @@ const AdminQuestionsDetailPage = () => {
     setIsSubmitting(true)
     try {
       // TODO: 백엔드 API 연동 - 답변 등록 API 호출
-      console.log("답변 등록:", {
-        questionId: id,
-        answer: answer,
-      })
-
-      // 성공 시 상태 업데이트
+      console.log("답변 등록:", { questionId: id, answer })
       setQuestion({
         ...question,
         status: "answered",
@@ -80,7 +74,6 @@ const AdminQuestionsDetailPage = () => {
           createdAt: new Date().toISOString(),
         },
       })
-
       alert("답변이 성공적으로 등록되었습니다.")
     } catch (error) {
       console.error("답변 등록 오류:", error)
@@ -100,7 +93,11 @@ const AdminQuestionsDetailPage = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString)
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`
+    return `${date.getFullYear()}년 ${
+      date.getMonth() + 1
+    }월 ${date.getDate()}일 ${date.getHours()}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`
   }
 
   return (
@@ -113,25 +110,32 @@ const AdminQuestionsDetailPage = () => {
       </div>
 
       <div className="question-detail-container">
+        {/* 질문 정보 */}
         <div className="question-header">
           <div className="question-title-row">
             <h2>{question.title}</h2>
-            <Badge variant={question.status === "answered" ? "success" : "warning"}>
+            <Badge
+              variant={question.status === "answered" ? "success" : "warning"}
+            >
               {question.status === "answered" ? "답변 완료" : "답변 대기"}
             </Badge>
           </div>
           <div className="question-meta">
             <span>작성자: {question.user.name}</span>
             <span>작성일: {formatDate(question.createdAt)}</span>
-            {question.facility && <span>관련 시설: {question.facility.name}</span>}
+            {question.facility && (
+              <span>관련 시설: {question.facility.name}</span>
+            )}
           </div>
         </div>
 
+        {/* 문의 내용 */}
         <div className="question-content">
           <h3>문의 내용</h3>
           <div className="content-box">{question.content}</div>
         </div>
 
+        {/* 문의자 정보 */}
         <div className="user-info">
           <h3>문의자 정보</h3>
           <div className="info-grid">
@@ -150,6 +154,7 @@ const AdminQuestionsDetailPage = () => {
           </div>
         </div>
 
+        {/* 답변 완료 시 */}
         {question.status === "answered" && question.answer ? (
           <div className="answer-section">
             <h3>답변 내용</h3>
@@ -158,40 +163,39 @@ const AdminQuestionsDetailPage = () => {
             </div>
             <div className="content-box">{question.answer.content}</div>
             <div className="answer-actions">
-              <Button
-                onClick={() => {
-                  setAnswer(question.answer.content)
-                  setQuestion({
-                    ...question,
-                    status: "pending",
-                    answer: null,
-                  })
-                }}
-              >
-                답변 수정하기
-              </Button>
+              <div className="mt-6 text-right">
+                <Button
+                  className="btn-answer"
+                  onClick={() => {
+                    /* ... */
+                  }}
+                >
+                  답변 수정하기
+                </Button>
+              </div>
             </div>
           </div>
         ) : (
+          /* 답변 대기 시 작성 폼 */
           <div className="answer-form">
             <h3>답변 작성</h3>
-            <Textarea
-              className="mb-9"
-               value={answer}
-               onChange={handleAnswerChange}
-               placeholder="문의에 대한 답변을 작성해주세요."
-               rows={6}
-             />
-             <div className="form-actions">
-               <Button
-                 className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
-                 onClick={handleSubmitAnswer}
-                 disabled={isSubmitting}
-               >
-                 {isSubmitting ? "등록 중..." : "답변 등록"}
-               </Button>
-          </div>
-
+            <div className="mb-9">
+              <Textarea
+                value={answer}
+                onChange={handleAnswerChange}
+                placeholder="문의에 대한 답변을 작성해주세요."
+                rows={6}
+              />
+            </div>
+            <div className="form-actions ">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
+                onClick={handleSubmitAnswer}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "등록 중..." : "답변 등록"}
+              </Button>
+            </div>
           </div>
         )}
       </div>
