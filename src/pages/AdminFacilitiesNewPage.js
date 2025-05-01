@@ -135,6 +135,19 @@ const handleRemoveMedicalEquipment = (index) => {
     const updatedStaff = formData.medicalStaff.filter((_, i) => i !== index)
     setFormData((prev) => ({ ...prev, medicalStaff: updatedStaff }))
   }
+    // — 요양원용 비용 계산 state & 유틸 함수 추가 —
+  const roomOptions = [
+    { value: "general", label: "일반실 (4인실)", sub: "급여(31일 기준)", price: 0 },
+    { value: "semi",    label: "상급병실/2인실", sub: "급여(2인실비)",    price: 1240000 },
+    { value: "premium", label: "상급병실/3인실", sub: "급여(3인실비)",    price: 620000 },
+  ]
+  const [selectedRoom, setSelectedRoom] = useState(roomOptions[0].value)
+  const salaryCost = 598393
+  const formatWon = n =>
+    n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  const ownBurden = roomOptions.find(r => r.value === selectedRoom).price
+  const totalCost = salaryCost + ownBurden
+
   
 
 
@@ -280,145 +293,181 @@ const handleRemoveMedicalEquipment = (index) => {
         )}
 
 {activeTab === "cost" && (
-  <div className="form-section">
-    <div className="form-row">
-      <div className="form-group">
-        <label>기본 이용료 (원/월)</label>
-        <Input
-          name="basicFee"
-          placeholder="기본 이용료를 입력하세요"
-          value={formData.basicFee}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <label>간병비 (원/월)</label>
-        <Input
-          name="nursingFee"
-          placeholder="간병비를 입력하세요"
-          value={formData.nursingFee}
-          onChange={handleChange}
-        />
-      </div>
-    </div>
-    <div className="form-row">
-      <div className="form-group">
-        <label>식대 (원/월)</label>
-        <Input
-          name="mealFee"
-          placeholder="식대를 입력하세요"
-          value={formData.mealFee}
-          onChange={handleChange}
-        />
-      </div>
-      <div className="form-group">
-        <label>프로그램 비용 (원/월)</label>
-        <Input
-          name="programFee"
-          placeholder="프로그램 비용을 입력하세요"
-          value={formData.programFee}
-          onChange={handleChange}
-        />
-      </div>
-    </div>
-
-    {formData.extraItems.map((item, index) => (
-      <div
-        className="form-row"
-        key={index}
-        style={{ display: "flex", alignItems: "flex-end", gap: "0.5rem" }}
-      >
-        <div className="form-group" style={{ flex: 1 }}>
-          <label>{index === 0 ? "추가 비용 항목" : " "}</label>
-          <Input
-            placeholder="항목명 (예: 기저귀비, 세탁비)"
-            value={item.name}
-            onChange={(e) =>
-              handleExtraItemChange(index, "name", e.target.value)
-            }
-          />
-        </div>
-        <div className="form-group" style={{ flex: 1, position: "relative" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            {index === 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleAddExtraItem}
-                className="add-extra-item-btn"
-              >
-                <span className="plus-icon">+</span>
-                <span>항목 추가</span>
-              </Button>
+          <div className="form-section">
+            {facilityType === "요양원" ? (
+              <>
+                <div className="form-group">
+                  <label>식재료비</label>
+                  <Input
+                    name="mealFee_ri"
+                    placeholder="예: 3,700원 * 3식 (월 31일 기준)"
+                    value={formData.mealFee_ri}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>간식비</label>
+                  <Input
+                    name="treatFee"
+                    placeholder="예: 1,000원 * 1회 (월 31일 기준)"
+                    value={formData.treatFee}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>상급침실 사용료</label>
+                  <Input
+                    name="bedFee"
+                    placeholder="예: 2인실 5,000원 / 1인실 8,000원 (월 31일 기준)"
+                    value={formData.bedFee}
+                    onChange={handleChange}
+                  />
+                </div>
+              </>
+            ) : facilityType === "실버타운" ? (
+              <>
+                <div className="form-group">
+                  <label>보증금</label>
+                  <Input
+                    name="deposit"
+                    placeholder="예: 50,000,000원 (퇴소 시 전액 반환)"
+                    value={formData.deposit}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>월 입소비 (1인실)</label>
+                  <Input
+                    name="singleRoomFee"
+                    placeholder="예: 7,000,000원"
+                    value={formData.singleRoomFee}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>월 입소비 (2인실)</label>
+                  <Input
+                    name="doubleRoomFee"
+                    placeholder="예: 5,200,000원"
+                    value={formData.doubleRoomFee}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>개인간병 이용시 비용</label>
+                  <Input
+                    name="nursingExtraFee"
+                    placeholder="예: 별도 산정 (간병인 식사 무상 제공)"
+                    value={formData.nursingExtraFee}
+                    onChange={handleChange}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>기본 이용료 (원/월)</label>
+                    <Input
+                      name="basicFee"
+                      placeholder="기본 이용료를 입력하세요"
+                      value={formData.basicFee}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>간병비 (원/월)</label>
+                    <Input
+                      name="nursingFee"
+                      placeholder="간병비를 입력하세요"
+                      value={formData.nursingFee}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>식대 (원/월)</label>
+                    <Input
+                      name="mealFee"
+                      placeholder="식대를 입력하세요"
+                      value={formData.mealFee}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>프로그램 비용 (원/월)</label>
+                    <Input
+                      name="programFee"
+                      placeholder="프로그램 비용을 입력하세요"
+                      value={formData.programFee}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                {formData.extraItems.map((item, idx) => (
+                  <div className="form-row" key={idx} style={{ display: "flex", gap: "0.5rem", alignItems: "flex-end" }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>{idx === 0 ? "추가 비용 항목" : ""}</label>
+                      <Input
+                        placeholder="항목명"
+                        value={item.name}
+                        onChange={e => handleExtraItemChange(idx, "name", e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group" style={{ flex: 1, position: "relative" }}>
+                      {idx === 0 && (
+                        <Button type="button" variant="outline" onClick={handleAddExtraItem}>
+                          + 항목 추가
+                        </Button>
+                      )}
+                      <Input
+                        placeholder="금액 (원/월)"
+                        value={item.amount}
+                        onChange={e => handleExtraItemChange(idx, "amount", e.target.value)}
+                      />
+                      {idx > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExtraItem(idx)}
+                          style={{ position: "absolute", top: 8, right: 8, background: "transparent", border: "none", cursor: "pointer" }}
+                        >
+                          <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <div className="form-group">
+                  <label>건강보험 적용률 (%)</label>
+                  <Select name="insuranceRate" value={formData.insuranceRate} onChange={handleChange}>
+                    <option value="50%">50%</option>
+                    <option value="70%">70%</option>
+                    <option value="80%">80%</option>
+                  </Select>
+                </div>
+                <div className="form-group">
+                  <label>최종 예상 비용 (원/월)</label>
+                  <Input
+                    name="finalEstimate"
+                    placeholder="최종 예상 비용을 입력하세요"
+                    value={formData.finalEstimate}
+                    onChange={handleChange}
+                  />
+                </div>
+                <p className="help-text" style={{ marginTop: 8, fontSize: 13, color: "#6b7280" }}>
+                  * 건강보험 적용 후 예상되는 최종 비용을 입력하세요.
+                </p>
+              </>
             )}
           </div>
-          <Input
-            placeholder="금액 (원/월)"
-            value={item.amount}
-            onChange={(e) =>
-              handleExtraItemChange(index, "amount", e.target.value)
-            }
-          />
-          {index > 0 && (
-            <button
-              type="button"
-              onClick={() => handleRemoveExtraItem(index)}
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-              }}
-            >
-              <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
-            </button>
-          )}
-        </div>
-      </div>
-    ))}
-
-    <div className="form-group">
-      <label>건강보험 적용률 (%)</label>
-      <Select
-        name="insuranceRate"
-        value={formData.insuranceRate}
-        onChange={handleChange}
-      >
-        <option value="50%">50%</option>
-        <option value="70%">70%</option>
-        <option value="80%">80%</option>
-      </Select>
-    </div>
-
-    <div className="form-group">
-      <label>최종 예상 비용 (원/월)</label>
-      <Input
-        name="finalEstimate"
-        placeholder="최종 예상 비용을 입력하세요"
-        value={formData.finalEstimate}
-        onChange={handleChange}
-      />
-    </div>
-
-    <p
-      className="help-text"
-      style={{ marginTop: "8px", fontSize: "13px", color: "#6b7280" }}
-    >
-      * 건강보험 적용 후 예상되는 최종 비용을 입력하세요. 실제 비용은 개인 상황에 따라 달라질 수 있습니다.
-    </p>
-  </div>
-)}
-
+        )}
 
 
 
 {activeTab === "type" && (
   <div className="form-section">
+    {/* 평가등급 (all types) */}
     <div className="form-group">
       <label>평가등급</label>
       <Select name="rating" value={formData.rating} onChange={handleChange}>
@@ -431,149 +480,89 @@ const handleRemoveMedicalEquipment = (index) => {
       </Select>
     </div>
 
-    {/* 병상 정보 (한 줄에 4개) */}
+    {/* 병상 정보 (all types) */}
     <div className="form-group">
       <label>병상 정보</label>
       <div className="form-row" style={{ display: "flex", gap: "0.5rem" }}>
-        <Input name="totalBeds" placeholder="총 병상" value={formData.totalBeds} onChange={handleChange} />
-        <Input name="generalBeds" placeholder="일반 병상" value={formData.generalBeds} onChange={handleChange} />
-        <Input name="vipBeds" placeholder="상급 병상" value={formData.vipBeds} onChange={handleChange} />
-        <Input name="isolationBeds" placeholder="격리 병상" value={formData.isolationBeds} onChange={handleChange} />
+        <Input name="totalBeds"       placeholder="총 병상"       value={formData.totalBeds}       onChange={handleChange} />
+        <Input name="generalBeds"     placeholder="일반 병상"     value={formData.generalBeds}     onChange={handleChange} />
+        <Input name="vipBeds"         placeholder="상급 병상"     value={formData.vipBeds}         onChange={handleChange} />
+        <Input name="isolationBeds"   placeholder="격리 병상"     value={formData.isolationBeds}   onChange={handleChange} />
       </div>
     </div>
 
-    {/* 의료진 정보 추가/삭제 */}
-    <div className="form-group">
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-    <label>의료진 정보</label>
-    <Button
-      type="button"
-      variant="outline"
-      onClick={handleAddMedicalStaff}
-      className="add-extra-item-btn"
-      style={{ marginBottom: "0.5rem" }}
-    >
-      + 의료진 추가
-    </Button>
-  </div>
+    {facilityType === "요양병원" && (
+      <>
+        {/* 의료진 정보 (요양병원만) */}
+        <div className="form-group">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label>의료진 정보</label>
+            <Button type="button" variant="outline" onClick={handleAddMedicalStaff}>
+              + 의료진 추가
+            </Button>
+          </div>
+          {formData.medicalStaff.map((staff, idx) => (
+            <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative" }}>
+              <Input
+                placeholder="직책"
+                value={staff.position}
+                onChange={e => handleMedicalStaffChange(idx, "position", e.target.value)}
+              />
+              <Input
+                placeholder="이름"
+                value={staff.name}
+                onChange={e => handleMedicalStaffChange(idx, "name", e.target.value)}
+              />
+              <Input
+                placeholder="전문분야"
+                value={staff.specialty}
+                onChange={e => handleMedicalStaffChange(idx, "specialty", e.target.value)}
+              />
+              {idx > 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveMedicalStaff(idx)}
+                  style={{ position: "absolute", top: 4, right: 4, background: "transparent", border: "none", cursor: "pointer" }}
+                >
+                  <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
 
-  {formData.medicalStaff.map((staff, index) => (
-  <div
-  key={index}
-  className="form-row"
-  style={{
-    display: "flex",
-    gap: "0.5rem",
-    marginBottom: "0.5rem",
-    position: "relative", // ✅ 기준 잡기
-  }}
->
-  <Input
-    placeholder="직책"
-    value={staff.position}
-    onChange={(e) =>
-      handleMedicalStaffChange(index, "position", e.target.value)
-    }
-  />
-  <Input
-    placeholder="이름"
-    value={staff.name}
-    onChange={(e) =>
-      handleMedicalStaffChange(index, "name", e.target.value)
-    }
-  />
-  <Input
-    placeholder="전문분야 (예: 내과, 재활의학과)"
-    value={staff.specialty}
-    onChange={(e) =>
-      handleMedicalStaffChange(index, "specialty", e.target.value)
-    }
-  />
-
-  {index > 0 && (
-    <button
-      type="button"
-      onClick={() => handleRemoveMedicalStaff(index)}
-      style={{
-        position: "absolute",
-        top: "4px",        // ✅ 상단 여백 최소화
-        right: "4px",      // ✅ 오른쪽 여백 최소화
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        padding: 0,
-        lineHeight: 1,
-      }}
-    >
-      <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
-    </button>
-  )}
-</div>
-
-))}
-
-</div>
-
-
-
-    {/* 의료 장비 추가/삭제 */}
-    <div className="form-group">
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-    <label>의료 장비</label>
-    <Button
-      type="button"
-      variant="outline"
-      onClick={handleAddMedicalEquipment}
-      className="add-extra-item-btn"
-      style={{ marginBottom: "0.5rem" }}
-    >
-      + 장비 추가
-    </Button>
-  </div>
-
-  {formData.medicalEquipments.map((equipment, index) => (
-   <div
-   key={index}
-   className="form-row"
-   style={{
-     display: "flex",
-     gap: "0.5rem",
-     marginBottom: "0.5rem",
-     position: "relative", // ✅ 기준 설정
-     alignItems: "center",
-   }}
- >
-   <Input
-     placeholder="장비명 입력 (예: MRI, CT, 초음파)"
-     value={equipment.name}
-     onChange={(e) => handleMedicalEquipmentChange(index, e.target.value)}
-   />
- 
-   {index > 0 && (
-     <button
-       type="button"
-       onClick={() => handleRemoveMedicalEquipment(index)}
-       style={{
-         position: "absolute",
-         top: "4px",      // ✅ Input 위에 정렬
-         right: "4px",
-         background: "transparent",
-         border: "none",
-         cursor: "pointer",
-         padding: 0,
-         lineHeight: 1,
-       }}
-     >
-       <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
-     </button>
-   )}
- </div>
- 
-  ))}
-</div>
-
+        {/* 의료 장비 (요양병원만) */}
+        <div className="form-group">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <label>의료 장비</label>
+            <Button type="button" variant="outline" onClick={handleAddMedicalEquipment}>
+              + 장비 추가
+            </Button>
+          </div>
+          {formData.medicalEquipments.map((eq, idx) => (
+            <div key={idx} className="form-row" style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem", position: "relative", alignItems: "center" }}>
+              <Input
+                placeholder="장비명 입력 (예: MRI)"
+                value={eq.name}
+                onChange={e => handleMedicalEquipmentChange(idx, e.target.value)}
+              />
+              {idx > 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveMedicalEquipment(idx)}
+                  style={{ position: "absolute", top: 4, right: 4, background: "transparent", border: "none", cursor: "pointer" }}
+                >
+                  <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      </>
+    )}
   </div>
 )}
+
 
 <div className="form-actions" style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
   <Button
