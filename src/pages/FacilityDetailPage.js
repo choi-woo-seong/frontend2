@@ -406,8 +406,8 @@ export default function FacilityDetailPage() {
         <TabsContent value="review" className="p-4 bg-white rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">리뷰</h2>
           {facility.reviews.length === 0 && (
-    <p>등록된 리뷰가 없습니다.</p>
-  )}
+   <p className="text-gray-400">등록된 리뷰가 없습니다.</p>
+       )}
           {facility.reviews.length > 0 && (() => {
             const total = facility.reviews.reduce((sum, r) => sum + r.rating, 0)
             const avg = total / facility.reviews.length
@@ -514,7 +514,7 @@ export default function FacilityDetailPage() {
                 <p>{q.content}</p>
               </div>
             ))}
-            {facility.questions.length === 0 && <p>등록된 문의가 없습니다.</p>}
+            <p className="text-gray-400">등록된 문의가 없습니다.</p>
           </div>
           {showQuestionForm ? (
             <div className="p-4 mb-4 bg-gray-50 rounded">
