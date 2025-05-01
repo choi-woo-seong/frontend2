@@ -212,6 +212,33 @@ export default function FacilityDetailPage() {
               <li key={i}>{am}</li>
             ))}
           </ul>
+          <div className="mb-6">
+         <h3 className="text-lg font-semibold mb-2">위치 보기</h3>
+         <div className="w-full h-64 rounded-lg overflow-hidden border">
+           <iframe
+             src={`https://www.google.com/maps?q=${encodeURIComponent(
+               facility.address
+             )}&output=embed`}
+             width="100%"
+             height="100%"
+             style={{ border: 0 }}
+             allowFullScreen=""
+             loading="lazy"
+           />
+         </div>
+         <div className="mt-4">
+         <a
+    href={`https://map.naver.com/v5/directions?destination=${encodeURIComponent(
+      facility.address
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded"
+  >
+    네이버 길찾기
+  </a>
+  </div>
+       </div>
         </TabsContent>
 
         {/* 비용 안내 */}
