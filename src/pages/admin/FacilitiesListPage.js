@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import Skeleton from "../../components/ui/Skeleton";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { FaSearch } from "react-icons/fa";
 import "../../styles/AdminFacilitiesListPage.css";
 
@@ -32,7 +32,7 @@ const FacilitiesListPage = () => {
           name: "행복요양원",
           type: "요양원",
           address: "서울시 강남구 테헤란로 123",
-          status: "approved",
+          status: "pending",
           phone: "02-123-4567",
           rating: 4.2,
           reviewCount: 10,
@@ -102,36 +102,6 @@ const FacilitiesListPage = () => {
     (currentPage - 1) * 10,
     currentPage * 10
   );
-
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "approved":
-        return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-            승인
-          </span>
-        );
-      case "pending":
-        return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
-            대기중
-          </span>
-        );
-      case "rejected":
-        return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-            거부됨
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
-            알 수 없음
-          </span>
-        );
-    }
-  };
-  
 
   if (isLoading) {
     return (
@@ -209,7 +179,7 @@ const FacilitiesListPage = () => {
         <th className="px-6 py-4">시설명</th>
         <th className="px-6 py-4">유형</th>
         <th className="px-6 py-4">주소</th>
-        <th className="px-6 py-4">상태</th>
+        <th className="px-6 py-4">등록일</th>
         <th className="px-6 py-4">관리</th>
       </tr>
     </thead>
@@ -219,16 +189,9 @@ const FacilitiesListPage = () => {
           <td>{facility.name}</td>
           <td>{facility.type}</td>
           <td>{facility.address}</td>
-          <td>{getStatusBadge(facility.status)}</td>
+          <td>{formatDate(facility.createdAt)}</td>
           <td className="px-6 py-4">
   <div className="flex justify-start items-center gap-5">
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => handleViewDetail(facility.id)}
-    >
-      <Eye className="w-5 h-5 text-blue-500" />
-    </Button>
     <Button
       variant="ghost"
       size="icon"
@@ -236,29 +199,11 @@ const FacilitiesListPage = () => {
     >
       <Pencil className="w-5 h-5 text-orange-500" />
     </Button>
-    {facility.status === "pending" && (
-      <>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => handleStatusChange(facility.id, "approved")}
-        >
-          <span className="text-green-600 text-xs">승인</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => handleStatusChange(facility.id, "rejected")}
-        >
-          <span className="text-red-500 text-xs">거부</span>
-        </Button>
-      </>
-    )}
     <Button
       variant="ghost"
       size="icon"
       onClick={() => handleDelete(facility.id)}
-    >
+      >
       <Trash2 className="w-5 h-5 text-red-500" />
     </Button>
   </div>
