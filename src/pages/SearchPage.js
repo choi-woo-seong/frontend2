@@ -1,9 +1,9 @@
+// src/pages/SearchPage.jsx
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import FacilityList from "../components/FacilityList";
 import RegionSelectorModal from "../components/RegionSelectorModal";
 import FilterModal from "./FilterModal";
-import '../styles/SearchPage.css';
+import "../styles/SearchPage.css";
 
 import {
   FaSearch,
@@ -43,9 +43,8 @@ function SearchPage() {
 
   const categories = [
     { label: "요양병원", imgSrc: "/images/요양병원.svg" },
-    { label: "요양원", imgSrc: "/images/요양원.svg" },
+    { label: "요양원",   imgSrc: "/images/요양원.svg" },
     { label: "실버타운", imgSrc: "/images/실버타운.svg" },
-  
   ];
 
   useEffect(() => {
@@ -57,8 +56,10 @@ function SearchPage() {
     try {
       setTimeout(() => {
         setFacilities([
+          // 요양병원
           {
             id: 1,
+            category: "요양병원",
             name: "프레스토요양병원",
             address: "서울특별시 강남구 도산대로 209",
             imgSrc: "/images/프레스토요양병원.jpg",
@@ -66,14 +67,27 @@ function SearchPage() {
             rating: 4.5,
             reviewCount: 28,
           },
+          // 요양원
           {
             id: 2,
-            name: "서울센트럴요양병원",
-            address: "서울특별시 영등포구 경인로 767",
-            imgSrc: "/images/서울센트럴요양병원.jpg",
-            tags: ["2등급", "대형", "설립 7년", "재활", "호스피스"],
+            category: "요양원",
+            name: "행복요양원",
+            address: "서울특별시 송파구 올림픽로 300",
+            imgSrc: "/images/행복요양원.jpg",
+            tags: ["2등급", "중형", "설립 10년", "호스피스"],
             rating: 4.2,
             reviewCount: 15,
+          },
+          // 실버타운
+          {
+            id: 3,
+            category: "실버타운",
+            name: "골든실버타운",
+            address: "경기도 성남시 수정구 성남대로 400",
+            imgSrc: "/images/골든실버타운.jpg",
+            tags: ["1등급", "대형", "설립 5년", "레저", "커뮤니티"],
+            rating: 4.8,
+            reviewCount: 34,
           },
         ]);
         setLoading(false);
@@ -87,8 +101,8 @@ function SearchPage() {
   };
 
   const handleLikeToggle = (id) => {
-    setLikedFacilities((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    setLikedFacilities(prev =>
+      prev.includes(id) ? prev.filter(fid => fid !== id) : [...prev, id]
     );
   };
 
@@ -123,7 +137,7 @@ function SearchPage() {
 
         {facilityDropdownOpen && (
           <div className="absolute top-16 left-4 w-56 bg-white border rounded-xl shadow-md z-20 py-2">
-            {categories.map((cat) => (
+            {categories.map(cat => (
               <button
                 key={cat.label}
                 onClick={() => {
@@ -163,7 +177,7 @@ function SearchPage() {
             placeholder="검색어 입력"
             className="search-input"
             value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            onChange={e => setSearchKeyword(e.target.value)}
           />
         </div>
       </div>
@@ -171,17 +185,29 @@ function SearchPage() {
       {/* 필터 버튼 */}
       <div className="searchpage-filters">
         <div className="flex gap-2 flex-1">
-          <button onClick={() => setFacilitySizeModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
+          <button
+            onClick={() => setFacilitySizeModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
             {selectedFacilityType} ▼
           </button>
-          <button onClick={() => setEvaluationGradeModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
+          <button
+            onClick={() => setEvaluationGradeModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
             {selectedEvaluationGrade} ▼
           </button>
-          <button onClick={() => setSpecializationModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
+          <button
+            onClick={() => setSpecializationModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
             {selectedSpecialization} ▼
           </button>
         </div>
-        <button onClick={() => setSortModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
+        <button
+          onClick={() => setSortModalOpen(true)}
+          className="border border-black rounded-full px-4 py-2 text-xs"
+        >
           {selectedSort} ▼
         </button>
       </div>
@@ -189,43 +215,52 @@ function SearchPage() {
       {/* 시설 목록 */}
       <div className="searchpage-facility-list">
         <ul className="facility-list">
-          {facilities.map((facility) => (
-            <li
-              className="facility-item"
-              key={facility.id}
-              onClick={() => handleGoToDetail(facility.id)}
-              style={{ cursor: "pointer" }}
-            >
-              <div className="facility-info">
-                <div className="facility-text">
-                  <h3>{facility.name}</h3>
-                  <p>{facility.address}</p>
-                  <div className="facility-tags">
-                    {facility.tags.map((tag, index) => (
-                      <span
-                        className="facility-tag"
-                        key={index}
-                        style={getTagStyle(tag)}
+          {loading && <p>로딩 중...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          {!loading && !error &&
+            facilities
+              .filter(f => f.category === category)
+              .map(fac => (
+                <li
+                  key={fac.id}
+                  className="facility-item"
+                  onClick={() => handleGoToDetail(fac.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="facility-info">
+                    <div className="facility-text">
+                      <h3>{fac.name}</h3>
+                      <p>{fac.address}</p>
+                      <div className="facility-tags">
+                        {fac.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="facility-tag"
+                            style={getTagStyle(tag)}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="facility-image-container">
+                      <img src={fac.imgSrc} alt={fac.name} />
+                      <button
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleLikeToggle(fac.id);
+                        }}
+                        className="like-button"
                       >
-                        {tag}
-                      </span>
-                    ))}
+                        {likedFacilities.includes(fac.id)
+                          ? <FaHeart className="liked" />
+                          : <FaRegHeart />}
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="facility-image-container">
-                  <img src={facility.imgSrc || '/default-image.jpg'} alt={facility.name} />
-                  <button onClick={(e) => {
-                    e.stopPropagation(); // 상세페이지 이동 막기
-                    handleLikeToggle(facility.id);
-                  }} className="like-button">
-                    {likedFacilities.includes(facility.id)
-                      ? <FaHeart className="liked" />
-                      : <FaRegHeart />}
-                  </button>
-                </div>
-              </div>
-            </li>
-          ))}
+                </li>
+              ))
+          }
         </ul>
       </div>
 
@@ -240,13 +275,13 @@ function SearchPage() {
         </button>
       </div>
 
-      {/* 필터 모달들 */}
+      {/* 모달들 */}
       {facilitySizeModalOpen && (
         <FilterModal
           title="시설규모"
           options={["대형", "중형", "소형"]}
           selectedOption={selectedFacilityType}
-          onApply={(option) => setSelectedFacilityType(option || "시설규모")}
+          onApply={opt => setSelectedFacilityType(opt || "시설규모")}
           onClose={() => setFacilitySizeModalOpen(false)}
         />
       )}
@@ -255,7 +290,7 @@ function SearchPage() {
           title="평가등급"
           options={["1등급", "2등급", "3등급", "4등급", "5등급", "등급제외"]}
           selectedOption={selectedEvaluationGrade}
-          onApply={(option) => setSelectedEvaluationGrade(option || "평가등급")}
+          onApply={opt => setSelectedEvaluationGrade(opt || "평가등급")}
           onClose={() => setEvaluationGradeModalOpen(false)}
         />
       )}
@@ -264,7 +299,7 @@ function SearchPage() {
           title="특화영역"
           options={["재활", "치매", "호스피스", "장기입원"]}
           selectedOption={selectedSpecialization}
-          onApply={(option) => setSelectedSpecialization(option || "특화영역")}
+          onApply={opt => setSelectedSpecialization(opt || "특화영역")}
           onClose={() => setSpecializationModalOpen(false)}
         />
       )}
@@ -273,7 +308,7 @@ function SearchPage() {
           title="정렬방식"
           options={["추천순", "조회순", "상담많은순", "후기많은순", "찜많은순"]}
           selectedOption={selectedSort}
-          onApply={(option) => setSelectedSort(option || "추천순")}
+          onApply={opt => setSelectedSort(opt || "추천순")}
           onClose={() => setSortModalOpen(false)}
         />
       )}
