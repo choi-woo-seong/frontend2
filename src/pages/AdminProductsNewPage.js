@@ -81,7 +81,12 @@ const AdminProductsNewPage = () => {
           <div className="form-row">
             <div className="form-group">
               <label>상품명 *</label>
-              <Input name="name" value={formData.name} onChange={handleChange} placeholder="상품명을 입력하세요" />
+              <Input
+   name="name"
+   autoComplete="off"
+   value={formData.name}
+   onChange={handleChange}
+   placeholder="상품명을 입력하세요"/>
             </div>
             <div className="form-group">
               <label>카테고리 *</label>

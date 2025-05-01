@@ -527,23 +527,7 @@ const AdminDashboardPage = () => {
               </div>
             </div>
 
-            {/* 최근 활동 */}
-            <div className="admin-activity">
-              <h3 className="admin-section-title">최근 활동</h3>
-              <ul className="admin-activity-list">
-                {recentActivities.map((activity) => (
-                  <li key={activity.id} className="admin-activity-item">
-                    <div className="admin-activity-content">
-                      <p className="admin-activity-message">{getActivityMessage(activity)}</p>
-                      <span className="admin-activity-time">{formatTime(activity.timestamp)}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <Button className="admin-view-all-button" onClick={handleViewAllActivities}>
-                모든 활동 보기
-              </Button>
-            </div>
+        
 
             {/* 빠른 작업 */}
             <div className="admin-quick-actions">

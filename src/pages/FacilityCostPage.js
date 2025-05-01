@@ -1,217 +1,138 @@
+// src/pages/FacilityCostPage.js
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs"
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { Info, ChevronLeft } from "lucide-react"
+import { Button } from "../components/ui/Button"
 
-const FacilityCostPage = () => {
+export default function FacilityCostPage() {
   const { id } = useParams()
-  const [facility, setFacility] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchFacilityCost = async () => {
-      try {
-        setLoading(true)
+  // 탭 상태 (입원 환자군)
+  const patientGroups = ["신체기능저하", "의료경도", "의료중도", "의료고도"]
+  const [activeGroup, setActiveGroup] = useState(patientGroups[0])
 
-        // 백엔드 API가 준비되지 않았으므로 임시 데이터 사용
-        setTimeout(() => {
-          // 더미 데이터
-          const dummyFacility = {
-            id: id,
-            name: "행복요양원",
-            monthlyCost: 1500000,
-            deposit: 5000000,
-            additionalCosts: [
-              { name: "간호 서비스", cost: 300000, note: "월 기준" },
-              { name: "물리치료", cost: 200000, note: "월 기준" },
-              { name: "식사 제공", cost: 450000, note: "월 기준, 하루 3식" },
-              { name: "특별 활동", cost: 100000, note: "월 기준, 선택사항" },
-            ],
-            insuranceCoverage: [
-              { grade: "1", personalCost: 520000, insuranceSupport: 1430000 },
-              { grade: "2", personalCost: 480000, insuranceSupport: 1260000 },
-              { grade: "3", personalCost: 450000, insuranceSupport: 1180000 },
-              { grade: "4", personalCost: 430000, insuranceSupport: 1100000 },
-              { grade: "5", personalCost: 400000, insuranceSupport: 1030000 },
-            ],
-            costNotes: [
-              "위 비용은 참고용이며 실제 비용은 상담 후 결정됩니다.",
-              "장기요양보험 적용 시 본인부담금은 소득 수준에 따라 달라질 수 있습니다.",
-              "특별한 의료 서비스가 필요한 경우 추가 비용이 발생할 수 있습니다.",
-              "입소 시 건강검진 비용은 별도입니다.",
-            ],
-          }
+  // 병실 선택 상태
+  const roomOptions = [
+    { value: "general", label: "일반실 (4인실)", sub: "급여(31일 기준)", price: 0 },
+    { value: "semi",    label: "상급병실/2인실", sub: "급여(2인실비)",    price: 1240000 },
+    { value: "premium", label: "상급병실/3인실", sub: "급여(3인실비)",    price: 620000 },
+  ]
+  const [selectedRoom, setSelectedRoom] = useState(roomOptions[0].value)
 
-          setFacility(dummyFacility)
-          setLoading(false)
-          setError(null)
-        }, 500)
-      } catch (err) {
-        console.error("비용 정보를 불러오는 중 오류가 발생했습니다:", err)
-        setError("비용 정보를 불러오는 중 오류가 발생했습니다.")
-        setLoading(false)
-      }
-    }
+  // 예시 고정값: 급여 입원비
+  const salaryCost = 598393
 
-    fetchFacilityCost()
-  }, [id])
+  const formatWon = n =>
+    n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+  // 본인부담 + 급여비 합산
+  const ownBurden = roomOptions.find(r => r.value === selectedRoom).price
+  const totalCost = salaryCost + ownBurden
 
   return (
-    <div className="container mx-auto p-4">
-      {/* 탭 메뉴 */}
-      <Tabs defaultValue="cost" className="w-full">
-        <TabsList className="grid grid-cols-4 mb-4">
-          <TabsTrigger value="info">
-            <Link to={`/facility/${id}`} className="w-full h-full flex items-center justify-center">
-              기본 정보
-            </Link>
-          </TabsTrigger>
-          <TabsTrigger value="cost">비용 안내</TabsTrigger>
-          <TabsTrigger value="review">
-            <Link to={`/facility/${id}/review`} className="w-full h-full flex items-center justify-center">
-              리뷰
-            </Link>
-          </TabsTrigger>
-          <TabsTrigger value="question">
-            <Link to={`/facility/${id}/question`} className="w-full h-full flex items-center justify-center">
-              문의
-            </Link>
-          </TabsTrigger>
-        </TabsList>
+    <div className="pb-20 container mx-auto p-4">
+    {/* 헤더: 뒤로가기 아이콘 */}
+    <div className="flex items-center mb-2">
+      <Link to={`/facility/${id}`} className="mr-2">
+        <ChevronLeft className="h-6 w-6 text-gray-600" />
+      </Link>
+      <h1 className="text-2xl font-bold">예상비용 살펴보기</h1>
+    </div>
+      <p className="text-sm text-gray-600 mb-6">
+        아래 요양병원 비용은 보험형태 및 체격 적용여부에 따라 달라질 수 있으며 비급여항목은 제외된 예상비용입니다.
+      </p>
 
-        <TabsContent value="cost" className="p-4 bg-white rounded-lg shadow">
-          {loading ? (
-            <div className="text-center py-4">로딩 중...</div>
-          ) : error ? (
-            <div className="text-center py-4 text-red-500">{error}</div>
-          ) : !facility ? (
-            <div className="text-center py-4 text-gray-500">비용 정보를 찾을 수 없습니다.</div>
-          ) : (
-            <>
-              <h2 className="text-xl font-semibold mb-4">비용 안내</h2>
+      {/* 탭: 입원 환자군 */}
+      <div className="flex space-x-2 mb-6">
+        {patientGroups.map(g => (
+          <button
+            key={g}
+            className={`flex-1 py-2 border rounded-lg text-sm
+              ${activeGroup === g
+                ? "bg-blue-50 border-blue-500 text-blue-600"
+                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+            onClick={() => setActiveGroup(g)}
+          >
+            {g}
+          </button>
+        ))}
+      </div>
 
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-2">기본 비용</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">월 이용료</p>
-                      <p className="font-medium">{facility.monthlyCost.toLocaleString()}원</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">입소 보증금</p>
-                      <p className="font-medium">{facility.deposit.toLocaleString()}원</p>
-                    </div>
-                  </div>
-                </div>
+      {/* 병실 라디오 리스트 */}
+      <div className="space-y-4 mb-6">
+        {roomOptions.map(r => (
+          <label
+            key={r.value}
+            className={`flex justify-between items-center p-4 border rounded-lg text-sm
+              ${selectedRoom === r.value
+                ? "border-blue-500 ring-2 ring-blue-200"
+                : "border-gray-200"}`}
+          >
+            <div>
+              <div className="flex items-center mb-1">
+                <input
+                  type="radio"
+                  name="room"
+                  value={r.value}
+                  checked={selectedRoom === r.value}
+                  onChange={() => setSelectedRoom(r.value)}
+                  className="mr-2 text-blue-600"
+                />
+                <span className="font-medium">{r.label}</span>
               </div>
+              <p className="text-xs text-gray-500 pl-7">{r.sub}</p>
+            </div>
+            <span className="font-medium">{formatWon(r.price)}원</span>
+          </label>
+        ))}
+      </div>
 
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-2">추가 비용</h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          항목
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          비용
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          비고
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {facility.additionalCosts.map((item, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.cost.toLocaleString()}원
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.note}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+      {/* 구분선 */}
+      <div className="border-t-2 border-blue-500 mb-6"></div>
 
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-2">장기요양보험 적용</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="mb-2">장기요양등급에 따른 본인부담금</p>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-100">
-                        <tr>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            등급
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            본인부담금
-                          </th>
-                          <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                          >
-                            보험 지원금
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {facility.insuranceCoverage.map((item, index) => (
-                          <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                              {item.grade}등급
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {item.personalCost.toLocaleString()}원
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {item.insuranceSupport.toLocaleString()}원
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+      {/* 급여 입원비 / 본인부담금 */}
+      <div className="flex justify-between mb-1 text-sm">
+        <span>급여 입원비</span>
+        <span>{formatWon(salaryCost)}원</span>
+      </div>
+      <div className="flex justify-between mb-6 text-sm">
+        <span>병실에 따른 본인부담금</span>
+        <span>{formatWon(ownBurden)}원</span>
+      </div>
 
-              <div>
-                <h3 className="text-lg font-medium mb-2">비용 관련 참고사항</h3>
-                <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                  {facility.costNotes.map((note, index) => (
-                    <li key={index}>{note}</li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
-        </TabsContent>
-      </Tabs>
+      {/* 예상 입원비 */}
+      <div className="flex justify-between items-baseline mb-6">
+        <span className="font-medium">예상 입원비</span>
+        <span className="text-xl font-bold text-blue-600">월 {formatWon(totalCost)}원</span>
+      </div>
+
+      {/* 간병비 안내 박스 */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg flex items-start space-x-2">
+        <Info className="h-5 w-5 text-gray-400 mt-1" />
+        <div className="text-sm text-gray-600">
+          자세한 간병비는 시설에 문의해주세요.
+          <p className="mt-1 text-xs text-gray-400">해당 병원의 상황에 따라 달라질 수 있습니다.</p>
+        </div>
+      </div>
+
+      {/* 안내사항 */}
+      <div className="mb-6 text-sm text-gray-600 space-y-1">
+        <p>예상비용은 실제 결제금액과 차이가 있을 수 있습니다.</p>
+        <p>반드시 해당 병원과 상담 후 정확한 비용을 확인하시기 바랍니다.</p>
+      </div>
+
+      {/* 하단 고정 상담하기 버튼 */}
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t p-4">
+        <Button
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded"
+          onClick={() => navigate(`/facility/${id}/consult`)}
+        >
+          상담하기
+        </Button>
+      </div>
     </div>
   )
 }
-
-export default FacilityCostPage

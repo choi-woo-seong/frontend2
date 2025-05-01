@@ -176,16 +176,22 @@ const AdminQuestionsDetailPage = () => {
           <div className="answer-form">
             <h3>답변 작성</h3>
             <Textarea
-              value={answer}
-              onChange={handleAnswerChange}
-              placeholder="문의에 대한 답변을 작성해주세요."
-              rows={6}
-            />
-            <div className="form-actions">
-              <Button onClick={handleSubmitAnswer} disabled={isSubmitting}>
-                {isSubmitting ? "등록 중..." : "답변 등록"}
-              </Button>
-            </div>
+              className="mb-9"
+               value={answer}
+               onChange={handleAnswerChange}
+               placeholder="문의에 대한 답변을 작성해주세요."
+               rows={6}
+             />
+             <div className="form-actions">
+               <Button
+                 className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
+                 onClick={handleSubmitAnswer}
+                 disabled={isSubmitting}
+               >
+                 {isSubmitting ? "등록 중..." : "답변 등록"}
+               </Button>
+          </div>
+
           </div>
         )}
       </div>

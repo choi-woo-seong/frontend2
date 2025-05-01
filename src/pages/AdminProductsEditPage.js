@@ -151,11 +151,16 @@ const AdminProductsEditPage = () => {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-3">
+        <div className="flex justify-between items-center mb-3">
             <h2 className="text-base font-semibold">상품 사양</h2>
-            <Button type="button" onClick={handleAddSpec}>
-              + 사양 추가
-            </Button>
+            <Button
+            type="button"
+            onClick={handleAddSpec}
+            className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 rounded px-3 py-1 text-sm"
+
+>
+            + 사양 추가
+          </Button>
           </div>
 
           <div className="space-y-2">

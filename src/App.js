@@ -77,9 +77,9 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/facility/:id" element={<FacilityDetailPage />} />
+                <Route path="/facility/:id/cost" element={<FacilityCostPage />} />
                 <Route path="/facility/:id/review" element={<FacilityReviewPage />} />
                 <Route path="/facility/:id/question" element={<FacilityQuestionPage />} />
-                <Route path="/facility/:id/cost" element={<FacilityCostPage />} />
                 <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/notices" element={<NoticesPage />} />
