@@ -34,6 +34,7 @@ import AdminFacilitiesNewPage from "./pages/AdminFacilitiesNewPage";
 import AdminFacilitiesEditPage from "./pages/AdminFacilitiesEditPage";
 import AdminQuestionsDetailPage from "./pages/AdminQuestionsDetailPage";
 import AdminUserManagementPage from "./pages/admin/AdminUserManagementPage";
+import NaverMapPage from "./pages/NaverMapPage";
 
 import BottomNavigation from "./components/BottomNavigation";
 import Chatbot from "./components/chatbot/index";
@@ -89,6 +90,7 @@ function App() {
                 <Route path="/videos" element={<VideosPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/care-grade-test" element={<CareGradeTestPage />} />
+                <Route path="/map" element={<NaverMapPage />} />
               </Route>
 
               {/* 관리자 전용 라우트 */}

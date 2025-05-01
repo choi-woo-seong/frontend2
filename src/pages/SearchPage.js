@@ -78,6 +78,16 @@ function SearchPage() {
             rating: 4.2,
             reviewCount: 15,
           },
+          {
+            id: 4,
+            category: "요양병원",
+            name: "아아요양병원",
+            address: "서울특별시 송파구 올림픽로 800",
+            imgSrc: "/images/행복요양원.jpg",
+            tags: ["2등급", "중형", "설립 10년", "호스피스"],
+            rating: 4.2,
+            reviewCount: 15,
+          },
           // 실버타운
           {
             id: 3,
@@ -266,13 +276,26 @@ function SearchPage() {
 
       {/* 지도 보기 버튼 */}
       <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
-        <button
-          onClick={() => navigate("/map")}
-          className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
-        >
-          <FaMapMarkerAlt />
-          지도보기
-        </button>
+      <button
+        onClick={() => {
+          const filtered = facilities.filter(f => f.category === category);
+          if (filtered.length === 0) {
+            alert("표시할 시설이 없습니다.");
+            return;
+          }
+
+          navigate("/map", { state: { facilities: filtered } });
+        }}
+        className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
+      >
+        <FaMapMarkerAlt />
+        지도보기
+      </button>
+
+
+
+
+
       </div>
 
       {/* 모달들 */}
