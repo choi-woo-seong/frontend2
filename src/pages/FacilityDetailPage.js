@@ -405,6 +405,9 @@ export default function FacilityDetailPage() {
         {/* 리뷰 탭 */}
         <TabsContent value="review" className="p-4 bg-white rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">리뷰</h2>
+          {facility.reviews.length === 0 && (
+    <p>등록된 리뷰가 없습니다.</p>
+  )}
           {facility.reviews.length > 0 && (() => {
             const total = facility.reviews.reduce((sum, r) => sum + r.rating, 0)
             const avg = total / facility.reviews.length
@@ -486,16 +489,15 @@ export default function FacilityDetailPage() {
             </div>
           ) : (
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setShowReviewForm(true)
-                setNewReviewRating(0)
-                setNewReviewContent("")
-              }}
-            >
-              리뷰 작성
-            </Button>
+             className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+             onClick={() => {
+               setShowReviewForm(true)
+               setNewReviewRating(0)
+               setNewReviewContent("")
+             }}
+           >
+             리뷰 작성
+           </Button>
           )}
         </TabsContent>
 
@@ -540,9 +542,12 @@ export default function FacilityDetailPage() {
               </div>
             </div>
           ) : (
-            <Button variant="outline" size="sm" onClick={() => setShowQuestionForm(true)}>
-              문의 작성
-            </Button>
+            <Button
+                         className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+                         onClick={() => setShowQuestionForm(true)}
+                       >
+                         문의 작성
+                       </Button>
           )}
         </TabsContent>
       </Tabs>
