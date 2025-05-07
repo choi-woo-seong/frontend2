@@ -342,13 +342,18 @@
 
 .restart-button,
 .home-button {
-  padding: 0.75rem;
+  display: flex;
+  align-items: center;         /* 세로 중앙 정렬 */
+  justify-content: center;     /* 가로 중앙 정렬 */
+  height: 3rem;                /* 버튼 높이 고정 */
+  padding: 0 1rem;             /* 좌우 패딩 */
   border-radius: 0.375rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
 }
+
 
 .restart-button {
   background-color: #3b82f6;

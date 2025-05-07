@@ -1,6 +1,8 @@
 // src/pages/SearchPage.jsx
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
 import RegionSelectorModal from "../components/RegionSelectorModal";
 import FilterModal from "./FilterModal";
 import "../styles/SearchPage.css";
@@ -50,6 +52,13 @@ function SearchPage() {
   useEffect(() => {
     fetchFacilities();
   }, [location.search]);
+
+  const [searchParams] = useSearchParams();
+useEffect(() => {
+  const urlCategory = searchParams.get("category");
+  if (urlCategory) setCategory(urlCategory);
+}, [searchParams]);
+
 
   const fetchFacilities = async () => {
     setLoading(true);

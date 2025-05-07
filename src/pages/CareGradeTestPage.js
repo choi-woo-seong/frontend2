@@ -48,11 +48,25 @@ const CareGradeTestPage = () => {
 
   // 결과 계산
   const calculateResult = () => {
-    // 총점 계산
-    const score = answers.reduce((sum, answer) => sum + (answer >= 0 ? answer : 0), 0)
-    setTotalScore(score)
+    let score = 0
+    let maxScore = 0
+  
+    answers.forEach((answer, index) => {
+      score += answer >= 0 ? answer : 0
+  
+      const options = questions[index].options
+      const maxOptionValue = Math.max(...options.map((opt) => opt.value))
+      maxScore += maxOptionValue
+    })
+  
+    // 백분율 점수로 환산
+    const percentScore = Math.round((score / 105) * 100)
+
+  
+    setTotalScore(percentScore)
     setShowResult(true)
   }
+  
 
   // 등급 판정
   const determineGrade = (score) => {
@@ -160,6 +174,7 @@ const CareGradeTestPage = () => {
             <div className="score-container">
               <div className="score-label">장기요양인정 점수</div>
               <div className="score-value">{totalScore}점</div>
+
             </div>
 
             {/* 등급 결과 */}
@@ -205,8 +220,8 @@ const questions = [
     description: "옷 입기, 양말·신발 신기, 단추 채우기, 지퍼 올리기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 1, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 2, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -215,8 +230,8 @@ const questions = [
     description: "세수, 양치질, 머리감기, 면도, 화장하기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 1, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 2, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -225,8 +240,8 @@ const questions = [
     description: "목욕이나 샤워하기, 몸 씻기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 1, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 3, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -235,8 +250,8 @@ const questions = [
     description: "음식 섭취, 식사도구 사용, 음식 자르기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 2, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 4, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+    { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+    { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -245,8 +260,8 @@ const questions = [
     description: "누웠다가 앉기, 앉았다가 일어서기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 2, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 4, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -255,8 +270,8 @@ const questions = [
     description: "방 안에서 걷기, 이동하기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 2, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 4, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+    { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+    { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -265,8 +280,8 @@ const questions = [
     description: "화장실 가기, 대소변 후 닦고 옷 입기, 기저귀 교환하기 등",
     options: [
       { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
-      { value: 2, label: "부분도움", description: "일부 도움이 필요함" },
-      { value: 4, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
+    { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+    { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -274,9 +289,9 @@ const questions = [
     title: "방금 전에 들었던 이야기나 일을 잊는다",
     description: "단기 기억력 저하",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 1, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 2, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -284,9 +299,9 @@ const questions = [
     title: "오늘이 며칠인지, 무슨 요일인지 모른다",
     description: "시간 지남력 저하",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 1, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 2, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -294,9 +309,9 @@ const questions = [
     title: "자신이 있는 장소를 알지 못한다",
     description: "장소 지남력 저하",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 2, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 4, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+    { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+    { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -304,9 +319,9 @@ const questions = [
     title: "자신의 이름을 기억하지 못한다",
     description: "사람 지남력 저하",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 2, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 4, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -314,9 +329,9 @@ const questions = [
     title: "같은 질문을 반복하거나 같은 말을 반복한다",
     description: "반복적 행동",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 1, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 2, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+    { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+    { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -324,9 +339,9 @@ const questions = [
     title: "길을 잃거나 헤맨다",
     description: "배회",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 2, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 4, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -334,9 +349,9 @@ const questions = [
     title: "폭언이나 위협적인 행동을 한다",
     description: "공격적 행동",
     options: [
-      { value: 0, label: "그렇지 않다", description: "문제 없음" },
-      { value: 2, label: "가끔 그렇다", description: "약간의 문제가 있음" },
-      { value: 4, label: "자주 그렇다", description: "상당한 문제가 있음" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
   {
@@ -344,9 +359,9 @@ const questions = [
     title: "하루에 한 번 이상 체위변경이 필요하다",
     description: "체위변경",
     options: [
-      { value: 0, label: "필요 없음", description: "해당 사항 없음" },
-      { value: 1, label: "가끔 필요함", description: "간헐적으로 필요함" },
-      { value: 2, label: "항상 필요함", description: "지속적으로 필요함" },
+      { value: 0, label: "완전자립", description: "도움 없이 혼자서 가능" },
+      { value: 3, label: "부분도움", description: "일부 도움이 필요함" },
+      { value: 7, label: "완전도움", description: "전적으로 다른 사람의 도움이 필요함" },
     ],
   },
 ]

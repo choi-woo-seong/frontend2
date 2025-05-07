@@ -23,17 +23,17 @@ const VideosPage = () => {
               views: 1245,
               uploadDate: "2023-04-15",
               thumbnailUrl: "/images/welfare-facilities-types-thumbnail.png",
-              videoUrl: "https://www.youtube.com/watch?v=example1",
+              videoUrl: "https://www.youtube.com/watch?v=_QUQK4zs8dM",
             },
             {
               id: 2,
               title: "노인 복지 시설 이용 방법",
-              category: "가이드",
+              category: "정책",
               duration: "08:21",
               views: 987,
               uploadDate: "2023-04-10",
               thumbnailUrl: "/images/senior-facility-usage-thumbnail.png",
-              videoUrl: "https://www.youtube.com/watch?v=example2",
+              videoUrl: "https://www.youtube.com/watch?v=YXkftby8yE8",
             },
             {
               id: 3,
@@ -43,37 +43,37 @@ const VideosPage = () => {
               views: 2345,
               uploadDate: "2023-04-05",
               thumbnailUrl: "/images/senior-housing-differences-thumbnail.png",
-              videoUrl: "https://www.youtube.com/watch?v=example3",
+              videoUrl: "https://www.youtube.com/watch?v=bl42kcYfdrg",
             },
             {
               id: 4,
-              title: "노인 복지 정책 설명회",
-              category: "정책",
+              title: "노인 복지 정책 발표",
+              category: "가이드",
               duration: "32:18",
               views: 876,
               uploadDate: "2023-03-28",
               thumbnailUrl: "/images/senior-welfare-presentation-thumbnail.png",
-              videoUrl: "https://www.youtube.com/watch?v=example4",
+              videoUrl: "https://www.youtube.com/watch?v=RERvwQvRvGU",
             },
             {
               id: 5,
-              title: "치매 예방을 위한 두뇌 활동",
+              title: "치매 예방을 위한 손운동",
               category: "건강",
               duration: "10:05",
               views: 3456,
               uploadDate: "2023-03-20",
               thumbnailUrl: "/images/thoughtful-communication.png",
-              videoUrl: "https://www.youtube.com/watch?v=example5",
+              videoUrl: "https://www.youtube.com/watch?v=JAp3Lgu98S4&t=14s",
             },
             {
               id: 6,
-              title: "노인 운동 프로그램: 관절 건강",
+              title: "노인 맞춤형 건강 체조",
               category: "건강",
               duration: "18:32",
               views: 2134,
               uploadDate: "2023-03-15",
               thumbnailUrl: "/images/supportive-stroll.png",
-              videoUrl: "https://www.youtube.com/watch?v=example6",
+              videoUrl: "https://www.youtube.com/watch?v=AJrCXjPT1Pg",
             },
           ]
 
@@ -92,11 +92,11 @@ const VideosPage = () => {
   return (
     <div className="videos-page">
       <div className="page-header">
-        <div className="container">
-          <Link to="/" className="mr-2">
-            <ChevronLeft className="h-6 w-6 text-gray-600" />
+        <div className="container flex items-center gap-2">
+          <Link to="/" className="flex items-center text-gray-600">
+            <ChevronLeft className="h-5 w-5" />
           </Link>
-          <h1>교육 영상</h1>
+          <h1 className="text-lg font-semibold">영상으로 만나는 요양정보</h1>
         </div>
       </div>
 
@@ -111,13 +111,19 @@ const VideosPage = () => {
               {videos.length > 0 ? (
                 videos.map((video) => (
                   <div key={video.id} className="video-card">
-                    <div className="video-thumbnail">
-                      <img src={video.thumbnailUrl || "/placeholder.svg"} alt={video.title} />
-                      <div className="video-duration">{video.duration}</div>
-                      <div className="play-button">
-                        <i className="fas fa-play"></i>
+                    <a
+                      href={video.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div className="video-thumbnail">
+                        <img src={video.thumbnailUrl || "/placeholder.svg"} alt={video.title} />
+                        <div className="video-duration">{video.duration}</div>
+                        <div className="play-button">
+                          <i className="fas fa-play"></i>
+                        </div>
                       </div>
-                    </div>
+                    </a>
                     <div className="video-info">
                       <h3 className="video-title">{video.title}</h3>
                       <div className="video-meta">

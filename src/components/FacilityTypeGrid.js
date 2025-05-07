@@ -4,10 +4,10 @@ import { Search } from "lucide-react"
 // 시설 유형 데이터 (4개만 유지)
 const facilityTypes = [
   { id: 0, name: "시설찾기", path: "/search" },
-  { id: 1, name: "요양병원", icon: "/images/요양병원.svg", path: "/search?type=요양병원" },
-  { id: 2, name: "요양원",   icon: "/images/요양원.svg",   path: "/search?type=요양원"   },
-  { id: 3, name: "실버타운", icon: "/images/실버타운.svg", path: "/search?type=실버타운" },
-]
+  { id: 1, name: "요양병원", icon: "/images/요양병원.svg", path: "/search?category=요양병원" },
+  { id: 2, name: "요양원",   icon: "/images/요양원.svg",   path: "/search?category=요양원"   },
+  { id: 3, name: "실버타운", icon: "/images/실버타운.svg", path: "/search?category=실버타운" },
+];
 
 function FacilityTypeGrid() {
   return (

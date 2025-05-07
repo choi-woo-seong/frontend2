@@ -157,7 +157,8 @@ function LoginForm() {
           className="login-social-btn google-btn w-full flex items-center justify-center space-x-2 py-2.5 border border-gray-300 bg-white rounded-md hover:bg-gray-100 transition-colors"
         >
           <img src="/images/구글.png" alt="Google" className="google-img" />
-          <span className="font-medium text-gray-800">구글로 로그인</span>
+          <span className="font-medium text-gray-800 -translate-x-3 transform">구글로 로그인</span>
+
         </button>
       </div>
 

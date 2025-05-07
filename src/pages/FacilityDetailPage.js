@@ -233,7 +233,7 @@ export default function FacilityDetailPage() {
     )}`}
     target="_blank"
     rel="noopener noreferrer"
-    className="inline-block bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded"
+    className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
   >
     네이버 길찾기
   </a>
