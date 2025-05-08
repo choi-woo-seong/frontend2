@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { ChevronRight, Play } from "lucide-react"
 
 // 비디오 데이터
@@ -6,31 +5,31 @@ import { ChevronRight, Play } from "lucide-react"
 const videos = [
   {
     id: 1,
-    title: "요양시설 종류별 특징 알아보기",
+    title: "노인 복지 시설 종류와 특징",
     duration: "5:30",
     thumbnail: "/images/welfare-facilities-types-thumbnail.png",
-    url: "/videos/1",
+    videoUrl: "https://www.youtube.com/watch?v=_QUQK4zs8dM",
   },
   {
     id: 2,
-    title: "요양시설 이용 방법 및 절차",
+    title: "노인 복지 시설 이용 방법",
     duration: "7:15",
     thumbnail: "/images/senior-facility-usage-thumbnail.png",
-    url: "/videos/2",
+    videoUrl: "https://www.youtube.com/watch?v=YXkftby8yE8",
   },
   {
     id: 3,
-    title: "실버타운 vs 요양원 vs 양로원 차이점",
+    title: "실버타운과 요양원의 차이점",
     duration: "6:45",
     thumbnail: "/images/senior-housing-differences-thumbnail.png",
-    url: "/videos/3",
+    videoUrl: "https://www.youtube.com/watch?v=bl42kcYfdrg",
   },
   {
     id: 4,
-    title: "노인복지 정책 및 지원금 안내",
+    title: "노인 복지 정책 발표",
     duration: "8:20",
     thumbnail: "/images/senior-welfare-presentation-thumbnail.png",
-    url: "/videos/4",
+    videoUrl: "https://www.youtube.com/watch?v=RERvwQvRvGU",
   },
 ]
 
@@ -40,14 +39,20 @@ function VideoSection() {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">영상으로 만나는 요양정보</h2>
-          <Link to="/videos" className="text-xs text-gray-500 flex items-center">
+          <a href="/videos" className="text-xs text-gray-500 flex items-center">
             더보기 <ChevronRight className="h-3 w-3" />
-          </Link>
+          </a>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {videos.map((video) => (
-            <Link key={video.id} to={video.url} className="block">
+            <a
+              key={video.id}
+              href={video.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
               <div className="relative rounded-lg overflow-hidden">
                 <img
                   src={video.thumbnail || "/placeholder.svg"}
@@ -66,7 +71,7 @@ function VideoSection() {
               <div className="mt-2">
                 <p className="text-xs font-medium line-clamp-2">{video.title}</p>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>

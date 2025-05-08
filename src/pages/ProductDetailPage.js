@@ -7,8 +7,7 @@ import {
   ChevronLeft,
   Star,
   ShoppingCart,
-  Share2,
-  MessageCircle
+  Share2
 } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import Layout from "../components/Layout"
@@ -21,17 +20,14 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState("description")
 
-  // 리뷰 작성 폼 관련 상태
   const [showReviewForm, setShowReviewForm] = useState(false)
   const [newReviewContent, setNewReviewContent] = useState("")
-  const [newReviewRating, setNewReviewRating] = useState(0)
+  const [newReviewRating, setNewReviewRating] = useState(1)
 
-  // 문의 작성 폼 관련 상태
   const [showQuestionForm, setShowQuestionForm] = useState(false)
   const [newQuestionContent, setNewQuestionContent] = useState("")
 
   useEffect(() => {
-    // 실제로는 axios.get으로 API 호출
     setTimeout(() => {
       setProduct({
         id: Number(id),
@@ -54,14 +50,10 @@ export default function ProductDetailPage() {
           { name: "접이식", value: "가능" },
           { name: "색상", value: "실버" }
         ],
-        reviews: [
-          { id: 1, user: "김**", rating: 5, content: "가볍고 튼튼해서 좋아요. 어머니가 사용하시기에 편리합니다.", date: "2023-05-15" },
-          { id: 2, user: "이**", rating: 4, content: "배송이 빨라서 좋았습니다. 제품도 만족스러워요.", date: "2023-04-22" },
-          { id: 3, user: "박**", rating: 5, content: "접이식이라 보관하기 좋고, 어르신이 사용하기에 안정적입니다.", date: "2023-03-10" }
-        ],
+        reviews: [],
         questions: [],
-        rating: 4.7,
-        reviewCount: 3
+        rating: 0,
+        reviewCount: 0
       })
       setLoading(false)
     }, 500)
@@ -94,7 +86,7 @@ export default function ProductDetailPage() {
     })
     setShowReviewForm(false)
     setNewReviewContent("")
-     setNewReviewRating(0)
+    setNewReviewRating(1)
   }
 
   const handleQuestionSubmit = () => {
@@ -129,157 +121,156 @@ export default function ProductDetailPage() {
   )
 
   return (
-   
-      <div className="container mx-auto px-4 py-4">
-        {/* 상단 네비게이션 */}
+    <div className="container mx-auto px-4 py-4">
+      <div className="flex items-center mb-4">
+        <Link to="/products" className="flex items-center text-gray-500">
+          <ChevronLeft className="h-5 w-5" />
+          <span>제품 목록</span>
+        </Link>
+      </div>
+
+      <img
+        src={product.images[0]}
+        alt={product.name}
+        className="w-full h-64 object-contain bg-white rounded-lg mb-4"
+      />
+
+      <div className="bg-white rounded-lg p-4 mb-4">
+        <h1 className="text-xl font-bold mb-2">{product.name}</h1>
+        <div className="flex items-center mb-2">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-4 w-4 ${
+                i < Math.floor(product.rating)
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+          <span className="text-sm ml-1">{product.rating.toFixed(1)}</span>
+          <span className="text-sm text-gray-500 ml-2">({product.reviewCount}개 리뷰)</span>
+        </div>
+        <div className="mb-4">
+          <div className="flex items-center">
+            <span className="text-2xl font-bold">{product.price}</span>
+            <span className="text-red-500 ml-2">{product.discount}</span>
+          </div>
+          <div className="text-sm text-gray-500 line-through">{product.originalPrice}</div>
+        </div>
         <div className="flex items-center mb-4">
-          <Link to="/products" className="flex items-center text-gray-500">
-            <ChevronLeft className="h-5 w-5" />
-            <span>제품 목록</span>
-          </Link>
-        </div>
-
-        {/* 제품 이미지 */}
-        <img
-          src={product.images[0]}
-          alt={product.name}
-          className="w-full h-64 object-contain bg-white rounded-lg mb-4"
-        />
-
-        {/* 제품 정보 */}
-        <div className="bg-white rounded-lg p-4 mb-4">
-          <h1 className="text-xl font-bold mb-2">{product.name}</h1>
-          <div className="flex items-center mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`h-4 w-4 ${
-                  i < Math.floor(product.rating)
-                    ? "text-yellow-400 fill-yellow-400"
-                    : "text-gray-300"
-                }`}
-              />
-            ))}
-            <span className="text-sm ml-1">{product.rating.toFixed(1)}</span>
-            <span className="text-sm text-gray-500 ml-2">({product.reviewCount}개 리뷰)</span>
-          </div>
-          <div className="mb-4">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold">{product.price}</span>
-              <span className="text-red-500 ml-2">{product.discount}</span>
-            </div>
-            <div className="text-sm text-gray-500 line-through">{product.originalPrice}</div>
-          </div>
-          <div className="flex items-center mb-4">
-            <span className="mr-2">수량:</span>
-            <div className="flex items-center border rounded">
-              <button
-                className="px-3 py-1"
-                onClick={() => handleQuantityChange(-1)}
-                disabled={quantity <= 1}
-              >-</button>
-              <span className="px-3 py-1 border-x">{quantity}</span>
-              <button className="px-3 py-1" onClick={() => handleQuantityChange(1)}>+</button>
-            </div>
-          </div>
-          <div className="flex gap-2 mb-4">
-            <Button
-              className="flex flex-1 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white gap-2 py-3"
-              onClick={addToCart}
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <span className="text-base font-medium">장바구니</span>
-            </Button>
-            <Button variant="outline" className="p-3">
-              <Share2 className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="bg-gray-50 p-3 rounded text-sm">
-            <p className="mb-1">· 무료배송</p>
-            <p>· 3일 이내 출고</p>
+          <span className="mr-2">수량:</span>
+          <div className="flex items-center border rounded">
+            <button
+              className="px-3 py-1"
+              onClick={() => handleQuantityChange(-1)}
+              disabled={quantity <= 1}
+            >-</button>
+            <span className="px-3 py-1 border-x">{quantity}</span>
+            <button className="px-3 py-1" onClick={() => handleQuantityChange(1)}>+</button>
           </div>
         </div>
+        <div className="flex gap-2 mb-4">
+          <Button
+            className="flex flex-1 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white gap-2 py-3"
+            onClick={addToCart}
+          >
+            <ShoppingCart className="h-5 w-5" />
+            <span className="text-base font-medium">장바구니</span>
+          </Button>
+          <Button variant="outline" className="p-3">
+            <Share2 className="h-5 w-5" />
+          </Button>
+        </div>
+        <div className="bg-gray-50 p-3 rounded text-sm">
+          <p className="mb-1">· 무료배송</p>
+          <p>· 3일 이내 출고</p>
+        </div>
+      </div>
 
-        {/* 탭 메뉴 */}
-        <div className="bg-white rounded-lg mb-4 overflow-hidden pb-4">
+      <div className="bg-white rounded-lg mb-4 overflow-hidden pb-4">
         <div className="flex border-b pb-3">
-             <button
-               className={`flex-1 py-3 text-center ${activeTab === "description" ? "border-b-2 border-blue-500 font-medium" : ""}`}
-               onClick={() => setActiveTab("description")}
-             >상세정보</button>
-            <button
-              className={`flex-1 py-3 text-center ${activeTab === "reviews" ? "border-b-2 border-blue-500 font-medium" : ""}`}
-              onClick={() => setActiveTab("reviews")}
-            >리뷰</button>
-            <button
-              className={`flex-1 py-3 text-center ${activeTab === "qna" ? "border-b-2 border-blue-500 font-medium" : ""}`}
-              onClick={() => setActiveTab("qna")}
-            >문의</button>
-          </div>
-          <div className="p-4">
-            {activeTab === "description" && (
-              <div>
-                <p className="mb-4">{product.description}</p>
-                <h3 className="font-medium mb-2">제품 사양</h3>
-                <table className="w-full text-sm">
-                  <tbody>
-                    {product.specifications.map((spec, idx) => (
-                      <tr key={idx} className="border-b">
-                        <td className="py-2 font-medium w-1/3">{spec.name}</td>
-                        <td className="py-2">{spec.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+          <button
+            className={`flex-1 py-3 text-center ${activeTab === "description" ? "border-b-2 border-blue-500 font-medium" : ""}`}
+            onClick={() => setActiveTab("description")}
+          >상세정보</button>
+          <button
+            className={`flex-1 py-3 text-center ${activeTab === "reviews" ? "border-b-2 border-blue-500 font-medium" : ""}`}
+            onClick={() => setActiveTab("reviews")}
+          >리뷰</button>
+          <button
+            className={`flex-1 py-3 text-center ${activeTab === "qna" ? "border-b-2 border-blue-500 font-medium" : ""}`}
+            onClick={() => setActiveTab("qna")}
+          >문의</button>
+        </div>
+        <div className="p-4">
+          {activeTab === "description" && (
+            <div>
+              <p className="mb-4">{product.description}</p>
+              <h3 className="font-medium mb-2">제품 사양</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                  {product.specifications.map((spec, idx) => (
+                    <tr key={idx} className="border-b">
+                      <td className="py-2 font-medium w-1/3">{spec.name}</td>
+                      <td className="py-2">{spec.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
-            {activeTab === "reviews" && (
-              <>
-                {/* 평균 평점 계산 및 표시 (FacilityDetailPage와 동일) */}
-                {product.reviews.length > 0 && (() => {
-                  const total = product.reviews.reduce((sum, r) => sum + r.rating, 0)
-                  const avg = total / product.reviews.length
-                  return (
-                    <div className="flex items-center mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-5 w-5 mr-1 ${
-                            i < Math.round(avg)
-                              ? "text-yellow-400 fill-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                      <span className="ml-2 text-lg font-medium">{avg.toFixed(1)}</span>
-                      <span className="ml-1 text-gray-500">({product.reviews.length}개)</span>
-                    </div>
-                  )
-                })()}
-
-                {/* 기존 리뷰 리스트 */}
-                <div className="space-y-4 mb-4">
-                  {product.reviews.map(r => (
-                    <div key={r.id} className="border-b pb-4">
-                      <div className="flex items-center mb-1">
+          {activeTab === "reviews" && (
+            <>
+              {product.reviews.length === 0 ? (
+                <div className="text-gray-500 text-sm mb-4">등록된 리뷰가 없습니다.</div>
+              ) : (
+                <>
+                  {(() => {
+                    const total = product.reviews.reduce((sum, r) => sum + r.rating, 0)
+                    const avg = total / product.reviews.length
+                    return (
+                      <div className="flex items-center mb-4">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-3 w-3 ${
-                              i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                            className={`h-5 w-5 mr-1 ${
+                              i < Math.round(avg)
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-300"
                             }`}
                           />
                         ))}
-                        <span className="text-sm ml-2">{r.user}</span>
-                        <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
+                        <span className="ml-2 text-lg font-medium">{avg.toFixed(1)}</span>
+                        <span className="ml-1 text-gray-500">({product.reviews.length}개)</span>
                       </div>
-                      <p className="text-sm">{r.content}</p>
-                    </div>
-                  ))}
-                </div>
+                    )
+                  })()}
 
-                {showReviewForm ? (
+                  <div className="space-y-4 mb-4">
+                    {product.reviews.map(r => (
+                      <div key={r.id} className="border-b pb-4">
+                        <div className="flex items-center mb-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-3 w-3 ${
+                                i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                          <span className="text-sm ml-2">{r.user}</span>
+                          <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
+                        </div>
+                        <p className="text-sm">{r.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {showReviewForm ? (
                 <div className="p-4 mb-4 bg-gray-50 rounded">
                   <h4 className="font-medium mb-2">리뷰 작성하기</h4>
                   <div className="flex mb-2">
@@ -317,8 +308,7 @@ export default function ProductDetailPage() {
                 </div>
               ) : (
                 <Button
-                  variant="outline"
-                  size="sm"
+                  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
                   onClick={() => setShowReviewForm(true)}
                 >
                   리뷰 작성
@@ -326,66 +316,64 @@ export default function ProductDetailPage() {
               )}
             </>
           )}
+  {activeTab === "qna" && (
+        <>
+          {product.questions.length === 0 && (
+            <div className="text-gray-500 text-sm mb-4">등록된 문의가 없습니다.</div>
+          )}
 
-            {activeTab === "qna" && (
-              <>
-                <div className="space-y-4 mb-4">
-                  {product.questions.length > 0 ? (
-                    product.questions.map(q => (
-                      <div key={q.id} className="border-b pb-4">
-                        <div className="flex items-center mb-1">
-                          <span>{q.user}</span>
-                          <span className="text-xs text-gray-500 ml-auto">{q.date}</span>
-                        </div>
-                        <p className="text-sm">{q.content}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <MessageCircle className="h-12 w-12 mx-auto mb-2 opacity-20" />
-                      <p>등록된 문의가 없습니다.</p>
-                    </div>
-                  )}
+          <div className="space-y-4 mb-4">
+            {product.questions.map(q => (
+              <div key={q.id} className="border-b pb-4">
+                <div className="flex items-center mb-1">
+                  <span>{q.user}</span>
+                  <span className="text-xs text-gray-500 ml-auto">{q.date}</span>
                 </div>
-                {showQuestionForm ? (
-                  <div className="p-4 mb-4 bg-gray-50 rounded">
-                    <h4 className="font-medium mb-2">문의 작성하기</h4>
-                    <textarea
-                      className="w-full border p-2 mb-2 rounded"
-                      rows={3}
-                      placeholder="문의 내용을 입력하세요"
-                      value={newQuestionContent}
-                      onChange={e => setNewQuestionContent(e.target.value)}
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
-                        onClick={handleQuestionSubmit}
-                      >
-                        등록
-                      </Button>
-                      <Button
-                        className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
-                        onClick={() => setShowQuestionForm(false)}
-                      >
-                        취소
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <Button variant="outline" size="sm" className="flex items-center" onClick={() => setShowQuestionForm(true)}>
-                    <MessageCircle className="h-4 w-4 mr-1" /> 문의 작성
-                  </Button>
-                )}
-              </>
-            )}
+                <p className="text-sm">{q.content}</p>
+              </div>
+            ))}
           </div>
-        </div>
 
-        <RecommendedSection />
+          {showQuestionForm ? (
+            <div className="p-4 mb-4 bg-gray-50 rounded">
+              <h4 className="font-medium mb-2">문의 작성하기</h4>
+              <textarea
+                className="w-full border p-2 mb-2 rounded"
+                rows={3}
+                placeholder="문의 내용을 입력하세요"
+                value={newQuestionContent}
+                onChange={e => setNewQuestionContent(e.target.value)}
+              />
+              <div className="flex gap-2">
+                <Button
+                  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+                  onClick={handleQuestionSubmit}
+                >
+                  등록
+                </Button>
+                <Button
+                  className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
+                  onClick={() => setShowQuestionForm(false)}
+                >
+                  취소
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+              onClick={() => setShowQuestionForm(true)}
+            >
+              문의 작성
+            </Button>
+          )}
+        </>
+      )}
+
+        </div>
       </div>
-    
+
+      <RecommendedSection />
+    </div>
   )
 }
-
-

@@ -516,32 +516,36 @@ export default function FacilityDetailPage() {
             </div>
           ) : (
             <Button
-             className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
-             onClick={() => {
-               setShowReviewForm(true)
-               setNewReviewRating(0)
-               setNewReviewContent("")
-             }}
-           >
-             리뷰 작성
-           </Button>
+            className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+            onClick={() => {
+              setShowReviewForm(true)
+              setNewReviewRating(1) // ✅ 별 1개부터 시작하도록 설정
+              setNewReviewContent("")
+            }}
+          >
+            리뷰 작성
+          </Button>
+          
           )}
         </TabsContent>
 
-        {/* 문의 탭 */}
-        <TabsContent value="question" className="p-4 bg-white rounded-lg shadow">
+       {/* 문의 탭 */}
+       <TabsContent value="question" className="p-4 bg-white rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-4">문의</h2>
           <div className="space-y-4 mb-4">
-            {facility.questions.map(q => (
-              <div key={q.id} className="border-b pb-2">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                  <span>{q.user}</span>
-                  <span>{q.date}</span>
+            {facility.questions.length === 0 ? (
+              <p className="text-gray-400">등록된 문의가 없습니다.</p>
+            ) : (
+              facility.questions.map(q => (
+                <div key={q.id} className="border-b pb-2">
+                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>{q.user}</span>
+                    <span>{q.date}</span>
+                  </div>
+                  <p>{q.content}</p>
                 </div>
-                <p>{q.content}</p>
-              </div>
-            ))}
-            <p className="text-gray-400">등록된 문의가 없습니다.</p>
+              ))
+            )}
           </div>
           {showQuestionForm ? (
             <div className="p-4 mb-4 bg-gray-50 rounded">
@@ -570,11 +574,11 @@ export default function FacilityDetailPage() {
             </div>
           ) : (
             <Button
-                         className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
-                         onClick={() => setShowQuestionForm(true)}
-                       >
-                         문의 작성
-                       </Button>
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+              onClick={() => setShowQuestionForm(true)}
+            >
+              문의 작성
+            </Button>
           )}
         </TabsContent>
       </Tabs>
