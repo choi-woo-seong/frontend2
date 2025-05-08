@@ -1,34 +1,38 @@
 import { ChevronRight, Play } from "lucide-react"
 
+// ✅ 유튜브 썸네일 자동 추출 함수
+const getYoutubeThumbnail = (url) => {
+  const match = url.match(/(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/)
+  const videoId = match?.[1]
+  return videoId
+    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+    : "/placeholder.svg"
+}
+
 // 비디오 데이터
-// 백엔드 개발자 참고: GET /api/videos/featured API 필요
 const videos = [
   {
     id: 1,
     title: "노인 복지 시설 종류와 특징",
     duration: "5:30",
-    thumbnail: "/images/welfare-facilities-types-thumbnail.png",
     videoUrl: "https://www.youtube.com/watch?v=_QUQK4zs8dM",
   },
   {
     id: 2,
     title: "노인 복지 시설 이용 방법",
     duration: "7:15",
-    thumbnail: "/images/senior-facility-usage-thumbnail.png",
     videoUrl: "https://www.youtube.com/watch?v=YXkftby8yE8",
   },
   {
     id: 3,
     title: "실버타운과 요양원의 차이점",
     duration: "6:45",
-    thumbnail: "/images/senior-housing-differences-thumbnail.png",
     videoUrl: "https://www.youtube.com/watch?v=bl42kcYfdrg",
   },
   {
     id: 4,
     title: "노인 복지 정책 발표",
     duration: "8:20",
-    thumbnail: "/images/senior-welfare-presentation-thumbnail.png",
     videoUrl: "https://www.youtube.com/watch?v=RERvwQvRvGU",
   },
 ]
@@ -54,8 +58,9 @@ function VideoSection() {
               className="block"
             >
               <div className="relative rounded-lg overflow-hidden">
+                {/* ✅ 유튜브 썸네일 자동 연동 */}
                 <img
-                  src={video.thumbnail || "/placeholder.svg"}
+                  src={getYoutubeThumbnail(video.videoUrl)}
                   alt={video.title}
                   className="w-full aspect-video object-cover"
                 />

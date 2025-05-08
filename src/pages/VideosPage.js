@@ -2,12 +2,21 @@
 
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { ChevronLeft } from "lucide-react" // 뒤로가기 아이콘 추가
+import { ChevronLeft } from "lucide-react"
 import "../styles/VideosPage.css"
 
 const VideosPage = () => {
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
+
+  // ✅ 유튜브 썸네일 자동 추출 함수
+  const getYoutubeThumbnail = (url) => {
+    const match = url.match(/(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/)
+    const videoId = match?.[1]
+    return videoId
+      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+      : "/placeholder.svg"
+  }
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -22,7 +31,6 @@ const VideosPage = () => {
               duration: "12:34",
               views: 1245,
               uploadDate: "2023-04-15",
-              thumbnailUrl: "/images/welfare-facilities-types-thumbnail.png",
               videoUrl: "https://www.youtube.com/watch?v=_QUQK4zs8dM",
             },
             {
@@ -32,7 +40,6 @@ const VideosPage = () => {
               duration: "08:21",
               views: 987,
               uploadDate: "2023-04-10",
-              thumbnailUrl: "/images/senior-facility-usage-thumbnail.png",
               videoUrl: "https://www.youtube.com/watch?v=YXkftby8yE8",
             },
             {
@@ -42,7 +49,6 @@ const VideosPage = () => {
               duration: "15:47",
               views: 2345,
               uploadDate: "2023-04-05",
-              thumbnailUrl: "/images/senior-housing-differences-thumbnail.png",
               videoUrl: "https://www.youtube.com/watch?v=bl42kcYfdrg",
             },
             {
@@ -52,7 +58,6 @@ const VideosPage = () => {
               duration: "32:18",
               views: 876,
               uploadDate: "2023-03-28",
-              thumbnailUrl: "/images/senior-welfare-presentation-thumbnail.png",
               videoUrl: "https://www.youtube.com/watch?v=RERvwQvRvGU",
             },
             {
@@ -62,7 +67,6 @@ const VideosPage = () => {
               duration: "10:05",
               views: 3456,
               uploadDate: "2023-03-20",
-              thumbnailUrl: "/images/thoughtful-communication.png",
               videoUrl: "https://www.youtube.com/watch?v=JAp3Lgu98S4&t=14s",
             },
             {
@@ -72,7 +76,6 @@ const VideosPage = () => {
               duration: "18:32",
               views: 2134,
               uploadDate: "2023-03-15",
-              thumbnailUrl: "/images/supportive-stroll.png",
               videoUrl: "https://www.youtube.com/watch?v=AJrCXjPT1Pg",
             },
           ]
@@ -117,7 +120,11 @@ const VideosPage = () => {
                       rel="noopener noreferrer"
                     >
                       <div className="video-thumbnail">
-                        <img src={video.thumbnailUrl || "/placeholder.svg"} alt={video.title} />
+                        {/* ✅ 유튜브 썸네일 자동 적용 */}
+                        <img
+                          src={getYoutubeThumbnail(video.videoUrl)}
+                          alt={video.title}
+                        />
                         <div className="video-duration">{video.duration}</div>
                         <div className="play-button">
                           <i className="fas fa-play"></i>

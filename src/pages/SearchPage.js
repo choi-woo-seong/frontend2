@@ -54,18 +54,16 @@ function SearchPage() {
   }, [location.search]);
 
   const [searchParams] = useSearchParams();
-useEffect(() => {
-  const urlCategory = searchParams.get("category");
-  if (urlCategory) setCategory(urlCategory);
-}, [searchParams]);
-
+  useEffect(() => {
+    const urlCategory = searchParams.get("category");
+    if (urlCategory) setCategory(urlCategory);
+  }, [searchParams]);
 
   const fetchFacilities = async () => {
     setLoading(true);
     try {
       setTimeout(() => {
         setFacilities([
-          // 요양병원
           {
             id: 1,
             category: "요양병원",
@@ -76,7 +74,6 @@ useEffect(() => {
             rating: 4.5,
             reviewCount: 28,
           },
-          // 요양원
           {
             id: 2,
             category: "요양원",
@@ -97,7 +94,6 @@ useEffect(() => {
             rating: 4.2,
             reviewCount: 15,
           },
-          // 실버타운
           {
             id: 3,
             category: "실버타운",
@@ -239,6 +235,24 @@ useEffect(() => {
           {!loading && !error &&
             facilities
               .filter(f => f.category === category)
+              .filter(f => {
+                if (
+                  searchKeyword &&
+                  !f.name.toLowerCase().includes(searchKeyword.toLowerCase()) &&
+                  !f.address.toLowerCase().includes(searchKeyword.toLowerCase())
+                ) return false;
+
+                if (selectedFacilityType !== "시설규모" && !f.tags.includes(selectedFacilityType))
+                  return false;
+
+                if (selectedEvaluationGrade !== "평가등급" && !f.tags.includes(selectedEvaluationGrade))
+                  return false;
+
+                if (selectedSpecialization !== "특화영역" && !f.tags.includes(selectedSpecialization))
+                  return false;
+
+                return true;
+              })
               .map(fac => (
                 <li
                   key={fac.id}
@@ -285,26 +299,41 @@ useEffect(() => {
 
       {/* 지도 보기 버튼 */}
       <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
-      <button
-        onClick={() => {
-          const filtered = facilities.filter(f => f.category === category);
-          if (filtered.length === 0) {
-            alert("표시할 시설이 없습니다.");
-            return;
-          }
+        <button
+          onClick={() => {
+            const filtered = facilities
+              .filter(f => f.category === category)
+              .filter(f => {
+                if (
+                  searchKeyword &&
+                  !f.name.toLowerCase().includes(searchKeyword.toLowerCase()) &&
+                  !f.address.toLowerCase().includes(searchKeyword.toLowerCase())
+                ) return false;
 
-          navigate("/map", { state: { facilities: filtered } });
-        }}
-        className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
-      >
-        <FaMapMarkerAlt />
-        지도보기
-      </button>
+                if (selectedFacilityType !== "시설규모" && !f.tags.includes(selectedFacilityType))
+                  return false;
 
+                if (selectedEvaluationGrade !== "평가등급" && !f.tags.includes(selectedEvaluationGrade))
+                  return false;
 
+                if (selectedSpecialization !== "특화영역" && !f.tags.includes(selectedSpecialization))
+                  return false;
 
+                return true;
+              });
 
+            if (filtered.length === 0) {
+              alert("표시할 시설이 없습니다.");
+              return;
+            }
 
+            navigate("/map", { state: { facilities: filtered } });
+          }}
+          className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
+        >
+          <FaMapMarkerAlt />
+          지도보기
+        </button>
       </div>
 
       {/* 모달들 */}
