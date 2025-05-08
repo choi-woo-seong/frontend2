@@ -1,15 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Link } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { AlertCircle } from "lucide-react"
 import axios from "axios"
 import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
-import Checkbox from "../ui/Checkbox"
-import './login.css'
+import "./login.css"
 
 const API_BASE_URL = process.env.REACT_APP_API_URL
 
@@ -32,10 +30,10 @@ function LoginForm() {
     })
   }
 
-  const handleCheckboxChange = (checked) => {
+  const handleCheckboxChange = (e) => {
     setLoginData({
       ...loginData,
-      rememberMe: checked,
+      rememberMe: e.target.checked,
     })
   }
 
@@ -59,6 +57,15 @@ function LoginForm() {
       const { token, admin } = response.data
       if (token) {
         localStorage.setItem("accessToken", token)
+
+        if (loginData.rememberMe) {
+          localStorage.setItem("rememberMe", "true")
+          localStorage.setItem("savedUserId", loginData.userId)
+        } else {
+          localStorage.removeItem("rememberMe")
+          localStorage.removeItem("savedUserId")
+        }
+
         if (admin) navigate("/admin/dashboard")
         else navigate("/")
       } else {
@@ -72,9 +79,7 @@ function LoginForm() {
     }
   }
 
-  // 소셜 로그인 리디렉션
   const handleSocialLogin = (provider) => {
-    // 백엔드에 등록된 OAuth2 시작 엔드포인트로 이동
     window.location.href = `${API_BASE_URL.replace('/api','')}/oauth2/authorization/${provider}`
   }
 
@@ -120,12 +125,22 @@ function LoginForm() {
           />
         </div>
 
-        <div className="login-remember flex items-center space-x-2">
-          <Checkbox id="rememberMe" checked={loginData.rememberMe} onCheckedChange={handleCheckboxChange} />
-          <label htmlFor="rememberMe" className="text-sm text-gray-600 cursor-pointer">
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={loginData.rememberMe}
+            onChange={handleCheckboxChange}
+            className="w-4 h-4"
+          />
+          <label
+            htmlFor="rememberMe"
+            className="text-sm text-gray-600 cursor-pointer relative top-[1px]"
+          >
             로그인 상태 유지
           </label>
         </div>
+
 
         <Button type="submit" className="login-btn w-full bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
           {isLoading ? "로그인 중..." : "로그인"}
@@ -158,7 +173,6 @@ function LoginForm() {
         >
           <img src="/images/구글.png" alt="Google" className="google-img" />
           <span className="font-medium text-gray-800 -translate-x-3 transform">구글로 로그인</span>
-
         </button>
       </div>
 

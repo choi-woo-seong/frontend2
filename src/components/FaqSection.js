@@ -21,9 +21,7 @@ const faqs = [
           다만, 어르신의 상태 별로 달라질 수 있기 때문에 또하나의가족 맞춤요양상담팀을 통해 적합한 요양시설을
           추천받아보시는 것은 어떨까요?
         </p>
-        <Link to="/consultation" className="text-blue-500 hover:underline">
-          &gt; 맞춤요양 상담하기
-        </Link>
+       
       </>
     ),
   },
@@ -70,9 +68,7 @@ const faqs = [
           또하나의가족에서는 맞춤요양상담을 통해 어르신께 가장 적합한 요양시설과 서비스를 안내해드리고 있으니, 어려움이
           있으실 때 꼭 이용해 보시길 추천드립니다!
         </p>
-        <Button variant="link" className="text-blue-500 p-0 h-auto flex items-center">
-          👍 맞춤요양상담 하러가기
-        </Button>
+      
       </>
     ),
   },
@@ -120,9 +116,7 @@ const faqs = [
           또하나의가족에서 어르신 성향, 장기요양인정번호, 보호자 연락처만 남겨주시면 보행기, 침대 등 사용 가능한
           품목까지 함께 확인 도와드릴게요.
         </p>
-        <Link to="/consultation" className="text-blue-500 hover:underline">
-          &gt; 복지용구 상담하기
-        </Link>
+   
       </>
     ),
   },
