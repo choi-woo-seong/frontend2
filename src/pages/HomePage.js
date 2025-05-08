@@ -1,4 +1,5 @@
 import "../styles/HomePage.css"
+import { useState,useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import {
   Search,
@@ -41,15 +42,26 @@ const products = [
   }
 ]
 
+
 function HomePage() {
+  const [isLoggin, setIsLoggin] = useState(false)
+ 
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken") // ✅ useEffect 내부에서 읽기
+    setIsLoggin(!!token) // token이 있으면 true, 없으면 false
+  }, [])
+
   const navigate = useNavigate()
-  const { isLoggedIn, logout } = useAuth() // ✅ 전역 로그인 상태 사용
+  const { isLoggedIn, logout } = useAuth()
+  
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      logout() // ✅ 전역 로그아웃 함수 호출
+      setIsLoggin(false)
+      localStorage.removeItem("accessToken")
       alert("로그아웃 되었습니다.")
-      navigate("/") // 홈으로 이동
+      navigate("/")
     }
   }
 
@@ -64,8 +76,17 @@ function HomePage() {
           <div className="home-logo-area">
             <img src={logo} alt="로고" className="logo" />
           </div>
-          <div className="auth-buttons">
-            {!isLoggedIn ? (
+          <div className="auth-buttons flex items-center space-x-2">
+            {isLoggin ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="auth-button"
+                onClick={handleLogout}
+              >
+                로그아웃
+              </Button>
+            ) : (
               <>
                 <Link to="/login">
                   <Button variant="ghost" size="sm" className="auth-button">
@@ -78,15 +99,6 @@ function HomePage() {
                   </Button>
                 </Link>
               </>
-            ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="auth-button"
-                onClick={handleLogout}
-              >
-                로그아웃
-              </Button>
             )}
           </div>
         </div>
@@ -130,10 +142,7 @@ function HomePage() {
 
         <div className="facility-grid-section">
           <div className="facility-card">
-            <div className="facility-card-header">
-             
-             
-            </div>
+            <div className="facility-card-header"></div>
             <FacilityTypeGrid />
           </div>
         </div>
