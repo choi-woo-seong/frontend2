@@ -131,8 +131,8 @@ function HomePage() {
         <div className="facility-grid-section">
           <div className="facility-card">
             <div className="facility-card-header">
-              <MessageCircle className="icon-small" />
-              <h2>전문가에 무료상담하기</h2>
+             
+             
             </div>
             <FacilityTypeGrid />
           </div>
