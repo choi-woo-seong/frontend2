@@ -54,7 +54,7 @@ function ProductsPage() {
 
         const productData = await productRes.json();
         const categoryData = await categoryRes.json();
-
+console.log(productData)
         const mappedProducts = productData.map((p) => ({
           id: p.id,
           name: p.name,
@@ -62,7 +62,7 @@ function ProductsPage() {
           discount: p.discountPrice
             ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
             : null,
-          image: p.imageUrls?.[0] || "/images/default-product.png",
+          images: p.images?.[0] || "/images/default-product.png",
           category: p.categoryName || "기타",
         }))
 
@@ -230,7 +230,7 @@ function ProductsPage() {
             >
               <div className="relative">
                 <img
-                  src={p.image}
+                  src={p.images}
                   alt={p.name}
                   className="w-full h-48 object-cover group-hover:scale-105 transition"
                 />

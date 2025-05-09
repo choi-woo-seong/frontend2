@@ -113,6 +113,7 @@ const AdminProductsNewPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    // 1) CreateProductRequest 용 JSON blob
     const payload = {
       name: formData.name,
       category: Number(formData.category),
@@ -127,15 +128,25 @@ const AdminProductsNewPage = () => {
       features: formData.features,
     }
 
+    // 2) FormData 조립
+    const fd = new FormData()
+    fd.append(
+      "product",
+      new Blob([JSON.stringify(payload)], { type: "application/json" })
+    )
+    formData.images.forEach(({ file }) => {
+      fd.append("images", file)
+    })
+
     try {
       const token = localStorage.getItem("accessToken")
       const res = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          // Content-Type는 브라우저가 자동으로 multipart/form-data; boundary=… 를 넣어줍니다.
         },
-        body: JSON.stringify(payload)
+        body: fd
       })
       if (!res.ok) throw new Error("상품 등록 실패")
       alert("상품 등록 완료!")

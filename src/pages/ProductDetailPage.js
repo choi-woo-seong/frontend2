@@ -53,7 +53,7 @@ console.log(data)
             ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
             : null,
           description: data.description,
-          images: data.imageUrls || ["/images/default-product.png"],
+          images: data.images || ["/images/default-product.png"],
           specifications: data.specifications || [],
           reviews: data.reviews || [],
           questions: data.questions || [],

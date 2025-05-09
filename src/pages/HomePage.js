@@ -64,7 +64,7 @@ function HomePage() {
     alert(`${product.name}이(가) 장바구니에 추가되었습니다.`);
     // TODO: 실제 API 연동 시, POST /cart 엔드포인트 호출 로직 추가
   };
-
+  console.log(products)
   return (
     <div className="home-container">
       <header className="home-header">
@@ -189,7 +189,7 @@ function HomePage() {
                   >
                     <div className="product-image-box">
                       <img
-                        src={product.image || "/images/placeholder.svg"}
+                        src={product.images || "/images/placeholder.svg"}
                         alt={product.name}
                         className="product-image"
                       />
