@@ -22,20 +22,16 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 필요 없으면 이것도 삭제 가능 */
 }
 
-
-
 .form-section {
   padding: 20px;
   border-bottom: 1px solid #eee;
   margin-top: 0 !important; /* 🔥 필요시 강제로 제거 */
-
 }
 .form-section1 {
-  background-color: #f9fafb; 
+  background-color: #f9fafb;
   padding: 20px;
   border-bottom: 1px solid #eee;
   margin-top: -32px !important; /* 🔥 필요시 강제로 제거 */
-
 }
 
 .form-section h2 {
@@ -170,9 +166,6 @@
   padding: 20px;
 }
 
-
-
-
 /* 시설 유형 드롭다운 */
 .facility-type-select {
   margin-bottom: 24px;
@@ -205,13 +198,11 @@
   font-weight: 500;
 }
 
-
-
 /* 인풋, 셀렉트, 텍스트에어리어 기본 높이 통일 */
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="tel"],
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='tel'],
 textarea,
 select {
   width: 100%;
@@ -224,10 +215,10 @@ select {
   box-sizing: border-box;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus,
+input[type='text']:focus,
+input[type='number']:focus,
+input[type='email']:focus,
+input[type='tel']:focus,
 textarea:focus,
 select:focus {
   outline: none;
@@ -252,7 +243,7 @@ textarea {
 
 /* 필수 항목(*) 강조 */
 label::after {
-  content: "";
+  content: '';
 }
 
 /* 폼 그룹 간격 */
@@ -276,7 +267,6 @@ label::after {
 .form-actions button {
   min-width: 120px;
 }
-
 
 /* 기존 시설 이미지 업로드 영역 조정 */
 .image-upload-area {
@@ -376,7 +366,6 @@ label::after {
   margin-bottom: 50px;
 }
 
-
 /* 탭 메뉴 전체 */
 .tab-menu {
   display: flex;
@@ -403,7 +392,6 @@ label::after {
   transition: background-color 0.2s;
 }
 
-
 /* 마우스 올렸을 때 */
 .tab:hover {
   background-color: #e2e8f0;
@@ -414,6 +402,47 @@ label::after {
   background-color: #ffffff; /* 선택된건 흰색 */
   color: #0f172a; /* 진한 글씨 */
   font-weight: 600;
+}
+
+/* 이메일 불러오기 */
+.email-fetch-button {
+  width: 100%;
+  height: 42px;
+  background-color: #2563eb;
+  color: white;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.email-fetch-button:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+.email-apply-button {
+  width: 100%;
+  height: 42px;
+  background-color: #10b981; /* emerald-500 */
+  color: white;
+  border: 1px solid #10b981;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.email-apply-button:hover {
+  background-color: #059669;
+  border-color: #059669;
+}
+
+.email-title-text{
+  padding: 10px;
 }
 
 /* 상단 시설유형 (요양병원 선택 부분) */
@@ -434,10 +463,6 @@ label::after {
 .facility-type-select {
   width: 100%;
 }
-
-
-
-
 
 .add-extra-item-btn {
   display: inline-flex;
@@ -463,7 +488,6 @@ label::after {
   line-height: 1;
 }
 
-
 /* 버튼 기본 스타일 */
 .form-actions button {
   height: 42px;
@@ -477,7 +501,6 @@ label::after {
   justify-content: center;
   margin-top: -30px;
 }
-
 
 /* 취소 버튼 */
 .facility-cancel-button {
@@ -495,11 +518,8 @@ label::after {
   background-color: #2563eb;
   color: #ffffff;
   border: 1px solid #2563eb;
-  
 }
 .facility-submit-button:hover {
   background-color: #1e40af;
   border-color: #1e40af;
 }
-
-
