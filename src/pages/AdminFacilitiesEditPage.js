@@ -158,12 +158,22 @@ const AdminFacilitiesEditPage = () => {
         </div>
 
         <div className="flex justify-end gap-2 mt-8">
-          <Button type="button" onClick={() => navigate("/admin/facilities")} className="facility-button cancel">
-            취소
-          </Button>
-          <Button type="submit" className="facility-button submit">
-            저장하기
-          </Button>
+        <div className="form-actions flex justify-end gap-2 mt-8">
+  <Button
+    type="button"
+    onClick={() => navigate("/admin/facilities")}
+    className="product-action-button product-cancel-button"
+  >
+    취소
+  </Button>
+  <Button
+    type="submit"
+    className="product-action-button product-submit-button"
+  >
+    저장하기
+  </Button>
+</div>
+
         </div>
       </form>
     </div>

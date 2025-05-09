@@ -38,46 +38,56 @@ function LoginForm() {
   }
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-
-    if (!loginData.userId || !loginData.password) {
-      setError("아이디와 비밀번호를 모두 입력해주세요.")
-      return
+    e.preventDefault();
+  
+    // 입력값 유효성 검사
+    if (!loginData.userId && !loginData.password) {
+      setError("아이디와 비밀번호를 모두 입력해주세요.");
+      return;
     }
-
-    setIsLoading(true)
-    setError(null)
-
+    if (!loginData.userId) {
+      setError("아이디를 입력해주세요.");
+      return;
+    }
+    if (!loginData.password) {
+      setError("비밀번호를 입력해주세요.");
+      return;
+    }
+  
+    setIsLoading(true);
+    setError(null);
+  
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         userId: loginData.userId,
         password: loginData.password,
-      })
-
-      const { token, admin } = response.data
+      });
+  
+      const { token, admin } = response.data;
       if (token) {
-        localStorage.setItem("accessToken", token)
-
+        localStorage.setItem("accessToken", token);
+  
         if (loginData.rememberMe) {
-          localStorage.setItem("rememberMe", "true")
-          localStorage.setItem("savedUserId", loginData.userId)
+          localStorage.setItem("rememberMe", "true");
+          localStorage.setItem("savedUserId", loginData.userId);
         } else {
-          localStorage.removeItem("rememberMe")
-          localStorage.removeItem("savedUserId")
+          localStorage.removeItem("rememberMe");
+          localStorage.removeItem("savedUserId");
         }
-
-        if (admin) navigate("/admin/dashboard")
-        else navigate("/")
+  
+        if (admin) navigate("/admin/dashboard");
+        else navigate("/");
       } else {
-        setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
+        setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
       }
     } catch (err) {
-      console.error("로그인 에러:", err)
-      setError(err.response?.data?.message || "로그인에 실패했습니다.")
+      console.error("로그인 에러:", err);
+      setError(err.response?.data?.message || "로그인에 실패했습니다.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+  
 
   const handleSocialLogin = (provider) => {
     window.location.href = `${API_BASE_URL.replace('/api','')}/oauth2/authorization/${provider}`

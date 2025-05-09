@@ -533,18 +533,31 @@ const AdminDashboardPage = () => {
             <div className="admin-quick-actions">
               <h3 className="admin-section-title">빠른 작업</h3>
               <div className="admin-quick-actions-grid">
-                <Button className="admin-quick-action-button" onClick={() => handleQuickAction("facility-list")}>
-                  시설 목록
-                </Button>
-                <Button className="admin-quick-action-button" onClick={() => handleQuickAction("product-list")}>
-                  상품 목록
-                </Button>
-                <Button className="admin-quick-action-button" onClick={() => handleQuickAction("notice-write")}>
-                  공지사항 작성
-                </Button>
-                <Button className="admin-quick-action-button" onClick={() => handleQuickAction("inquiry-answer")}>
-                  문의 답변
-                </Button>
+              <Button
+                className="admin-quick-action-button text-gray-800 font-medium hover:bg-blue-500 hover:text-white hover:font-semibold transition px-4 py-2 rounded"
+                onClick={() => handleQuickAction("facility-list")}
+              >
+                시설 목록
+              </Button>
+              <Button
+                className="admin-quick-action-button text-gray-800 font-medium hover:bg-blue-500 hover:text-white hover:font-semibold transition px-4 py-2 rounded"
+                onClick={() => handleQuickAction("product-list")}
+              >
+                상품 목록
+              </Button>
+              <Button
+                className="admin-quick-action-button text-gray-800 font-medium hover:bg-blue-500 hover:text-white hover:font-semibold transition px-4 py-2 rounded"
+                onClick={() => handleQuickAction("notice-write")}
+              >
+                공지사항 작성
+              </Button>
+              <Button
+                className="admin-quick-action-button text-gray-800 font-medium hover:bg-blue-500 hover:text-white hover:font-semibold transition px-4 py-2 rounded"
+                onClick={() => handleQuickAction("inquiry-answer")}
+              >
+                문의 답변
+              </Button>
+
               </div>
             </div>
           </div>
