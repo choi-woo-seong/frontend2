@@ -28,35 +28,53 @@ export default function ProductDetailPage() {
   const [newQuestionContent, setNewQuestionContent] = useState("")
 
   useEffect(() => {
-    setTimeout(() => {
-      setProduct({
-        id: Number(id),
-        name: "실버워커 (바퀴X) 노인용 보행기 경량 접이식 보행보조기",
-        price: "220,000원",
-        originalPrice: "1,100,000원",
-        discount: "80%",
-        description:
-          "가볍고 튼튼한 알루미늄 소재로 제작된 노인용 보행기입니다. 접이식 디자인으로 보관과 이동이 편리하며, 미끄럼 방지 고무 팁이 안전한 보행을 도와줍니다.",
-        images: [
-          "/images/supportive-stroll.png",
-          "/images/elderly-woman-using-walker.png",
-          "/images/elderly-woman-using-rollator.png"
-        ],
-        specifications: [
-          { name: "재질", value: "알루미늄" },
-          { name: "무게", value: "2.5kg" },
-          { name: "최대 하중", value: "100kg" },
-          { name: "높이 조절", value: "78-90cm" },
-          { name: "접이식", value: "가능" },
-          { name: "색상", value: "실버" }
-        ],
-        reviews: [],
-        questions: [],
-        rating: 0,
-        reviewCount: 0
-      })
-      setLoading(false)
-    }, 500)
+    const fetchProduct = async () => {
+      try {
+        setLoading(true)
+        const token = localStorage.getItem("accessToken")
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        if (!res.ok) throw new Error("상품 정보 로드 실패")
+        const data = await res.json()
+console.log(data)
+        const mapped = {
+          id: data.id,
+          name: data.name,
+          price: data.discountPrice
+            ? data.discountPrice.toLocaleString("ko-KR") + "원"
+            : data.price.toLocaleString("ko-KR") + "원",
+          originalPrice: data.price.toLocaleString("ko-KR") + "원",
+          discount: data.discountPrice
+            ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
+            : null,
+          description: data.description,
+          images: data.imageUrls || ["/images/default-product.png"],
+          specifications: data.specifications || [],
+          reviews: data.reviews || [],
+          questions: data.questions || [],
+          rating: data.rating || 0,
+          reviewCount: data.reviewCount || 0,
+          category:data.categoryName || [],
+          features:data.features || [],
+          manufacturer:data.manufacturer || [],
+          originName:data.originName || [],
+          stockQuantity: data.stockQuantity || 0,
+        }
+
+        setProduct(mapped)
+      } catch (err) {
+        console.error("상품 로딩 실패:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProduct()
   }, [id])
 
   const handleQuantityChange = amount => {
@@ -64,8 +82,32 @@ export default function ProductDetailPage() {
     if (q >= 1) setQuantity(q)
   }
 
-  const addToCart = () => {
-    alert(`${product.name} ${quantity}개가 장바구니에 추가되었습니다.`)
+  const addToCart = async () => {
+    console.log(product)
+    try {
+      const token = localStorage.getItem("accessToken")
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: quantity,
+        }),
+      })
+  
+      if (!res.ok) {
+        const errorText = await res.text()
+        throw new Error(errorText)
+      }
+  
+      alert(`${product.name} ${quantity}개가 장바구니에 추가되었습니다.`)
+    } catch (error) {
+      console.error("장바구니 추가 실패:", error)
+      alert("장바구니 추가 중 오류가 발생했습니다.")
+    }
   }
 
   const handleReviewSubmit = () => {
@@ -182,9 +224,18 @@ export default function ProductDetailPage() {
             <Share2 className="h-5 w-5" />
           </Button>
         </div>
+        <h3 className="font-medium mb-2">재고</h3>
+        <table className="w-full text-sm">
+          <tbody>
+              <tr className="border-b">
+                <td className="py-2">{product.stockQuantity} 남음</td>
+              </tr>
+          </tbody>
+        </table>
         <div className="bg-gray-50 p-3 rounded text-sm">
           <p className="mb-1">· 무료배송</p>
           <p>· 3일 이내 출고</p>
+          
         </div>
       </div>
 
@@ -212,8 +263,42 @@ export default function ProductDetailPage() {
                 <tbody>
                   {product.specifications.map((spec, idx) => (
                     <tr key={idx} className="border-b">
-                      <td className="py-2 font-medium w-1/3">{spec.name}</td>
+                      <td className="py-2 font-medium w-1/5">{spec.label}</td>
                       <td className="py-2">{spec.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <h3 className="font-medium mb-2">카테고리</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                    <tr className="border-b">
+                      <td className="py-2">{product.category}</td>
+                    </tr>
+                </tbody>
+              </table>
+              <h3 className="font-medium mb-2">원산지</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                    <tr className="border-b">
+                      <td className="py-2">{product.originName}</td>
+                    </tr>
+                </tbody>
+              </table>
+              <h3 className="font-medium mb-2">제조사</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                    <tr className="border-b">
+                      <td className="py-2">{product.manufacturer}</td>
+                    </tr>
+                </tbody>
+              </table>
+              <h3 className="font-medium mb-2">제품 특징</h3>
+              <table className="w-full text-sm">
+                <tbody>
+                  {product.features.map((features, idx) => (
+                    <tr key={idx} className="border-b">
+                      <td className="py-2">{features}</td>
                     </tr>
                   ))}
                 </tbody>

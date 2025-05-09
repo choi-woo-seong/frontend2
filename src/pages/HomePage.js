@@ -1,73 +1,69 @@
-import "../styles/HomePage.css"
-import { useState,useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import {
-  Search,
-  MessageCircle,
-  ChevronRight,
-  ShoppingCart
-} from "lucide-react"
+// src/pages/HomePage.jsx
+import "../styles/HomePage.css";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, ChevronRight, ShoppingCart } from "lucide-react";
 
-import { Button } from "../components/ui/Button"
-import FacilityTypeGrid from "../components/FacilityTypeGrid"
-import FaqSection from "../components/FaqSection"
-import PromotionSection from "../components/PromotionSection"
-import NoticeBar from "../components/NoticeBar"
-import VideoSection from "../components/VideoSection"
-import BottomNavigation from "../components/BottomNavigation"
-import logo from "../pages/img/logo.png"
-import { useAuth } from "../hooks/use-auth" // ✅ 전역 상태 사용
+import { Button } from "../components/ui/Button";
+import FacilityTypeGrid from "../components/FacilityTypeGrid";
+import FaqSection from "../components/FaqSection";
+import PromotionSection from "../components/PromotionSection";
+import NoticeBar from "../components/NoticeBar";
+import VideoSection from "../components/VideoSection";
+import BottomNavigation from "../components/BottomNavigation";
+import logo from "../pages/img/logo.png";
+import { useAuth } from "../hooks/use-auth"; // ✅ 전역 상태 사용
 
-const products = [
-  {
-    id: 1,
-    name: "실버워커 (바퀴X) 노인용 보행기 경량 접이식 보행보조기",
-    price: "220,000원",
-    discount: "80%",
-    image: "/images/supportive-stroll.png"
-  },
-  {
-    id: 2,
-    name: "의료용 실버워커(MASSAGE 722F) 노인용 보행기",
-    price: "100,000원",
-    discount: "50%",
-    image: "/images/elderly-woman-using-walker.png"
-  },
-  {
-    id: 3,
-    name: "의료용 워커 노인 보행기 4발 지팡이 실버카 보행보조기",
-    price: "54,000원",
-    discount: "60%",
-    image: "/images/elderly-woman-using-rollator.png"
-  }
-]
-
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
-  const [isLoggin, setIsLoggin] = useState(false)
- 
-
+  // --- 기존 로그인 상태 관리 ---
+  const [isLoggin, setIsLoggin] = useState(false);
   useEffect(() => {
-    const token = localStorage.getItem("accessToken") // ✅ useEffect 내부에서 읽기
-    setIsLoggin(!!token) // token이 있으면 true, 없으면 false
-  }, [])
+    const token = localStorage.getItem("accessToken");
+    setIsLoggin(!!token);
+  }, []);
 
-  const navigate = useNavigate()
-  const { isLoggedIn, logout } = useAuth()
-  
+  const navigate = useNavigate();
+  const { isLoggedIn, logout } = useAuth();
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      setIsLoggin(false)
-      localStorage.removeItem("accessToken")
-      alert("로그아웃 되었습니다.")
-      navigate("/")
+      setIsLoggin(false);
+      localStorage.removeItem("accessToken");
+      alert("로그아웃 되었습니다.");
+      navigate("/");
     }
-  }
+  };
 
+  // --- 상품 데이터 상태 및 로딩 상태 ---
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  // --- 마운트 시 API 호출 ---
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoadingProducts(true);
+        const res = await fetch(`${API_BASE_URL}/products`);
+        if (!res.ok) throw new Error("상품 정보를 불러오지 못했습니다.");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // --- 장바구니 담기 핸들러 ---
   const addToCart = (product) => {
-    alert(`${product.name}이(가) 장바구니에 추가되었습니다.`)
-  }
+    alert(`${product.name}이(가) 장바구니에 추가되었습니다.`);
+    // TODO: 실제 API 연동 시, POST /cart 엔드포인트 호출 로직 추가
+  };
 
   return (
     <div className="home-container">
@@ -89,12 +85,20 @@ function HomePage() {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost" size="sm" className="auth-button">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="auth-button"
+                  >
                     로그인
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button variant="ghost" size="sm" className="auth-button">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="auth-button"
+                  >
                     회원가입
                   </Button>
                 </Link>
@@ -107,6 +111,7 @@ function HomePage() {
       <main className="main-content">
         <NoticeBar />
 
+        {/* 검색 섹션 */}
         <div className="search-section">
           <div className="search-box">
             <input
@@ -120,6 +125,7 @@ function HomePage() {
           </div>
         </div>
 
+        {/* 히어로 배너 */}
         <div className="hero-section">
           <div className="hero-banner">
             <div className="hero-text">
@@ -140,6 +146,7 @@ function HomePage() {
           </div>
         </div>
 
+        {/* 시설 타입 그리드 */}
         <div className="facility-grid-section">
           <div className="facility-card">
             <div className="facility-card-header"></div>
@@ -150,6 +157,7 @@ function HomePage() {
         <VideoSection />
         <PromotionSection />
 
+        {/* 상품 섹션: API 통해 받아온 products 렌더링 */}
         <div className="products-section">
           <div className="products-card">
             <div className="products-header">
@@ -170,38 +178,42 @@ function HomePage() {
             </div>
 
             <div className="products-grid">
-              {products.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/products/${product.id}`}
-                  className="product-card"
-                >
-                  <div className="product-image-box">
-                    <img
-                      src={product.image || "/images/placeholder.svg"}
-                      alt={product.name}
-                      className="product-image"
-                    />
-                    <button
-                      className="add-cart-button"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        addToCart(product)
-                      }}
-                    >
-                      <ShoppingCart className="icon-tiny" />
-                    </button>
-                  </div>
-                  <div className="product-info">
-                    <div className="product-name">{product.name}</div>
-                    <div className="product-price-info">
-                      <span className="price">{product.price}</span>
-                      <span className="discount">{product.discount}</span>
+              {loadingProducts ? (
+                <div>상품 로딩 중...</div>
+              ) : (
+                products.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={`/products/${product.id}`}
+                    className="product-card"
+                  >
+                    <div className="product-image-box">
+                      <img
+                        src={product.image || "/images/placeholder.svg"}
+                        alt={product.name}
+                        className="product-image"
+                      />
+                      <button
+                        className="add-cart-button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          addToCart(product);
+                        }}
+                      >
+                        <ShoppingCart className="icon-tiny" />
+                      </button>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                    <div className="product-info">
+                      <div className="product-name">{product.name}</div>
+                      <div className="product-price-info">
+                        <span className="price">{product.price}</span>
+                        <span className="discount">{product.discount}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -211,7 +223,7 @@ function HomePage() {
 
       <BottomNavigation currentPath="/" />
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;

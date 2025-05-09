@@ -18,6 +18,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 const ProductsListPage = () => {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
+  const [categoryList, setCategoryList] = useState([]);
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterCategory, setFilterCategory] = useState("all")
@@ -27,19 +28,32 @@ const ProductsListPage = () => {
 
   // 상품 데이터 로드
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsAndCategories = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const res = await fetch(`${API_BASE_URL}/products`, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        });
-        if (!res.ok) throw new Error("상품 목록 로드 실패");
-        const data = await res.json();
-        // API에서 받은 데이터 형태에 맞춰 매핑
-        const mapped = data.map(p => ({
+  
+        // 상품 + 카테고리 동시에 호출
+        const [productRes, categoryRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/products`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          }),
+          fetch(`${API_BASE_URL}/categories`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          })
+        ]);
+  
+        if (!productRes.ok || !categoryRes.ok) throw new Error("데이터 로드 실패");
+  
+        const productData = await productRes.json();
+        const categoryData = await categoryRes.json();
+  
+        const mappedProducts = productData.map(p => ({
           id: p.id,
           name: p.name,
           category: p.categoryName,
@@ -49,15 +63,18 @@ const ProductsListPage = () => {
           salesCount: p.salesCount || 0,
           createdAt: new Date(p.createdAt)
         }));
-        setProducts(mapped);
-        setTotalPages(Math.ceil(mapped.length / 10));
+  
+        setProducts(mappedProducts);
+        setCategoryList(categoryData); // ✅ 여기에 저장
+        setTotalPages(Math.ceil(mappedProducts.length / 10));
       } catch (error) {
-        console.error("상품 목록 로드 중 오류 발생:", error);
+        console.error("목록 로드 중 오류 발생:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchProducts();
+  
+    fetchProductsAndCategories();
   }, []);
 
   // 상품 상세 페이지로 이동
@@ -112,6 +129,7 @@ const ProductsListPage = () => {
 
   // 필터링된 상품 목록
   const filteredProducts = products.filter((product) => {
+    
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === "all" || product.category === filterCategory;
     const matchesStock =
@@ -227,11 +245,9 @@ const ProductsListPage = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-800 focus:outline-none"
             >
               <option value="all">전체</option>
-              <option value="이동 보조">이동 보조</option>
-              <option value="욕실 용품">욕실 용품</option>
-              <option value="침실 용품">침실 용품</option>
-              <option value="일상 생활용품">일상 생활용품</option>
-              <option value="의료 용품">의료 용품</option>
+              {categoryList.map(cat => (
+                <option key={cat.id} value={cat.name}>{cat.name}</option>
+              ))}
             </select>
           </div>
         </div>

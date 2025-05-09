@@ -13,17 +13,11 @@ import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import Layout from "../components/Layout"
 
-const allProducts = [
-  { id: 1, name: "실버워커 (바퀴X) 노인용 보행기 경량 접이식 보행보조기", price: "220,000원", discount: "80%", image: "/images/supportive-stroll.png", category: "보행보조기" },
-  { id: 2, name: "의료용 실버워커(MASSAGE 722F) 노인용 보행기", price: "100,000원", discount: "50%", image: "/images/elderly-woman-using-walker.png", category: "보행보조기" },
-  { id: 3, name: "의료용 워커 노인 보행기 4발 지팡이 실버카 보행보조기", price: "54,000원", discount: "60%", image: "/images/elderly-woman-using-rollator.png", category: "보행보조기" },
-  { id: 4, name: "전동침대 의료용 병원침대 환자용 요양원 실버 가정용", price: "890,000원", discount: "30%", image: "/images/modern-hospital-bed.png", category: "침대" },
-  { id: 5, name: "목욕의자 샤워의자 접이식 목욕의자 실버용품", price: "45,000원", discount: "20%", image: "/images/accessible-bathroom-chair.png", category: "목욕용품" },
-  { id: 6, name: "고급 원목 지팡이 어르신 선물 효도선물 실버용품", price: "38,000원", discount: "15%", image: "/images/carved-wooden-cane.png", category: "지팡이" },
-]
+const parsePrice = (str) => parseInt(str.replace(/[^0-9]/g, ""))
 
 function ProductsPage() {
   const [products, setProducts] = useState([])
+  const [allProducts, setAllProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     category: "all",
@@ -33,34 +27,77 @@ function ProductsPage() {
     keyword: "",
   })
   const [showFilters, setShowFilters] = useState(false)
+  const [categories, setCategories] = useState([{ id: "all", name: "전체" }])
 
-  const categories = [
-    { id: "all", name: "전체" },
-    { id: "보행보조기", name: "보행보조기" },
-    { id: "침대", name: "침대" },
-    { id: "목욕용품", name: "목욕용품" },
-    { id: "지팡이", name: "지팡이" },
-    { id: "휠체어", name: "휠체어" },
-  ]
+  useEffect(() => {
+    const fetchProductsAndCategories = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("accessToken");
 
-  const parsePrice = (str) => parseInt(str.replace(/[^0-9]/g, ""))
+        const [productRes, categoryRes] = await Promise.all([
+          fetch(`${process.env.REACT_APP_API_URL}/products`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+          fetch(`${process.env.REACT_APP_API_URL}/categories`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ])
 
+        if (!productRes.ok || !categoryRes.ok) throw new Error("데이터 로드 실패");
+
+        const productData = await productRes.json();
+        const categoryData = await categoryRes.json();
+
+        const mappedProducts = productData.map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price.toLocaleString("ko-KR") + "원",
+          discount: p.discountPrice
+            ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
+            : null,
+          image: p.imageUrls?.[0] || "/images/default-product.png",
+          category: p.categoryName || "기타",
+        }))
+
+        setAllProducts(mappedProducts)
+        setCategories([{ id: "all", name: "전체" }, ...categoryData.map(cat => ({ id: cat.name, name: cat.name }))])
+      } catch (err) {
+        console.error("데이터 로딩 오류:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProductsAndCategories()
+  }, [])
+  
   useEffect(() => {
     setLoading(true)
     setTimeout(() => {
       let filtered = [...allProducts]
 
       if (filters.category !== "all") {
-        filtered = filtered.filter(p => p.category === filters.category)
+        filtered = filtered.filter((p) => p.category === filters.category)
       }
       if (filters.minPrice) {
-        filtered = filtered.filter(p => parsePrice(p.price) >= parseInt(filters.minPrice))
+        filtered = filtered.filter(
+          (p) => parsePrice(p.price) >= parseInt(filters.minPrice)
+        )
       }
       if (filters.maxPrice) {
-        filtered = filtered.filter(p => parsePrice(p.price) <= parseInt(filters.maxPrice))
+        filtered = filtered.filter(
+          (p) => parsePrice(p.price) <= parseInt(filters.maxPrice)
+        )
       }
       if (filters.keyword) {
-        filtered = filtered.filter(p => p.name.includes(filters.keyword))
+        filtered = filtered.filter((p) => p.name.includes(filters.keyword))
       }
       if (filters.sort === "priceAsc") {
         filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price))
@@ -71,7 +108,7 @@ function ProductsPage() {
       setProducts(filtered)
       setLoading(false)
     }, 300)
-  }, [filters])
+  }, [filters, allProducts])
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target
