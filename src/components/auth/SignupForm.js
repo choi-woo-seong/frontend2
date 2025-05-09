@@ -36,6 +36,12 @@ function SignupForm() {
     password: true,
     confirmPassword: true,
   })
+  const [errors, setErrors] = useState({
+    userId: "",
+    email: "",
+    phone: "",
+  })
+  
 
   const [verificationCode, setVerificationCode] = useState("")
 
@@ -84,32 +90,32 @@ function SignupForm() {
 
   const handleNextStep = async () => {
     if (currentStep === SignupStep.BasicInfo) {
-      const isUserIdValid = formData.userId.length >= 4
-      const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
-      const isPhoneValid = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/.test(formData.phone)
-
-      setValidation({
-        ...validation,
-        userId: isUserIdValid,
-        email: isEmailValid,
-        phone: isPhoneValid,
-      })
-
+      const isUserIdValid = formData.userId.length >= 4;
+      const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+      const isPhoneValid = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/.test(formData.phone);
+  
+      setErrors({
+        userId: isUserIdValid ? "" : "아이디를 4자 이상 입력해주세요.",
+        email: isEmailValid ? "" : "유효한 이메일 형식을 입력해주세요.",
+        phone: isPhoneValid ? "" : "유효한 전화번호를 입력해주세요.",
+      });
+  
       if (isUserIdValid && isEmailValid && isPhoneValid) {
         try {
-          const res = await axios.get(`${API_BASE_URL}/auth/check-userid?userId=${formData.userId}`)
+          const res = await axios.get(`${API_BASE_URL}/auth/check-userid?userId=${formData.userId}`);
           if (!res.data) {
-            setCurrentStep(SignupStep.EmailVerification)
+            setCurrentStep(SignupStep.EmailVerification);
           } else {
-            alert("이미 사용중인 아이디입니다.")
+            alert("이미 사용중인 아이디입니다.");
           }
         } catch (error) {
-          console.error(error)
-          alert("서버 오류. 다시 시도해주세요.")
+          console.error(error);
+          alert("서버 오류. 다시 시도해주세요.");
         }
       }
     }
-  }
+  };
+  
 
   const handlePrevStep = () => {
     if (currentStep > 0) setCurrentStep(currentStep - 1)
@@ -143,22 +149,68 @@ function SignupForm() {
   const renderBasicInfoStep = () => (
     <>
       <div className="space-y-4 mb-6">
+        {/* 아이디 */}
         <div className="space-y-2">
           <Label>아이디</Label>
-          <Input name="userId" placeholder="아이디 (4자 이상)" value={formData.userId} onChange={handleChange} />
+          <Input
+            name="userId"
+            placeholder="아이디 (4자 이상)"
+            value={formData.userId}
+            onChange={handleChange}
+            className={errors.userId ? "border-red-500" : ""}
+          />
+          {errors.userId && (
+            <p className="text-sm text-red-500 mt-1 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" /> {errors.userId}
+            </p>
+          )}
         </div>
+  
+        {/* 이메일 */}
         <div className="space-y-2">
           <Label>이메일</Label>
-          <Input name="email" placeholder="이메일 입력" value={formData.email} onChange={handleChange} />
+          <Input
+            name="email"
+            placeholder="이메일 입력"
+            value={formData.email}
+            onChange={handleChange}
+            className={errors.email ? "border-red-500" : ""}
+          />
+          {errors.email && (
+            <p className="text-sm text-red-500 mt-1 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" /> {errors.email}
+            </p>
+          )}
         </div>
+  
+        {/* 전화번호 */}
         <div className="space-y-2">
           <Label>핸드폰 번호</Label>
-          <Input name="phone" placeholder="010-1234-5678" value={formData.phone} onChange={handleChange} />
+          <Input
+            name="phone"
+            placeholder="01012345678"
+            value={formData.phone}
+            onChange={handleChange}
+            className={errors.phone ? "border-red-500" : ""}
+          />
+          {errors.phone && (
+            <p className="text-sm text-red-500 mt-1 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" /> {errors.phone}
+            </p>
+          )}
         </div>
       </div>
-      <Button onClick={handleNextStep} className="sign-btn w-full">다음</Button>
+  
+      {/* 다음 버튼 */}
+      <Button
+        onClick={handleNextStep}
+        className="login-btn w-full bg-blue-500 hover:bg-blue-600"
+      >
+        다음
+      </Button>
     </>
-  )
+  );
+  
 
   const renderEmailVerificationStep = () => (
     <>
@@ -174,8 +226,21 @@ function SignupForm() {
         </div>
       </div>
       <div className="flex justify-between gap-2">
-        <Button onClick={handlePrevStep} type="button" className="w-1/2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100">이전</Button>
-        <Button onClick={handleVerifyEmail} type="button" className="w-1/2 bg-blue-500 text-white hover:bg-blue-600">다음</Button>
+      <Button
+          onClick={handlePrevStep}
+          className="w-1/2 py-3 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 rounded-xl"
+        >
+          이전
+        </Button>
+
+        <Button
+          onClick={handleVerifyEmail} // or handleCompleteSignup
+          className="w-1/2 py-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl"
+        >
+          다음
+        </Button>
+
+
       </div>
     </>
   )
@@ -203,14 +268,22 @@ function SignupForm() {
         </div>
       </div>
       <div className="flex justify-between gap-2">
-        <Button onClick={handlePrevStep} type="button" className="w-1/2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100">이전</Button>
-        <Button
-          type="button"
-          onClick={handleCompleteSignup}
-          className="w-1/2 bg-blue-500 text-white hover:bg-blue-600"
-        >
-          가입 완료
-        </Button>
+      <Button
+        onClick={handlePrevStep}
+        type="button"
+        className="w-1/2 py-3 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 rounded-xl"
+      >
+        이전
+      </Button>
+
+      <Button
+        type="button"
+        onClick={handleCompleteSignup}
+        className="w-1/2 py-3 bg-blue-500 text-white hover:bg-blue-600 rounded-xl"
+      >
+        가입 완료
+      </Button>
+
       </div>
     </>
   )
@@ -220,11 +293,12 @@ function SignupForm() {
 <div className="flex flex-col items-center justify-center space-y-6">
   <h2 className="text-2xl font-bold text-gray-800">회원가입이 완료되었습니다!</h2>
   <Link
-    to="/login"
-    className="px-6 py-2 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600 transition"
-  >
-    로그인 하러 가기
-  </Link>
+  to="/login"
+  className="w-full py-3 bg-blue-500 text-white text-center text-sm rounded-xl hover:bg-blue-600 transition"
+>
+  로그인 하러 가기
+</Link>
+
 </div>
 
   )
