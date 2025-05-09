@@ -1,5 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react"
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
@@ -61,6 +62,15 @@ function MainLayout() {
 }
 
 function App() {
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      console.log("앱 시작 시 기존 토큰 삭제");
+      localStorage.removeItem("accessToken");
+    }
+  }, []); // ⬅️ 앱 첫 로드 시 1회 실행
+
   return (
     <Router>
       <AuthProvider>
