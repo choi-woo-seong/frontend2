@@ -20,12 +20,6 @@ function FacilityTypeSelector({ selectedType, onTypeChange }) {
     { id: "nursing_home", name: "요양원" },
     { id: "silver_town", name: "실버타운" },
     { id: "nursing_hospital", name: "요양병원" },
-    { id: "day_care", name: "주야간보호" },
-    { id: "home_visit", name: "방문요양" },
-    { id: "home_nursing", name: "방문간호" },
-    { id: "home_bath", name: "방문목욕" },
-    { id: "short_term_care", name: "단기보호" },
-    { id: "elderly_home", name: "양로원" },
   ]
 
   const toggleDropdown = () => {
