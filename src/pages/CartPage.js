@@ -233,10 +233,14 @@ function CartPage() {
 
       {!isLoading && cart.length > 0 && (
         <div className="payment-bar">
-          <Button onClick={handlePayment} className="payment-button">
-            카카오페이로 결제하기
-          </Button>
-        </div>
+  <div className="payment-inner">
+    <Button onClick={handlePayment} className="payment-button">
+      카카오페이로 결제하기
+    </Button>
+  </div>
+</div>
+
+   
       )}
 
       <BottomNavigation />

@@ -220,22 +220,45 @@
   bottom: 4rem;
   left: 0;
   right: 0;
-  background-color: white;
+  padding: 1rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  background-color: transparent; /* ✅ 흰 배경 제거 */
+}
+
+.payment-inner {
+  width: 100%;
+  max-width: 1280px;
+  background-color: white;       /* ✅ 흰 배경 이쪽에만 적용 */
   border-top: 1px solid #e0e0e0;
   padding: 1rem;
+  border-radius: 12px;           /* 선택 사항: 위에 라운드 */
 }
+
 
 .payment-button {
   width: 100%;
-  background-color: #f59e0b;
+  padding: 1rem;
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;
+  background-color: #fee500; /* 카카오페이 노란색 */
+  color: #3c1e1e; /* 카카오페이 텍스트 색상 */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
 }
 
 .payment-button:hover {
-  background-color: #d97706;
+  background-color: #ffeb3b;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
+
 
 .payment-button i {
   margin-right: 0.5rem;

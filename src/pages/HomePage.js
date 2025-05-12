@@ -41,23 +41,45 @@ function HomePage() {
   const [loadingProducts, setLoadingProducts] = useState(true);
 
   // --- 마운트 시 API 호출 ---
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoadingProducts(true);
-        const res = await fetch(`${API_BASE_URL}/products`);
-        if (!res.ok) throw new Error("상품 정보를 불러오지 못했습니다.");
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      setLoadingProducts(true);
+      const res = await fetch(`${API_BASE_URL}/products`);
+      if (!res.ok) throw new Error("상품 정보를 불러오지 못했습니다.");
+      const data = await res.json();
 
+      const mapped = data.map((p) => {
+        const price = typeof p.price === "number" ? p.price : parseInt(p.price);
+        const discountPrice = typeof p.discountPrice === "number"
+          ? p.discountPrice
+          : parseInt(p.discountPrice);
+
+        const discount =
+          price && discountPrice
+            ? Math.round((1 - discountPrice / price) * 100) + "%"
+            : null;
+
+        return {
+          ...p,
+          price: price.toLocaleString("ko-KR"),
+          discount,
+          images: p.images?.[0] || "/images/placeholder.svg",
+        };
+      });
+
+      setProducts(mapped);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  // ✅ 여기에 useEffect 추가
+  useEffect(() => {
     fetchProducts();
   }, []);
+  
 
   // --- 장바구니 담기 핸들러 ---
   const addToCart = (product) => {
@@ -159,64 +181,70 @@ function HomePage() {
 
         {/* 상품 섹션: API 통해 받아온 products 렌더링 */}
         <div className="products-section">
-          <div className="products-card">
-            <div className="products-header">
-              <h2>인기 제품 추천 상품</h2>
-              <Link to="/products" className="more-link">
-                더보기
-                <ChevronRight className="icon-tiny" />
-              </Link>
-            </div>
+  <div className="products-card">
+    <div className="products-header">
+      <h2>인기 제품 추천 상품</h2>
+      <Link to="/products" className="more-link">
+        더보기
+        <ChevronRight className="icon-tiny" />
+      </Link>
+    </div>
 
-            <div className="store-banner">
-              <div>요양원 입소 전 준비하세요.</div>
-              <div>
-                <Link to="/products" className="store-link">
-                  스토어 바로가기 &gt;
-                </Link>
-              </div>
-            </div>
+    <div className="store-banner">
+      <div>요양원 입소 전 준비하세요.</div>
+      <div>
+        <Link to="/products" className="store-link">
+          스토어 바로가기 &gt;
+        </Link>
+      </div>
+    </div>
 
-            <div className="products-grid">
-              {loadingProducts ? (
-                <div>상품 로딩 중...</div>
-              ) : (
-                products.map((product) => (
-                  <Link
-                    key={product.id}
-                    to={`/products/${product.id}`}
-                    className="product-card"
-                  >
-                    <div className="product-image-box">
-                      <img
-                        src={product.images || "/images/placeholder.svg"}
-                        alt={product.name}
-                        className="product-image"
-                      />
-                      <button
-                        className="add-cart-button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          addToCart(product);
-                        }}
-                      >
-                        <ShoppingCart className="icon-tiny" />
-                      </button>
-                    </div>
-                    <div className="product-info">
-                      <div className="product-name">{product.name}</div>
-                      <div className="product-price-info">
-                        <span className="price">{product.price}</span>
-                        <span className="discount">{product.discount}</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="products-grid">
+      {loadingProducts ? (
+        <div>상품 로딩 중...</div>
+      ) : (
+        products.slice(0, 3).map((product) => (
+          <Link
+            key={product.id}
+            to={`/products/${product.id}`}
+            className="product-card"
+          >
+  <div className="home-product-image-box">
+  <img
+    src={product.images || "/images/placeholder.svg"}
+    alt={product.name}
+    className="home-product-image"
+  />
+  <button
+    className="add-cart-button"
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      addToCart(product);
+    }}
+  >
+    <ShoppingCart className="icon-tiny" />
+  </button>
+</div>
+
+<div className="product-price-info">
+  <span className="price">
+    {product.discountPrice
+      ? parseInt(product.discountPrice).toLocaleString("ko-KR") + "원"
+      : product.price + "원"}
+  </span>
+  {product.discount && (
+    <span className="discount">{product.discount}</span>
+  )}
+</div>
+
+          </Link>
+        ))
+      )}
+    </div>
+  </div>
+</div>
+
 
         <FaqSection />
       </main>

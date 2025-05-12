@@ -55,16 +55,19 @@ function ProductsPage() {
         const productData = await productRes.json();
         const categoryData = await categoryRes.json();
 console.log(productData)
-        const mappedProducts = productData.map((p) => ({
-          id: p.id,
-          name: p.name,
-          price: p.price.toLocaleString("ko-KR") + "원",
-          discount: p.discountPrice
-            ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
-            : null,
-          images: p.images?.[0] || "/images/default-product.png",
-          category: p.categoryName || "기타",
-        }))
+const mappedProducts = productData.map((p) => ({
+  id: p.id,
+  name: p.name,
+  priceOriginal: p.price.toLocaleString("ko-KR") + "원", // 정가
+  priceDiscounted: p.discountPrice
+    ? p.discountPrice.toLocaleString("ko-KR") + "원"
+    : p.price.toLocaleString("ko-KR") + "원", // 할인된 가격 (없으면 정가 사용)
+  discount: p.discountPrice
+    ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
+    : null,
+  images: p.images?.[0] || "/images/default-product.png",
+  category: p.categoryName || "기타",
+}))
 
         setAllProducts(mappedProducts)
         setCategories([{ id: "all", name: "전체" }, ...categoryData.map(cat => ({ id: cat.name, name: cat.name }))])
@@ -221,48 +224,35 @@ console.log(productData)
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+
           {products.map((p) => (
-            <Link
-              key={p.id}
-              to={`/products/${p.id}`}
-              className="bg-white rounded-lg shadow overflow-hidden group"
-            >
-              <div className="relative">
-                <img
-                  src={p.images}
-                  alt={p.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition"
-                />
-                {p.discount && (
-                  <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                    {p.discount} 할인
-                  </div>
-                )}
-                <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition">
-                  <button className="bg-white p-1 rounded-full shadow">
-                    <Heart className="h-4 w-4 text-gray-500 hover:text-red-500" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      addToCart(p)
-                    }}
-                    className="bg-white p-1 rounded-full shadow"
-                  >
-                    <ShoppingCart className="h-4 w-4 text-gray-500 hover:text-blue-500" />
-                  </button>
-                </div>
-              </div>
-              <div className="p-4 space-y-2">
-                <div className="text-xs text-gray-500">{p.category}</div>
-                <div className="text-sm font-medium line-clamp-2">{p.name}</div>
-                <div className="flex items-center justify-between">
-                  <span className="text-blue-500 font-semibold">{p.price}</span>
-                </div>
-              </div>
-            </Link>
+           <Link
+           key={p.id}
+           to={`/products/${p.id}`}
+           className="bg-white rounded-lg shadow overflow-hidden group"
+         >
+           <div className="aspect-square w-full overflow-hidden">
+             <img
+               src={p.images}
+               alt={p.name}
+               className="w-full h-full object-cover transition group-hover:scale-105"
+             />
+           </div>
+           <div className="p-4 space-y-2">
+             <div className="text-xs text-gray-500">{p.category}</div>
+             <div className="text-sm font-medium line-clamp-2">{p.name}</div>
+             <div className="flex items-center justify-between gap-2">
+               {p.discount && (
+                 <span className="text-sm text-gray-400 line-through">
+                   {p.priceOriginal}
+                 </span>
+               )}
+               <span className="text-blue-500 font-semibold">{p.priceDiscounted}</span>
+             </div>
+           </div>
+         </Link>
+         
           ))}
         </div>
       )}
