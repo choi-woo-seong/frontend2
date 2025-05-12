@@ -1,3 +1,4 @@
+// src/pages/NoticesPage.jsx
 "use client"
 
 import { useEffect, useState } from "react"
@@ -10,7 +11,6 @@ const NoticesPage = () => {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [fetched, setFetched] = useState(false)
   const size = 10
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const NoticesPage = () => {
       try {
         setLoading(true)
         const response = await fetch(
-         `${process.env.REACT_APP_API_URL}/notices?page=${currentPage - 1}&size=${size}&sort=createdAt,desc`
+          `${process.env.REACT_APP_API_URL}/notices?page=${currentPage - 1}&size=${size}&sort=createdAt,desc`
         )
 
         const contentType = response.headers.get("content-type")
@@ -42,6 +42,7 @@ const NoticesPage = () => {
 
   return (
     <div className="notices-page">
+      {/* 상단 헤더 */}
       <div className="page-header">
         <div className="container header-flex">
           <div className="flex items-center">
@@ -53,6 +54,7 @@ const NoticesPage = () => {
         </div>
       </div>
 
+      {/* 내용 */}
       <div className="page-content">
         <div className="container">
           {loading ? (
@@ -80,15 +82,16 @@ const NoticesPage = () => {
                         </Link>
                       </td>
                       <td>{new Date(notice.createdAt).toLocaleDateString("ko-KR")}</td>
-                      <td>{notice.views}</td> {/* ✅ 조회수 출력 */}
+                      <td>{notice.views}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
+              {/* 페이지네이션 */}
               <div className="pagination">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
                   disabled={currentPage === 1}
                 >
                   이전
@@ -105,7 +108,7 @@ const NoticesPage = () => {
                 ))}
 
                 <button
-                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 >
                   다음
