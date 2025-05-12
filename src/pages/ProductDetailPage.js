@@ -6,14 +6,18 @@ import { useParams, Link } from "react-router-dom"
 import {
   ChevronLeft,
   Star,
-  ShoppingCart,
-  Share2
+  ShoppingCart
 } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import Layout from "../components/Layout"
 import RecommendedSection from "../components/RecommendedSection"
+import { useAuth } from "../hooks/use-auth" // ✅ 로그인 사용자 정보 사용
+
 
 export default function ProductDetailPage() {
+  const { user } = useAuth() // ✅ 현재 로그인 사용자 정보
+  
+
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -27,54 +31,59 @@ export default function ProductDetailPage() {
   const [showQuestionForm, setShowQuestionForm] = useState(false)
   const [newQuestionContent, setNewQuestionContent] = useState("")
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true)
-        const token = localStorage.getItem("accessToken")
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
+  const fetchProduct = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem("accessToken")
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (!res.ok) throw new Error("상품 정보 로드 실패")
+      const data = await res.json()
+      setProduct(prev => ({
+        ...prev,
+        id: data.id,
+        name: data.name,
+        price: data.discountPrice
+          ? data.discountPrice.toLocaleString("ko-KR") + "원"
+          : data.price.toLocaleString("ko-KR") + "원",
+        originalPrice: data.price.toLocaleString("ko-KR") + "원",
+        discount: data.discountPrice
+          ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
+          : null,
+        description: data.description,
+        images: data.images || ["/images/default-product.png"],
+        specifications: data.specifications || [],
+        questions: data.questions || [],
+        rating: data.rating || 0,
+        reviewCount: data.reviewCount || 0,
+        category: data.categoryName || [],
+        features: data.features || [],
+        manufacturer: data.manufacturer || [],
+        originName: data.originName || [],
+        stockQuantity: data.stockQuantity || 0,
+      }))
 
-        if (!res.ok) throw new Error("상품 정보 로드 실패")
-        const data = await res.json()
-console.log(data)
-        const mapped = {
-          id: data.id,
-          name: data.name,
-          price: data.discountPrice
-            ? data.discountPrice.toLocaleString("ko-KR") + "원"
-            : data.price.toLocaleString("ko-KR") + "원",
-          originalPrice: data.price.toLocaleString("ko-KR") + "원",
-          discount: data.discountPrice
-            ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
-            : null,
-          description: data.description,
-          images: data.images || ["/images/default-product.png"],
-          specifications: data.specifications || [],
-          reviews: data.reviews || [],
-          questions: data.questions || [],
-          rating: data.rating || 0,
-          reviewCount: data.reviewCount || 0,
-          category:data.categoryName || [],
-          features:data.features || [],
-          manufacturer:data.manufacturer || [],
-          originName:data.originName || [],
-          stockQuantity: data.stockQuantity || 0,
-        }
-
-        setProduct(mapped)
-      } catch (err) {
-        console.error("상품 로딩 실패:", err)
-      } finally {
-        setLoading(false)
-      }
+      // 리뷰 불러오기
+      const reviewRes = await fetch(`${process.env.REACT_APP_API_URL}/reviews/product/${id}`)
+      const reviews = await reviewRes.json()
+      setProduct(prev => ({ ...prev, reviews }))
+    } catch (err) {
+      console.error("상품 로딩 실패:", err)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchProduct()
+  console.log("✅ 현재 로그인 유저 정보:", user);
+
+
+
   }, [id])
 
   const handleQuantityChange = amount => {
@@ -83,7 +92,6 @@ console.log(data)
   }
 
   const addToCart = async () => {
-    console.log(product)
     try {
       const token = localStorage.getItem("accessToken")
       const res = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
@@ -92,17 +100,9 @@ console.log(data)
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: quantity,
-        }),
+        body: JSON.stringify({ productId: product.id, quantity })
       })
-  
-      if (!res.ok) {
-        const errorText = await res.text()
-        throw new Error(errorText)
-      }
-  
+      if (!res.ok) throw new Error(await res.text())
       alert(`${product.name} ${quantity}개가 장바구니에 추가되었습니다.`)
     } catch (error) {
       console.error("장바구니 추가 실패:", error)
@@ -110,31 +110,43 @@ console.log(data)
     }
   }
 
-  const handleReviewSubmit = () => {
-    const newReview = {
-      id: product.reviews.length + 1,
-      user: "나**",
-      rating: newReviewRating,
-      content: newReviewContent,
-      date: new Date().toISOString().split("T")[0]
+  const handleReviewSubmit = async () => {
+    try {
+      const token = localStorage.getItem("accessToken")
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/reviews`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId: product.id,
+         userName: user?.user_name || " ",
+ // ✅ 로그인 유저 이름 또는 기본값
+
+          rating: newReviewRating,
+          content: newReviewContent,
+        })
+      })
+      if (!response.ok) throw new Error("리뷰 등록 실패")
+
+      // 등록 후 다시 불러오기
+      await fetchProduct()
+      setShowReviewForm(false)
+      setNewReviewContent("")
+      setNewReviewRating(1)
+    } catch (e) {
+      console.error(e)
+      alert("리뷰 등록에 실패했습니다.")
     }
-    setProduct({
-      ...product,
-      reviews: [...product.reviews, newReview],
-      reviewCount: product.reviewCount + 1,
-      rating:
-        (product.rating * product.reviewCount + newReviewRating) /
-        (product.reviewCount + 1)
-    })
-    setShowReviewForm(false)
-    setNewReviewContent("")
-    setNewReviewRating(1)
   }
 
   const handleQuestionSubmit = () => {
     const newQuestion = {
       id: product.questions.length + 1,
-      user: "나**",
+userName: user?.username , // username 필드로 변경
+
+
       content: newQuestionContent,
       date: new Date().toISOString().split("T")[0]
     }
@@ -146,30 +158,17 @@ console.log(data)
     setNewQuestionContent("")
   }
 
-  if (loading) return (
-    <div className="container mx-auto px-4 py-4 animate-pulse">
-      <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-      <div className="h-64 bg-gray-200 rounded mb-4"></div>
-      <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
-      <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-      <div className="h-32 bg-gray-200 rounded mb-4"></div>
-    </div>
-  )
-
-  if (!product) return (
-    <div className="container mx-auto px-4 py-4">
-      <p>제품을 찾을 수 없습니다.</p>
-    </div>
-  )
+  if (loading) return <div className="container mx-auto px-4 py-4 animate-pulse">Loading...</div>
+  if (!product) return <div className="container mx-auto px-4 py-4">제품을 찾을 수 없습니다.</div>
 
   return (
     <div className="container mx-auto px-4 py-4">
-      <div className="flex items-center mb-4">
-        <Link to="/products" className="flex items-center text-gray-500">
-          <ChevronLeft className="h-5 w-5" />
-          <span>제품 목록</span>
-        </Link>
-      </div>
+   <div className="flex items-center mt-4 mb-4">
+  <Link to="/products" className="flex items-center text-gray-500">
+    <ChevronLeft className="h-5 w-5" />
+    <span className="text-lg font-semibold ml-1">제품 목록</span>
+  </Link>
+</div>
 
       <img
         src={product.images[0]}
@@ -212,18 +211,16 @@ console.log(data)
             <button className="px-3 py-1" onClick={() => handleQuantityChange(1)}>+</button>
           </div>
         </div>
-        <div className="flex gap-2 mb-4">
-          <Button
-            className="flex flex-1 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white gap-2 py-3"
-            onClick={addToCart}
-          >
-            <ShoppingCart className="h-5 w-5" />
-            <span className="text-base font-medium">장바구니</span>
-          </Button>
-          <Button variant="outline" className="p-3">
-            <Share2 className="h-5 w-5" />
-          </Button>
-        </div>
+       <div className="flex gap-2 mb-4">
+  <Button
+    className="flex flex-1 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white gap-2 py-3"
+    onClick={addToCart}
+  >
+    <ShoppingCart className="h-5 w-5" />
+    <span className="text-base font-medium">장바구니</span>
+  </Button>
+</div>
+
         <h3 className="font-medium mb-2">재고</h3>
         <table className="w-full text-sm">
           <tbody>
@@ -345,7 +342,8 @@ console.log(data)
                               }`}
                             />
                           ))}
-                          <span className="text-sm ml-2">{r.user}</span>
+                         <span className="text-sm ml-2">{r.userName}</span>
+
                           <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
                         </div>
                         <p className="text-sm">{r.content}</p>

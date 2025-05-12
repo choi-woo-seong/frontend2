@@ -31,6 +31,8 @@ const NoticeDetailPage = () => {
       } finally {
         if (!ignore) setLoading(false)
       }
+    console.log("API URL:", process.env.REACT_APP_API_URL);
+
     }
 
     increaseViewAndFetch()
