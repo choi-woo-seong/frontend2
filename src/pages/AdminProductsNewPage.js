@@ -227,16 +227,17 @@ const AdminProductsNewPage = () => {
           <div className="form-group mt-6">
             <label className="block text-sm font-medium mb-2">상품 특징</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3">
-              {["경량 디자인", "접이식 구조", "방수 가능", "미끄럼 방지", "조절 가능한 높이", "인체공학적 설계", "쉬운 세척", "내구성 강화", "휴대성 우수", "안전 잠금 장치"].map((feature, idx) => (
-                <label key={idx} className="flex items-center gap-2 text-sm text-gray-700">
-                  <input
-                    type="checkbox"
-                    checked={formData.features?.includes(feature)}
-                    onChange={() => handleFeatureToggle(feature)}
-                  />
-                  {feature}
-                </label>
-              ))}
+             {["경량 디자인", "접이식 구조", "방수 가능", "미끄럼 방지", "조절 가능한 높이", "인체공학적 설계", "쉬운 세척", "내구성 강화", "휴대성 우수", "안전 잠금 장치"].map((feature, idx) => (
+              <label key={idx} className="feature-checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={formData.features?.includes(feature)}
+                  onChange={() => handleFeatureToggle(feature)}
+                />
+                {feature}
+              </label>
+            ))}
+
             </div>
           </div>
 
