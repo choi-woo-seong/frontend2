@@ -80,7 +80,8 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     fetchProduct()
-   console.log("✅ 현재 로그인 유저 구조:", user);
+  console.log("✅ 현재 로그인 유저 정보:", user);
+
 
 
   }, [id])
@@ -120,7 +121,7 @@ export default function ProductDetailPage() {
         },
         body: JSON.stringify({
           productId: product.id,
-         userName: user?.user_name || "익명",
+         userName: user?.user_name || " ",
  // ✅ 로그인 유저 이름 또는 기본값
 
           rating: newReviewRating,
@@ -143,7 +144,8 @@ export default function ProductDetailPage() {
   const handleQuestionSubmit = () => {
     const newQuestion = {
       id: product.questions.length + 1,
-     userName: user?.user_name || "익명",
+userName: user?.username , // username 필드로 변경
+
 
       content: newQuestionContent,
       date: new Date().toISOString().split("T")[0]
