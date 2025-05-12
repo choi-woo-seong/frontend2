@@ -11,6 +11,7 @@ import "../styles/AdminFacilitiesNewPage.css";
 import KakaoAddressSearch from "../components/admin/KakaoAddressSearch";
 
 const AdminFacilitiesNewPage = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_URL
   const navigate = useNavigate();
 
   const [facilityType, setFacilityType] = useState("");
@@ -108,7 +109,7 @@ const AdminFacilitiesNewPage = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8081/api/facility/create",
+        `${API_BASE_URL}/facility/create`,
         {
           method: "POST",
           body: form,

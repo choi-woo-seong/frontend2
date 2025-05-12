@@ -1,183 +1,535 @@
-"use client"
+// AdminFacilitiesEditPage.jsx
+"use client";
 
-import { useState } from "react"
-import { useParams, useNavigate, Link } from "react-router-dom"
-import { ChevronLeft } from "lucide-react"
-import { Button } from "../components/ui/Button"
-import { Input } from "../components/ui/Input"
-import { Textarea } from "../components/ui/Textarea"
-import Checkbox from "../components/ui/Checkbox"
-import "../styles/AdminFacilitiesEditPage.css"
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { ChevronLeft, X } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Textarea } from "../components/ui/Textarea";
+import { Select } from "../components/ui/Select";
+import "../styles/AdminFacilitiesNewPage.css";
+import KakaoAddressSearch from "../components/admin/KakaoAddressSearch";
 
 const AdminFacilitiesEditPage = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const API_BASE_URL = process.env.REACT_APP_API_URL;
+  const { id } = useParams();
+  const navigate = useNavigate();
 
+  const [facilityType, setFacilityType] = useState("");
+  const [showAddressSearch, setShowAddressSearch] = useState(false);
+  const [loadingMarkDown, setLoadingMarkDown] = useState(false);
+  const [isMarkdownSynced, setIsMarkdownSynced] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
     type: "",
-    region: "",
-    subregion: "",
+    name: "",
+    establishedYear: "",
     address: "",
     phone: "",
-    capacity: "",
-    rating: "",
+    homepage: "",
+    grade: "",
+    facilitySize: "",
     description: "",
-    imageUrls: "",
-    services: [],
-    facilities: [],
-    isPromoted: false,
-    isCertified: false,
-  })
+    weekdayHours: "",
+    weekendHours: "",
+    holidayHours: "",
+    visitingHours: "",
+    images: [],
+  });
 
-  const servicesOptions = [
-    "24시간 간호 서비스", "작업치료", "인지재활", "투약 관리", "이동 지원",
-    "물리치료", "언어치료", "식사 제공", "목욕 서비스", "응급 의료 지원"
-  ]
+  const [emailList, setEmailList] = useState([]);
+  const [selectedEmail, setSelectedEmail] = useState("");
+  const [loadingEmails, setLoadingEmails] = useState(false);
 
-  const facilitiesOptions = [
-    "개인 화장실", "공용 휴게실", "정원", "운동 시설", "카페테리아",
-    "미용실", "도서관", "식당", "종교 시설", "세탁 서비스"
-  ]
+  const facilityTypeMap = {
+    요양병원: "nursing_hospital",
+    요양원: "nursing_home",
+    실버타운: "silver_town",
+  };
+  const reverseTypeMap = {
+    nursing_hospital: "요양병원",
+    nursing_home: "요양원",
+    silver_town: "실버타운",
+  };
+
+  useEffect(() => {
+    const fetchFacility = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/facility/${id}`);
+        const data = await res.json();
+        setFormData({ ...data, images: [] });
+        setFacilityType(reverseTypeMap[data.type]);
+      } catch (err) {
+        console.error("기존 시설 정보 로드 실패", err);
+      }
+    };
+    fetchFacility();
+  }, [id]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "description") setIsMarkdownSynced(false);
+  };
+
+  const handleFacilityTypeChange = (e) => {
+    const selected = e.target.value;
+    setFacilityType(selected);
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }))
-  }
+      type: facilityTypeMap[selected],
+    }));
+  };
 
-  const handleFeatureToggle = (item, category) => {
-    setFormData((prev) => ({
-      ...prev,
-      [category]: prev[category].includes(item)
-        ? prev[category].filter((i) => i !== item)
-        : [...prev[category], item],
-    }))
-  }
+  const handleRemoveImage = (index) => {
+    const updatedImages = formData.images.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, images: updatedImages }));
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    alert("시설 정보 수정 완료!")
-    navigate("/admin/facilities")
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    const dto = {
+      type: formData.type,
+      name: formData.name,
+      establishedYear: Number(formData.establishedYear),
+      address: formData.address,
+      phone: formData.phone,
+      homepage: formData.homepage,
+      grade: formData.grade,
+      facilitySize: formData.facilitySize,
+      description: formData.description,
+      weekdayHours: formData.weekdayHours,
+      weekendHours: formData.weekendHours,
+      holidayHours: formData.holidayHours,
+      visitingHours: formData.visitingHours,
+    };
+
+    form.append(
+      "dto",
+      new Blob([JSON.stringify(dto)], { type: "application/json" })
+    );
+    formData.images.forEach((imgObj) => {
+      form.append("images", imgObj.file);
+    });
+
+    // 👉 여기에 로그 찍어보자
+    form
+      .get("dto")
+      .text()
+      .then((text) => {
+        console.log("DTO 내용 확인:", JSON.parse(text));
+      });
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/facility/${id}`, {
+        method: "PUT",
+        body: form,
+      });
+
+      if (response.ok) {
+        alert("시설 수정 완료");
+        navigate("/admin/facilities");
+      } else {
+        const err = await response.json();
+        alert("수정 실패: " + err.message);
+      }
+    } catch (err) {
+      console.error("수정 중 오류 발생:", err);
+      alert("서버 오류 발생");
+    }
+  };
+
+  const fetchEmails = () => {
+    setLoadingEmails(true);
+    fetch("http://localhost:8000/emails")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success" && Array.isArray(data.files)) {
+          setEmailList(data.files);
+        } else {
+          console.error("이메일 데이터가 올바르지 않음", data);
+        }
+      })
+      .catch((err) => {
+        console.error("이메일 불러오기 실패", err);
+      })
+      .finally(() => {
+        setLoadingEmails(false);
+      });
+  };
+
+  const handleMarkdownConvert = async () => {
+    setLoadingMarkDown(true);
+    try {
+      const response = await fetch("http://localhost:8000/markdown", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          raw_text: formData.description,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setFormData((prev) => ({
+          ...prev,
+          description: data.markdown.replace(/\\n/g, "\n"),
+        }));
+        setIsMarkdownSynced(true);
+      } else {
+        alert("마크다운 변환 실패: " + data.detail);
+      }
+    } catch (err) {
+      console.error("에러 발생:", err);
+      alert("서버 요청 실패!");
+    } finally {
+      setLoadingMarkDown(false);
+    }
+  };
 
   return (
-    <div className="bg-white px-6 py-10 max-w-5xl mx-auto text-sm">
-      <div className="mb-6">
-        <Link to="/admin/facilities" className="flex items-center gap-1 text-lg font-semibold text-gray-700">
-          <ChevronLeft className="h-5 w-5" />
-          <span>시설 정보 수정</span>
-        </Link>
+    <div className="admin-facilities-new-page">
+      <div className="page-header-full">
+        <div className="header-inner">
+          <Link to="/admin/facilities" className="flex items-center gap-1">
+            <ChevronLeft className="h-5 w-5 text-gray-600" />
+            <span className="page-title">시설 수정</span>
+          </Link>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <label className="block text-sm font-medium">시설명</label>
-            <Input name="name" value={formData.name} onChange={handleChange} placeholder="시설명을 입력하세요" />
+      <div className="facility-type-wrapper">
+        <label className="facility-type-label">시설 유형 *</label>
+        <div className="facility-type-select">
+          <Select value={facilityType} onChange={handleFacilityTypeChange}>
+            <option value="">종류</option>
+            <option value="요양병원">요양병원</option>
+            <option value="요양원">요양원</option>
+            <option value="실버타운">실버타운</option>
+          </Select>
+        </div>
+      </div>
 
-            <label className="block text-sm font-medium">시설 유형</label>
-            <Input name="type" value={formData.type} onChange={handleChange} placeholder="예: 요양원, 요양병원" />
-
-            <label className="block text-sm font-medium">지역</label>
-            <Input name="region" value={formData.region} onChange={handleChange} placeholder="예: 서울특별시" />
-
-            <label className="block text-sm font-medium">세부 지역</label>
-            <Input name="subregion" value={formData.subregion} onChange={handleChange} placeholder="예: 강남구" />
-
-            <label className="block text-sm font-medium">주소</label>
-            <Input name="address" value={formData.address} onChange={handleChange} placeholder="상세 주소 입력" />
-
-            <label className="block text-sm font-medium">전화번호</label>
-            <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="연락처 입력" />
-
-            <label className="block text-sm font-medium">수용 인원</label>
-            <Input name="capacity" value={formData.capacity} onChange={handleChange} placeholder="예: 50" />
-
-            <label className="block text-sm font-medium">평점 (0~5)</label>
-            <Input name="rating" value={formData.rating} onChange={handleChange} placeholder="예: 4.5" />
-
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="isPromoted"
-                checked={formData.isPromoted}
-                onChange={handleChange}
-              />
-              <span className="text-sm">프로모션 시설</span>
+      {/* 이메일 불러오기 */}
+      <div className="form-section email-fetch-section">
+        <h3 className="email-title-text">메일에서 불러오기</h3>
+        <div className="form-row">
+          <div className="form-group" style={{ flex: 1 }}>
+            <Button
+              type="button"
+              onClick={fetchEmails}
+              className="email-fetch-button"
+              disabled={loadingEmails}
+            >
+              {loadingEmails ? "불러오는 중..." : "이메일 불러오기"}
+            </Button>
+          </div>
+        </div>
+        {emailList.length > 0 && (
+          <>
+            <div className="form-row" style={{ marginTop: "1rem" }}>
+              <div className="form-group" style={{ flex: 2 }}>
+                <label>이메일 선택</label>
+                <Select
+                  value={selectedEmail}
+                  onChange={(e) => setSelectedEmail(e.target.value)}
+                >
+                  <option value="">이메일을 선택하세요</option>
+                  {emailList.map((email, index) => (
+                    <option key={index} value={email.email_subject}>
+                      {email.email_subject}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="isCertified"
-                checked={formData.isCertified}
+            <div style={{ marginTop: "1rem" }}>
+              <Button
+                type="button"
+                onClick={() =>
+                  alert("이메일 적용하기 기능은 나중에 추가됩니다.")
+                }
+                disabled={!selectedEmail}
+              >
+                이메일 내용 적용하기
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="facility-form">
+        <div className="form-section">
+          <div className="form-group">
+            <label>시설명 *</label>
+            <Input
+              name="name"
+              placeholder="시설 이름을 입력하세요"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>설립년도 *</label>
+            <Input
+              name="establishedYear"
+              placeholder="설립년도로 입력하세요"
+              value={formData.establishedYear}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group address-row">
+            <label>주소 *</label>
+            <div className="address-input-group">
+              <Input
+                name="address"
+                placeholder="시설 주소를 입력하세요"
+                value={formData.address}
                 onChange={handleChange}
               />
-              <span className="text-sm">인증된 시설</span>
+              <Button
+                type="button"
+                onClick={() => setShowAddressSearch(true)}
+                className="address-search-button"
+              >
+                주소 찾기
+              </Button>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <label className="block text-sm font-medium">시설 설명</label>
-            <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="시설에 대한 설명을 입력하세요" />
-
-            <label className="block text-sm font-medium">이미지 URL (쉼표 구분)</label>
-            <Textarea name="imageUrls" value={formData.imageUrls} onChange={handleChange} rows={3} placeholder="/image1.png, /image2.png, ..." />
-
-            <label className="block text-sm font-medium mt-4">제공 서비스</label>
-            <div className="grid grid-cols-2 gap-2">
-              {servicesOptions.map((item) => (
-                <label key={item} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.services.includes(item)}
-                    onChange={() => handleFeatureToggle(item, "services")}
-                  />
-                  <span className="text-sm">{item}</span>
-                </label>
-              ))}
+          <div className="form-row">
+            <div className="form-group">
+              <label>연락처</label>
+              <Input
+                name="phone"
+                placeholder="연락처를 입력하세요"
+                value={formData.phone}
+                onChange={handleChange}
+              />
             </div>
+            <div className="form-group">
+              <label>홈페이지</label>
+              <Input
+                name="homepage"
+                placeholder="홈페이지 URL을 입력하세요"
+                value={formData.homepage}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-            <label className="block text-sm font-medium mt-4">편의 시설</label>
-            <div className="grid grid-cols-2 gap-2">
-              {facilitiesOptions.map((item) => (
-                <label key={item} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.facilities.includes(item)}
-                    onChange={() => handleFeatureToggle(item, "facilities")}
-                  />
-                  <span className="text-sm">{item}</span>
-                </label>
-              ))}
+          <div className="form-row">
+            <div className="form-group">
+              <label>평가등급</label>
+              <Select
+                name="grade"
+                value={formData.grade}
+                onChange={handleChange}
+              >
+                <option value="">등급을 선택하세요</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="등급제외">등급제외</option>
+              </Select>
+            </div>
+            <div className="form-group">
+              <label>병원 규모</label>
+              <Select
+                name="facilitySize"
+                value={formData.facilitySize}
+                onChange={handleChange}
+              >
+                <option value="">규모를 선택하세요</option>
+                <option value="LARGE">대형</option>
+                <option value="MEDIUM">중형</option>
+                <option value="SMALL">소형</option>
+              </Select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>시설 설명</label>
+            <Textarea
+              name="description"
+              placeholder="시설에 대한 설명을 입력하세요"
+              value={formData.description}
+              onChange={handleChange}
+              rows="15"
+            />
+            <Button
+              type="button"
+              className="markdown-preview-button"
+              onClick={handleMarkdownConvert}
+              disabled={loadingMarkDown || isMarkdownSynced}
+            >
+              {loadingMarkDown
+                ? "변환 중..."
+                : isMarkdownSynced
+                ? "변환 완료"
+                : "시설 설명 마크다운으로 변환"}
+            </Button>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>평일 운영시간</label>
+              <Input
+                name="weekdayHours"
+                placeholder="예: 09:00 - 18:00"
+                value={formData.weekdayHours}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>주말 운영시간</label>
+              <Input
+                name="weekendHours"
+                placeholder="예: 10:00 - 15:00"
+                value={formData.weekendHours}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>공휴일 운영시간</label>
+              <Input
+                name="holidayHours"
+                placeholder="예: 10:00 - 15:00"
+                value={formData.holidayHours}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>면회시간</label>
+              <Input
+                name="visitingHours"
+                placeholder="예: 13:30 - 17:00"
+                value={formData.visitingHours}
+                onChange={handleChange}
+              />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 mt-8">
-        <div className="form-actions flex justify-end gap-2 mt-8">
-  <Button
-    type="button"
-    onClick={() => navigate("/admin/facilities")}
-    className="product-action-button product-cancel-button"
-  >
-    취소
-  </Button>
-  <Button
-    type="submit"
-    className="product-action-button product-submit-button"
-  >
-    저장하기
-  </Button>
-</div>
+        <div className="form-section1">
+          <h2>시설 이미지</h2>
+          <div
+            className="image-upload-area"
+            onClick={() =>
+              document.getElementById("image-upload-input").click()
+            }
+          >
+            <img
+              src="/icons/upload-photo.png"
+              alt="사진 업로드"
+              className="image-upload-icon-img"
+            />
+            <div className="image-upload-text">
+              이미지를 업로드하세요 (최대 5MB)
+            </div>
+            <input
+              id="image-upload-input"
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const files = Array.from(e.target.files);
+                const newImages = files.map((file) => ({
+                  file,
+                  preview: URL.createObjectURL(file),
+                }));
+                setFormData((prev) => ({
+                  ...prev,
+                  images: [...prev.images, ...newImages],
+                }));
+              }}
+            />
+          </div>
+          {formData.images.length > 0 && (
+            <div
+              className="image-preview-list"
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                flexWrap: "wrap",
+                marginTop: "1rem",
+              }}
+            >
+              {formData.images.map((image, index) => (
+                <div key={index} style={{ position: "relative" }}>
+                  <img
+                    src={image.preview}
+                    alt="업로드 이미지"
+                    className="uploaded-image"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    style={{
+                      position: "absolute",
+                      top: "4px",
+                      right: "4px",
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <X className="w-5 h-5 text-red-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
+        <div
+          className="form-actions"
+          style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}
+        >
+          <Button
+            type="button"
+            onClick={() => navigate("/admin/facilities")}
+            className="facility-action-button facility-cancel-button"
+          >
+            취소
+          </Button>
+          <Button
+            type="submit"
+            className="facility-action-button facility-submit-button"
+          >
+            시설 수정
+          </Button>
         </div>
       </form>
-    </div>
-  )
-}
 
-export default AdminFacilitiesEditPage
+      {showAddressSearch && (
+        <KakaoAddressSearch
+          onComplete={(address) => {
+            setFormData((prev) => ({ ...prev, address }));
+            setShowAddressSearch(false);
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default AdminFacilitiesEditPage;

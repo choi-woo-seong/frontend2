@@ -53,10 +53,12 @@ const FacilitiesListPage = () => {
           silver_town: "실버타운",
         };
 
-        const converted = data.map((f) => ({
-          ...f,
-          type: reverseTypeMap[f.type] || f.type, // 백엔드 값이 "nursing_home"이면 "요양원"으로 표시
-        }));
+        const converted = data
+          .map((f) => ({
+            ...f,
+            type: reverseTypeMap[f.type] || f.type, // 백엔드 값이 "nursing_home"이면 "요양원"으로 표시
+          }))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         setFacilities(converted);
       } catch (err) {
@@ -74,9 +76,24 @@ const FacilitiesListPage = () => {
   };
 
   const handleEdit = (id) => navigate(`/admin/facilities/${id}/edit`);
-  const handleDelete = (id) => {
-    if (window.confirm("정말로 이 시설을 삭제하시겠습니까?")) {
-      setFacilities(facilities.filter((facility) => facility.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("정말로 이 시설을 삭제하시겠습니까?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:8081/api/facility/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setFacilities((prev) => prev.filter((facility) => facility.id !== id));
+        alert("삭제가 완료되었습니다.");
+      } else {
+        const errorData = await response.json();
+        alert("삭제 실패: " + (errorData.message || "알 수 없는 오류"));
+      }
+    } catch (err) {
+      console.error("삭제 요청 실패:", err);
+      alert("서버 오류로 삭제에 실패했습니다.");
     }
   };
   const handleAddNewFacility = () => navigate("/admin/facilities/new");
