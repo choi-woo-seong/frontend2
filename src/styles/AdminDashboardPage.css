@@ -1,6 +1,8 @@
 /* 관리자 대시보드 스타일 */
 .admin-dashboard {
-  padding: 1.5rem;
+  max-width: 1280px;     /* 💡 레이아웃 너비 제한 */
+  margin: 0 auto;        /* ✅ 가운데 정렬 */
+  padding: 1.5rem 1rem;  /* ✅ 양옆 패딩 추가 */
 }
 
 .admin-dashboard-title {
@@ -77,10 +79,16 @@
 
 /* 대시보드 콘텐츠 레이아웃 */
 .admin-dashboard-content {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column; /* ✅ 세로 배치로 변경 */
+  gap: 2rem;               /* ✅ 영역 간 간격 추가 */
 }
+
+.admin-dashboard-main,
+.admin-dashboard-sidebar {
+  width: 100%; /* ✅ 한 줄 전체 너비 사용 */
+}
+
 
 @media (max-width: 1024px) {
   .admin-dashboard-content {

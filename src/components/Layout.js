@@ -58,26 +58,23 @@ const Layout = ({ children }) => {
       <div className="flex flex-col min-h-screen">
         {/* 관리자 헤더 */}
         <header className="bg-white border-b sticky top-0 z-20">
-          <div className="flex items-center justify-between container mx-auto px-4 py-3">
-            {/* 뒤로가기 + 제목 */}
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => navigate(-1)}
-                className="text-gray-700 hover:text-black"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <h1 className="text-lg font-bold text-gray-900">관리자 대시보드</h1>
-            </div>
-            {/* 로그아웃 버튼 */}
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="flex items-center text-sm text-gray-600 hover:text-gray-800"
-            >
-              <LogOut className="w-4 h-4 mr-1" />
-              로그아웃
-            </button>
-          </div>
+      
+  <div className="h-16 flex items-center justify-between container mx-auto px-4">
+    <div className="flex items-center space-x-2">
+      <button onClick={() => navigate(-1)} className="text-gray-700 hover:text-black">
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <h1 className="text-lg font-bold text-gray-900">관리자 대시보드</h1>
+    </div>
+    <button
+      onClick={() => setShowLogoutConfirm(true)}
+      className="flex items-center text-sm text-gray-600 hover:text-gray-800"
+    >
+      <LogOut className="w-4 h-4 mr-1" />
+      로그아웃
+    </button>
+  </div>
+
 
           {/* 관리자 탭 메뉴 */}
           <div className="bg-gray-50 py-3">
