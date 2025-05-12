@@ -117,10 +117,39 @@ function CartPage() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원"
   }
 
-  const handlePayment = () => {
-    alert("카카오페이 결제 기능은 현재 개발 중입니다.")
-  }
+  const handlePayment = async () => {
+    try {
+      const token   = localStorage.getItem("accessToken");
+      const orderId = Date.now();                      // 예시: 타임스탬프로 임시 주문 ID 생성
+      const itemName    = `장바구니상품 ${cart.length}건`;
+      const totalAmount = calculateTotal();
 
+      // 백엔드 ready API 호출
+      const res = await fetch(
+        `${API_BASE_URL}/payment/kakao/ready` +
+          `?orderId=${orderId}` +
+          `&itemName=${encodeURIComponent(itemName)}` +
+          `&totalAmount=${totalAmount}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error("결제 준비 실패");
+      const { redirectUrl, tid } = await res.json();
+      
+      localStorage.setItem("kakaoTid", tid);
+      
+      // 카카오페이 페이지로 이동
+      window.location.href = redirectUrl;
+    } catch (err) {
+      console.error(err);
+     alert("결제 요청 중 오류가 발생했습니다.");
+    }
+  }
   return (
     <div className="cart-page">
       <header className="page-header">
