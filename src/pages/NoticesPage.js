@@ -10,6 +10,7 @@ const NoticesPage = () => {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [fetched, setFetched] = useState(false)
   const size = 10
 
   useEffect(() => {

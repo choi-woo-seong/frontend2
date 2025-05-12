@@ -8,21 +8,36 @@ const NoticeDetailPage = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchNotice = async () => {
+    let ignore = false
+
+    const increaseViewAndFetch = async () => {
       try {
+        // ✅ 조회수 증가 요청
+        await fetch(`${process.env.REACT_APP_API_URL}/notices/${id}/view`, {
+          method: "PATCH"
+        })
+
+        // ✅ 공지사항 상세 정보 가져오기
         const response = await fetch(`${process.env.REACT_APP_API_URL}/notices/${id}`)
         if (!response.ok) throw new Error("공지사항 조회 실패")
         const data = await response.json()
-        setNotice(data)
+
+        if (!ignore) {
+          setNotice(data)
+        }
       } catch (error) {
         console.error("공지사항 불러오기 오류:", error)
-        setNotice(null)
+        if (!ignore) setNotice(null)
       } finally {
-        setLoading(false)
+        if (!ignore) setLoading(false)
       }
     }
 
-    fetchNotice()
+    increaseViewAndFetch()
+
+    return () => {
+      ignore = true
+    }
   }, [id])
 
   if (loading) {
@@ -59,11 +74,13 @@ const NoticeDetailPage = () => {
             </tr>
             <tr>
               <th className="w-24 text-left px-4 py-2 bg-gray-50 text-sm text-gray-600">등록일</th>
-              <td className="px-4 py-2 text-sm text-gray-700">{new Date(notice.createdAt).toLocaleDateString("ko-KR")}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">
+                {new Date(notice.createdAt).toLocaleDateString("ko-KR")}
+              </td>
             </tr>
             <tr>
               <th className="w-24 text-left px-4 py-2 bg-gray-50 text-sm text-gray-600">조회수</th>
-              <td className="px-4 py-2 text-sm text-gray-700">{notice.views}</td> {/* ✅ 여기 수정 */}
+              <td className="px-4 py-2 text-sm text-gray-700">{notice.views}</td>
             </tr>
             <tr>
               <th className="w-24 text-left px-4 py-2 bg-gray-50 text-sm text-gray-600">내용</th>

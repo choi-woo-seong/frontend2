@@ -4,18 +4,37 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Info } from "lucide-react";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 function NoticeBar() {
   const [notices, setNotices] = useState([]);
   const [currentNoticeIndex, setCurrentNoticeIndex] = useState(0);
 
+  // ✅ 공지사항 API 호출
   useEffect(() => {
-    setNotices([
-      { id: 1, title: "요양보호사 자격증 취득 지원 프로그램 안내", link: "/notices/1" },
-      { id: 2, title: "2023년 노인장기요양보험 제도 변경 안내", link: "/notices/2" },
-      { id: 3, title: "실버타운 모바일 앱 출시 안내", link: "/notices/3" },
-    ]);
+    const fetchNotices = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/notices?page=0&size=5&sort=createdAt,desc`);
+        if (!response.ok) throw new Error("공지사항 불러오기 실패");
+
+        const data = await response.json();
+        // 공지사항 링크 추가
+        const mapped = data.content.map((notice) => ({
+          id: notice.id,
+          title: notice.title,
+          link: `/notices/${notice.id}`,
+        }));
+
+        setNotices(mapped);
+      } catch (error) {
+        console.error("공지사항 불러오기 오류:", error);
+      }
+    };
+
+    fetchNotices();
   }, []);
 
+  // ✅ 5초마다 다음 공지로
   useEffect(() => {
     if (notices.length <= 1) return;
     const interval = setInterval(() => {
@@ -25,6 +44,7 @@ function NoticeBar() {
   }, [notices]);
 
   if (!notices.length) return null;
+
   const currentNotice = notices[currentNoticeIndex];
 
   return (
