@@ -3,6 +3,19 @@
   margin: 0 auto;
   padding: 20px;
 }
+.feature-checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.feature-checkbox-label input[type="checkbox"] {
+  margin-right: 6px; /* ← 이 부분이 핵심 */
+  transform: translateY(1px);
+}
+
 
 .admin-header {
   display: flex;

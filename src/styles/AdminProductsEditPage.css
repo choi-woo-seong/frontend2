@@ -3,6 +3,24 @@
   margin: 0 auto;
   padding: 2rem 1rem;
 }
+/* 상품 특징 체크박스 스타일 - 간격 및 정렬 */
+.feature-checkbox-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+  cursor: pointer;
+  margin-right: 8px; /* 여백을 살짝 추가 */
+}
+
+.feature-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px; /* ✅ 글씨와 여백 확보 */
+  transform: translateY(1px);
+}
+
 
 .admin-products-edit-title {
   font-size: 1.8rem;

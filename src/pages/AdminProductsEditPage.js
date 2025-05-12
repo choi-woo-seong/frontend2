@@ -225,15 +225,16 @@ function AdminProductsEditPage() {
             <label className="block text-sm font-medium mb-2">상품 특징</label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {featureOptions.map(feat => (
-                <label key={feat} className="flex items-center gap-2 text-sm text-gray-700">
+                <label key={feat} className="feature-checkbox-label">
                   <input
                     type="checkbox"
                     checked={formData.features.includes(feat)}
                     onChange={() => toggleFeature(feat)}
                   />
-                  <span>{feat}</span>
+                  {feat}
                 </label>
               ))}
+
             </div>
           </div>
           {/* 배송비, 제조사, 원산지 */}
