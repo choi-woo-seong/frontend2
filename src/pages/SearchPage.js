@@ -333,23 +333,6 @@ function SearchPage() {
         </ul>
       </div>
 
-      {/* 지도 보기 */}
-      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
-        <button
-          onClick={() => {
-            if (filtered.length === 0) {
-              alert("표시할 시설이 없습니다.");
-              return;
-            }
-            navigate("/map", { state: { facilities: filtered } });
-          }}
-          className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
-        >
-          <FaMapMarkerAlt />
-          지도보기
-        </button>
-      </div>
-
       {/* 모달 */}
       <RegionSelectorModal
         isOpen={regionModalOpen}
