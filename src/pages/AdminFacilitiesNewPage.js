@@ -129,30 +129,6 @@ const AdminFacilitiesNewPage = () => {
     }
   };
 
-  // 메일 불러오기 관련 -----------------
-  const [emailList, setEmailList] = useState([]);
-  const [selectedEmail, setSelectedEmail] = useState("");
-  const [loadingEmails, setLoadingEmails] = useState(false);
-
-  const fetchEmails = () => {
-    setLoadingEmails(true);
-    fetch("http://localhost:8000/emails")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success" && Array.isArray(data.files)) {
-          setEmailList(data.files);
-        } else {
-          console.error("이메일 데이터가 올바르지 않음", data);
-        }
-      })
-      .catch((err) => {
-        console.error("이메일 불러오기 실패", err);
-      })
-      .finally(() => {
-        setLoadingEmails(false);
-      });
-  };
-  // ----------------------------------------
 
   // 시설설명 마크다운으로 변환
   const [loadingMarkDown, setLoadingMarkDown] = useState(false);
@@ -210,57 +186,6 @@ const AdminFacilitiesNewPage = () => {
             <option value="실버타운">실버타운</option>
           </Select>
         </div>
-      </div>
-
-      {/* 이메일 불러오기 영역 */}
-      <div className="form-section email-fetch-section">
-        <h3 className="email-title-text">메일에서 불러오기</h3>
-
-        <div className="form-row">
-          <div className="form-group" style={{ flex: 1 }}>
-            <Button
-              type="button"
-              onClick={fetchEmails}
-              className="email-fetch-button"
-              disabled={loadingEmails}
-            >
-              {loadingEmails ? "불러오는 중..." : "이메일 불러오기"}
-            </Button>
-          </div>
-        </div>
-
-        {emailList.length > 0 && (
-          <>
-            <div className="form-row" style={{ marginTop: "1rem" }}>
-              <div className="form-group" style={{ flex: 2 }}>
-                <label>이메일 선택</label>
-                <Select
-                  value={selectedEmail}
-                  onChange={(e) => setSelectedEmail(e.target.value)}
-                >
-                  <option value="">이메일을 선택하세요</option>
-                  {emailList.map((email, index) => (
-                    <option key={index} value={email.email_subject}>
-                      {email.email_subject}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "1rem" }}>
-              <Button
-                type="button"
-                onClick={() =>
-                  alert("이메일 적용하기 기능은 나중에 추가됩니다.")
-                }
-                disabled={!selectedEmail}
-              >
-                이메일 내용 적용하기
-              </Button>
-            </div>
-          </>
-        )}
       </div>
 
       <form onSubmit={handleSubmit} className="facility-form">

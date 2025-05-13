@@ -1,6 +1,12 @@
 // src/pages/SearchPage.jsx
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Await,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import axios from "axios";
 
 import RegionSelectorModal from "../components/RegionSelectorModal";
 import FilterModal from "./FilterModal";
@@ -42,7 +48,6 @@ const gradeMap = {
 };
 
 function SearchPage() {
-  
   const API_BASE_URL = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -120,18 +125,20 @@ function SearchPage() {
       const res = await fetch(url);
       const data = await res.json();
 
-      const sorted = data.map((fac) => ({
-        id: fac.id,
-        name: fac.name,
-        address: fac.address,
-        category: category,
-        imgSrc: fac.imageUrls?.[0] || "/placeholder.svg",
-        grade: fac.grade || null,
-        facilitySize: fac.facilitySize || null,
-        establishedYear: fac.establishedYear || null,
-        rating: fac.rating || 4.3,
-        reviewCount: fac.reviewCount || 0,
-      }));
+      const sorted = data
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // 🔥 최신순 정렬
+        .map((fac) => ({
+          id: fac.id,
+          name: fac.name,
+          address: fac.address,
+          category: category,
+          imgSrc: fac.imageUrls?.[0] || "/placeholder.svg",
+          grade: fac.grade || null,
+          facilitySize: fac.facilitySize || null,
+          establishedYear: fac.establishedYear || null,
+          rating: fac.rating || 4.3,
+          reviewCount: fac.reviewCount || 0,
+        }));
 
       setFacilities(sorted);
       setError(null);
@@ -140,6 +147,15 @@ function SearchPage() {
       setError("시설 정보를 불러올 수 없습니다.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // click 이벤트 (viewCount +1)
+  const handleIncreaseView = async (id) => {
+    try {
+      await axios.post(`${API_BASE_URL}/facility/${id}/view`);
+    } catch (error) {
+      console.error("viewCount에러 : ", error);
     }
   };
 
@@ -176,6 +192,7 @@ function SearchPage() {
   };
 
   const handleGoToDetail = (id) => {
+    handleIncreaseView(id);
     navigate(`/facility/${id}`);
   };
 
