@@ -10,6 +10,9 @@ import "./AdminInquiriesPage.css"
 import { FaSearch } from "react-icons/fa"
 import { MessageSquare, Trash2 } from "lucide-react"
 
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const InquiriesPage = () => {
   const navigate = useNavigate()
   const [inquiries, setInquiries] = useState([])
@@ -24,7 +27,7 @@ const InquiriesPage = () => {
       const token = localStorage.getItem("accessToken")
       if (!token) return navigate("/login")
       try {
-        const res = await fetch("http://localhost:8080/api/questions", {
+        const res = await fetch(`${API_BASE_URL}/questions`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -60,7 +63,7 @@ const InquiriesPage = () => {
     const token = localStorage.getItem("accessToken")
     if (!token) return navigate("/login")
     try {
-      const res = await fetch(`http://localhost:8080/api/questions/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/questions/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
