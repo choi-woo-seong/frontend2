@@ -15,6 +15,12 @@ import { useAuth } from "../hooks/use-auth" // ✅ 로그인 사용자 정보 �
 
 
 export default function ProductDetailPage() {
+   const formatDate = isoString =>
+    new Date(isoString).toLocaleString("ko-KR", {
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit"
+    });
+
   const { user } = useAuth() // ✅ 현재 로그인 사용자 정보
   
 
@@ -67,10 +73,37 @@ export default function ProductDetailPage() {
         stockQuantity: data.stockQuantity || 0,
       }))
 
-      // 리뷰 불러오기
-      const reviewRes = await fetch(`${process.env.REACT_APP_API_URL}/reviews/product/${id}`)
-      const reviews = await reviewRes.json()
-      setProduct(prev => ({ ...prev, reviews }))
+// 리뷰 불러오기
+const reviewRes = await fetch(
+  `${process.env.REACT_APP_API_URL}/reviews/product/${id}`, 
+  { headers: { Authorization: `Bearer ${token}` } }
+)
+const rawReviews = reviewRes.ok ? await reviewRes.json() : []
+
+// JSON 키가 camelCase 이므로, 그대로 꺼내 쓰거나 camelCase → camelCase 로 맵핑
+const reviews = rawReviews.map(r => ({
+  id:        r.id,
+  productId: r.productId,
+  userName:  r.userName,
+  rating:    r.rating,
+  content:   r.content,
+  createdAt: r.createdAt
+}))
+
+setProduct(prev => ({ ...prev, reviews }))
+
+      
+     // 내 문의 전체를 가져와서
+    const listRes = await fetch(
+      `${process.env.REACT_APP_API_URL}/questions/my`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    if (!listRes.ok) throw new Error("문의 목록 로드 실패")
+    const list = await listRes.json()
+    // productId가 현재 상품과 같은 것만 필터
+    const questions = list.filter(q => String(q.productId) === String(id))
+    setProduct(prev => ({ ...prev, questions }))
+
     } catch (err) {
       console.error("상품 로딩 실패:", err)
     } finally {
@@ -183,6 +216,7 @@ setProduct(prev => {
     questions: filtered,  // 배열 그대로 넣어줍니다
   };
 });
+
 
 
 
@@ -369,24 +403,26 @@ setProduct(prev => {
                   })()}
 
                   <div className="space-y-4 mb-4">
-                    {product.reviews.map(r => (
-                      <div key={r.id} className="border-b pb-4">
-                        <div className="flex items-center mb-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-3 w-3 ${
-                                i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                         <span className="text-sm ml-2">{r.userName}</span>
+           {product.reviews.map(r => (
+  <div key={r.id} className="border-b pb-4">
+    <div className="flex items-center mb-1">
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          className={`h-3 w-3 ${
+            i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+          }`}
+        />
+      ))}
+      <span className="text-sm ml-2">{r.userName}</span>  {/* 매핑된 userName */}
+      <span className="text-xs text-gray-500 ml-auto">
+        {formatDate(r.createdAt)}
+      </span>
+    </div>
+    <p className="text-sm">{r.content}</p>
+  </div>
+))}
 
-                          <span className="text-xs text-gray-500 ml-auto">{r.date}</span>
-                        </div>
-                        <p className="text-sm">{r.content}</p>
-                      </div>
-                    ))}
                   </div>
                 </>
               )}
@@ -447,10 +483,25 @@ setProduct(prev => {
             {product.questions.map(q => (
               <div key={q.id} className="border-b pb-4">
                 <div className="flex items-center mb-1">
-                  <span>{q.user}</span>
-                  <span className="text-xs text-gray-500 ml-auto">{q.date}</span>
+                   <span className="font-medium">{q.userId}</span>
+                  <span className="text-xs text-gray-500 ml-auto">{formatDate(q.createdAt)}</span>
                 </div>
                 <p className="text-sm">{q.content}</p>
+                 {/* — 답변이 있을 때만 보여주는 블록 추가 */}
+
+         {q.answer && (
+           <div className="mt-2 p-3 bg-gray-50 rounded">
+    <div className="flex items-center justify-between mb-1">
+      <h4 className="font-medium text-sm">답변</h4>
+      <span className="text-xs text-gray-500">
+        {formatDate(q.answer.createdAt)}
+      </span>
+    </div>
+    <p className="text-sm whitespace-pre-wrap">{q.answer.content}</p>
+  </div>
+         )}
+         {/* — 여기까지 */}
+
               </div>
             ))}
           </div>
