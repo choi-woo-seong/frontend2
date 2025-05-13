@@ -44,9 +44,11 @@ const AdminUserManagementPage = () => {
     fetchMembers();
   }, [token]);
 
-  const filteredMembers = members.filter((member) =>
-    member.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMembers = searchTerm
+  ? members.filter((member) =>
+      (member.name ?? "").toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  : members;
 
   const handleView = (member) => {
     setSelectedMember(member);
