@@ -209,33 +209,23 @@ function HomePage() {
             to={`/products/${product.id}`}
             className="product-card"
           >
-  <div className="home-product-image-box">
-  <img
-    src={product.images || "/images/placeholder.svg"}
-    alt={product.name}
-    className="home-product-image"
-  />
-  <button
-    className="add-cart-button"
-    onClick={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      addToCart(product);
-    }}
-  >
-    <ShoppingCart className="icon-tiny" />
-  </button>
-</div>
+    <div className="home-product-image-box">
+      <img
+        src={product.images || "/images/placeholder.svg"}
+        alt={product.name}
+        className="home-product-image"
+      />
+    </div>
 
-<div className="product-price-info">
-  <span className="price">
-    {product.discountPrice
-      ? parseInt(product.discountPrice).toLocaleString("ko-KR") + "원"
-      : product.price + "원"}
-  </span>
-  {product.discount && (
-    <span className="discount">{product.discount}</span>
-  )}
+        <div className="product-price-info">
+          <span className="price">
+            {product.discountPrice
+              ? parseInt(product.discountPrice).toLocaleString("ko-KR") + "원"
+              : product.price + "원"}
+          </span>
+          {product.discount && (
+            <span className="discount">{product.discount}</span>
+          )}
 </div>
 
           </Link>
