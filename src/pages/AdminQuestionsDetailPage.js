@@ -10,6 +10,9 @@ import "../styles/AdminInquiriesPage.css"
 import { ChevronLeft } from "lucide-react"
 import { Textarea } from "../components/ui/Textarea"
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+
 const AdminQuestionsDetailPage = () => {
   const navigate = useNavigate()
   const { id } = useParams()
@@ -23,7 +26,7 @@ const AdminQuestionsDetailPage = () => {
       const token = localStorage.getItem("accessToken")
       if (!token) return navigate("/login")
       try {
-        const res = await fetch(`http://localhost:8080/api/questions/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/questions/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -42,29 +45,35 @@ const AdminQuestionsDetailPage = () => {
   }, [id, navigate])
 
   const handleAnswerSubmit = async () => {
-    if (!answerContent.trim()) return alert("답변을 입력해주세요")
-    const token = localStorage.getItem("accessToken")
-    if (!token) return navigate("/login")
-    setIsSubmitting(true)
-    try {
-      const res = await fetch(`http://localhost:8080/api/questions/${id}/answer`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ content: answerContent }),
-      })
-      if (!res.ok) throw new Error("등록 실패")
-      const data = await res.json()
-      setQuestion({ ...question, answer: data, status: "answered" })
-      alert("답변이 등록되었습니다.")
-    } catch (err) {
-      console.error("답변 등록 실패:", err)
-    } finally {
-      setIsSubmitting(false)
-    }
+  if (!answerContent.trim()) return alert("답변을 입력해주세요")
+  const token = localStorage.getItem("accessToken")
+  if (!token) return navigate("/login")
+  setIsSubmitting(true)
+
+  try {
+    const method = question.answer ? "PUT" : "POST"  // ✅ 등록 vs 수정 구분
+
+    const res = await fetch(`${API_BASE_URL}/questions/${id}/answer`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content: answerContent }),
+    })
+
+    if (!res.ok) throw new Error("등록 실패")
+
+    const data = await res.json()
+    setQuestion({ ...question, answer: data, status: "answered" })
+    alert(question.answer ? "답변이 수정되었습니다." : "답변이 등록되었습니다.")
+    navigate("/admin/questions")
+  } catch (err) {
+    console.error("답변 등록/수정 실패:", err)
+  } finally {
+    setIsSubmitting(false)
   }
+}
 
   if (isLoading) {
     return <Layout><div className="admin-loading">로딩 중...</div></Layout>

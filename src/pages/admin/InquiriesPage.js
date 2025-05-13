@@ -197,15 +197,13 @@ const InquiriesPage = () => {
                       <td>{formatDate(inquiry.createdAt)}</td>
                       <td className="px-6 py-4">
                         <div className="flex justify-start items-center gap-5">
-                          {inquiry.status === "pending" && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleViewDetail(inquiry.id)}
-                            >
-                              <MessageSquare className="w-5 h-5 text-green-600" />
-                            </Button>
-                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewDetail(inquiry.id)}  
+                          >
+                            <MessageSquare className="w-5 h-5 text-green-600" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
