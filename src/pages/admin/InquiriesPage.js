@@ -10,6 +10,9 @@ import "./AdminInquiriesPage.css"
 import { FaSearch } from "react-icons/fa"
 import { MessageSquare, Trash2 } from "lucide-react"
 
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const InquiriesPage = () => {
   const navigate = useNavigate()
   const [inquiries, setInquiries] = useState([])
@@ -24,7 +27,7 @@ const InquiriesPage = () => {
       const token = localStorage.getItem("accessToken")
       if (!token) return navigate("/login")
       try {
-        const res = await fetch("http://localhost:8080/api/questions", {
+        const res = await fetch(`${API_BASE_URL}/questions`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -60,7 +63,7 @@ const InquiriesPage = () => {
     const token = localStorage.getItem("accessToken")
     if (!token) return navigate("/login")
     try {
-      const res = await fetch(`http://localhost:8080/api/questions/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/questions/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -194,15 +197,13 @@ const InquiriesPage = () => {
                       <td>{formatDate(inquiry.createdAt)}</td>
                       <td className="px-6 py-4">
                         <div className="flex justify-start items-center gap-5">
-                          {inquiry.status === "pending" && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleViewDetail(inquiry.id)}
-                            >
-                              <MessageSquare className="w-5 h-5 text-green-600" />
-                            </Button>
-                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewDetail(inquiry.id)}  
+                          >
+                            <MessageSquare className="w-5 h-5 text-green-600" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"

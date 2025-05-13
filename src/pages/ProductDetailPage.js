@@ -141,21 +141,59 @@ export default function ProductDetailPage() {
     }
   }
 
-  const handleQuestionSubmit = () => {
-    const newQuestion = {
-      id: product.questions.length + 1,
-userName: user?.username , // username 필드로 변경
+ const handleQuestionSubmit = () => {
+
+    (async () => {
+      try {
+        const token = localStorage.getItem("accessToken");        // 1) 질문 등록
+        const res = await fetch(
+          `${process.env.REACT_APP_API_URL}/questions`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              title: `${product.name} 문의`,
+              content: newQuestionContent,
+              productId: product.id
+            }),
+          }
+        );
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
+
+  // 2) 다시 내 질문 목록 가져오기
+const listRes = await fetch(
+  `${process.env.REACT_APP_API_URL}/questions/my`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+const list = await listRes.json();
+
+// productId 기준으로 필터링
+const filtered = list.filter(q => String(q.productId) === String(product.id));
+
+// state 업데이트
+setProduct(prev => {
+  if (!prev) return prev;
+  return {
+    ...prev,
+    questions: filtered,  // 배열 그대로 넣어줍니다
+  };
+});
 
 
-      content: newQuestionContent,
-      date: new Date().toISOString().split("T")[0]
-    }
-    setProduct({
-      ...product,
-      questions: [...product.questions, newQuestion]
-    })
-    setShowQuestionForm(false)
-    setNewQuestionContent("")
+
+
+        setShowQuestionForm(false);
+       setNewQuestionContent("");
+      } catch (err) {
+        console.error("문의 등록 실패:", err);
+        alert("문의 등록 중 오류가 발생했습니다.");
+      }
+    })();
   }
 
   if (loading) return <div className="container mx-auto px-4 py-4 animate-pulse">Loading...</div>
