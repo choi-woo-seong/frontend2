@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { ChevronLeft } from "lucide-react"
+
 import Layout from "../../components/Layout"
 import { Button } from "../../components/ui/Button"
 import { Input } from "../../components/ui/Input"
 import { Textarea } from "../../components/ui/Textarea"
 import { Label } from "../../components/ui/Label"
 import "../../styles/AdminNoticeCreatePage.css"
+
 
 
 
@@ -96,12 +99,19 @@ const handleSubmit = async (e) => {
   return (
     <Layout>
       <div className="admin-notice-create max-w-6xl mx-auto px-4">
-        <div className="admin-header">
-          <h1>공지사항 작성</h1>
-          <Button onClick={() => navigate("/notices")} variant="outline">
-              목록으로 돌아가기
-            </Button>
-        </div>
+     <div className="admin-header flex items-center justify-between mb-6">
+         <div className="flex items-center">
+           <Link
+             to="/notices"
+             className="flex items-center text-gray-600 hover:text-gray-800"
+           >
+             <ChevronLeft className="h-5 w-5" />
+          
+           </Link>
+           <h1 className="ml-4 text-2xl font-semibold">공지사항 작성</h1>
+         </div>
+        
+       </div>
 
         <form onSubmit={handleSubmit} className="notice-form">
           <div className="form-group">
