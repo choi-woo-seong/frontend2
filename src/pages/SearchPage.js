@@ -1,4 +1,3 @@
-// src/pages/SearchPage.jsx
 import { useState, useEffect } from "react";
 import {
   Await,
@@ -92,6 +91,26 @@ function SearchPage() {
     selectedSort,
   ]);
 
+  // 찜목록 가져오기
+  useEffect(() => {
+  const fetchBookmarks = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const likedIds = res.data.map((item) => item.facilityId); // 🔥 id만 뽑아
+      setLikedFacilities(likedIds); // ✅ 상태 반영
+    } catch (err) {
+      console.error("찜한 시설 불러오기 실패", err);
+    }
+  };
+
+  fetchBookmarks();
+}, []); 
+
   const fetchFacilities = async () => {
     setLoading(true);
     try {
@@ -159,6 +178,36 @@ function SearchPage() {
     }
   };
 
+  // click 이벤트 (찜하기)
+  const handleFavorites = async (id) => {
+    const isLiked = likedFacilities.includes(id);
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      if (isLiked) {
+        await axios.delete(`${API_BASE_URL}/bookmarks/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setLikedFacilities((prev) => prev.filter((fid) => fid !== id));
+      } else {
+        await axios.post(
+          `${API_BASE_URL}/bookmarks/${id}`,
+          {}, // POST body 없음
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setLikedFacilities((prev) => [...prev, id]);
+      }
+    } catch (error) {
+      console.error("찜 토글 에러:", error);
+    }
+  };
+
   const filtered = facilities.filter((f) => {
     if (
       searchKeyword &&
@@ -184,12 +233,6 @@ function SearchPage() {
 
     return true;
   });
-
-  const handleLikeToggle = (id) => {
-    setLikedFacilities((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
-    );
-  };
 
   const handleGoToDetail = (id) => {
     handleIncreaseView(id);
@@ -330,10 +373,11 @@ function SearchPage() {
                   </div>
                   <div className="facility-image-container">
                     <img src={fac.imgSrc} alt={fac.name} />
+
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleLikeToggle(fac.id);
+                        handleFavorites(fac.id);
                       }}
                       className="like-button"
                     >
@@ -343,6 +387,7 @@ function SearchPage() {
                         <FaRegHeart />
                       )}
                     </button>
+                    
                   </div>
                 </div>
               </li>

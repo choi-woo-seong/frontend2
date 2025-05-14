@@ -51,18 +51,49 @@ export default function FacilityDetailPage() {
     fetchFacility();
   }, [id]);
 
-  const handleToggleFavorite = async () => {
+  // 찜목록 가져오기
+useEffect(() => {
+  const fetchBookmarks = async () => {
     try {
-      if (isFavorite) {
-        await axios.delete(`/api/users/favorites/${id}`);
-      } else {
-        await axios.post("/api/users/favorites", { facilityId: id });
-      }
-      setIsFavorite(!isFavorite);
-    } catch {
-      alert("즐겨찾기 처리 중 오류가 발생했습니다.");
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const likedIds = res.data.map((item) => item.facilityId);
+      setIsFavorite(likedIds.includes(Number(id))); // ✅ 현재 facilityId 기준 찜 여부
+    } catch (err) {
+      console.error("찜한 시설 불러오기 실패", err);
     }
   };
+
+  fetchBookmarks();
+}, [id]);
+
+
+  // click 이벤트 (찜하기)
+const handleToggleFavorite = async () => {
+  const token = localStorage.getItem("accessToken");
+  try {
+    if (isFavorite) {
+      await axios.delete(`${API_BASE_URL}/bookmarks/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIsFavorite(false);
+    } else {
+      await axios.post(
+        `${API_BASE_URL}/bookmarks/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setIsFavorite(true);
+    }
+  } catch (err) {
+    console.error("찜 토글 에러", err);
+  }
+};
+
 
   if (loading) return <div className="p-4 text-center">로딩 중...</div>;
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
@@ -109,12 +140,16 @@ export default function FacilityDetailPage() {
   )}
 
   {/* 즐겨찾기 버튼 */}
-  <button onClick={handleToggleFavorite} className="favorite-button absolute top-3 right-3 z-10">
-    <Heart
-      className={isFavorite ? "text-red-500" : "text-gray-400"}
-      fill={isFavorite ? "currentColor" : "none"}
-    />
-  </button>
+<button
+  onClick={handleToggleFavorite}
+  className="favorite-button absolute top-3 right-3 z-10"
+>
+  <Heart
+    className={isFavorite ? "text-red-500" : "text-gray-400"}
+    fill={isFavorite ? "currentColor" : "none"}
+  />
+</button>
+
 </div>
 
 
