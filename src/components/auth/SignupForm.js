@@ -81,12 +81,38 @@ function SignupForm() {
   }
 
   const handleSendVerification = async () => {
-    // 이메일 인증코드 전송 로직 (추후 구현)
+  console.log("[SEND] 이메일 인증 요청 시작");
+
+  try {
+    const res = await axios.post(`${API_BASE_URL}/email/send`, {
+      email: formData.email,
+    });
+
+    console.log("[SEND] 응답:", res.data);
+    alert("인증 코드가 전송되었습니다.");
+  } catch (err) {
+    console.error("[SEND] 인증 코드 전송 실패:", err);
+    alert("메일 전송 실패");
   }
+};
 
   const handleVerifyEmail = async () => {
-    setCurrentStep(SignupStep.Password)
+  try {
+    const response = await axios.post(`${API_BASE_URL}/email/verify`, {
+      email: formData.email,
+      code: verificationCode,
+    });
+
+    if (response.status === 200) {
+      setCurrentStep(SignupStep.Password);
+    } else {
+      alert("인증 실패. 다시 시도해주세요.");
+    }
+  } catch (error) {
+    console.error("인증 실패:", error);
+    alert("인증 코드가 일치하지 않거나 만료되었습니다.");
   }
+};
 
   const handleNextStep = async () => {
     if (currentStep === SignupStep.BasicInfo) {
