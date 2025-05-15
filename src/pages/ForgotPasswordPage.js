@@ -22,7 +22,7 @@ function ForgotPasswordPage() {
   const [isCodeSent, setIsCodeSent] = useState(false)
 
   const handleEmailSubmit = async (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (!email) {
       setError("이메일을 입력해주세요.")
       return
@@ -106,7 +106,6 @@ function ForgotPasswordPage() {
 
   return (
     <div className="forgot-container flex flex-col min-h-screen">
-      {/* 헤더 */}
       <header className="forgot-header bg-white border-b">
         <div className="flex items-center px-4 py-3">
           <Link to="/" className="mr-4">
@@ -116,7 +115,6 @@ function ForgotPasswordPage() {
         </div>
       </header>
 
-      {/* 메인 */}
       <main className="forgot-main flex-grow flex items-center justify-center p-4">
         <div className="forgot-card w-full max-w-md">
           {error && (
@@ -183,7 +181,7 @@ function ForgotPasswordPage() {
                   type="button"
                   onClick={() => {
                     setIsCodeSent(false)
-                    handleEmailSubmit({ preventDefault: () => {} })
+                    handleEmailSubmit()
                   }}
                   className="hover:underline"
                 >
