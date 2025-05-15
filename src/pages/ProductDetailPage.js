@@ -51,28 +51,33 @@ export default function ProductDetailPage() {
       )
       if (!res.ok) throw new Error("상품 정보 로드 실패")
       const data = await res.json()
-      setProduct(prev => ({
-        ...prev,
-        id: data.id,
-        name: data.name,
-        price: data.discountPrice
-          ? data.discountPrice.toLocaleString("ko-KR") + "원"
-          : data.price.toLocaleString("ko-KR") + "원",
-        originalPrice: data.price.toLocaleString("ko-KR") + "원",
-        discount: data.discountPrice
-          ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
-          : null,
-        description: data.description,
-        images: data.images || ["/images/default-product.png"],
-        specifications: data.specifications || [],
-        rating: data.rating || 0,
-        reviewCount: data.reviewCount || 0,
-        category: data.categoryName || [],
-        features: data.features || [],
-        manufacturer: data.manufacturer || [],
-        originName: data.originName || [],
-        stockQuantity: data.stockQuantity || 0,
-      }))
+setProduct(prev => ({
+  ...prev,
+  id: data.id,
+  name: data.name,
+  price: data.discountPrice
+    ? data.discountPrice.toLocaleString("ko-KR") + "원"
+    : data.price.toLocaleString("ko-KR") + "원",
+  originalPrice: data.price.toLocaleString("ko-KR") + "원",
+  discount: data.discountPrice
+    ? Math.round((1 - data.discountPrice / data.price) * 100) + "%"
+    : null,
+  description: data.description,
+  images: data.images && data.images.length > 0
+    ? data.images
+    : ["/images/default-product.png"],
+  specifications: data.specifications || [],
+  rating: data.rating || 0,
+  reviewCount: data.reviewCount || 0,
+  category: data.categoryName || "",
+  features: data.features || [],
+  manufacturer: data.manufacturer || "",
+  originName: data.originName || "",
+  stockQuantity: data.stockQuantity || 0,
+  reviews: [],     // ✅ 초기화
+  questions: [],   // ✅ 초기화
+}))
+
 
       // 리뷰 불러오기
       const reviewRes = await fetch(
@@ -317,12 +322,13 @@ export default function ProductDetailPage() {
               <h3 className="font-medium mb-2">제품 사양</h3>
               <table className="w-full text-sm">
                 <tbody>
-                  {product.specifications.map((spec, idx) => (
-                    <tr key={idx} className="border-b">
-                      <td className="py-2 font-medium w-1/5">{spec.label}</td>
-                      <td className="py-2">{spec.value}</td>
-                    </tr>
-                  ))}
+                {(product.specifications || []).map((spec, idx) => (
+  <tr key={idx} className="border-b">
+    <td className="py-2 font-medium w-1/5">{spec.label}</td>
+    <td className="py-2">{spec.value}</td>
+  </tr>
+))}
+
                 </tbody>
               </table>
               <h3 className="font-medium mb-2">카테고리</h3>
@@ -352,11 +358,12 @@ export default function ProductDetailPage() {
               <h3 className="font-medium mb-2">제품 특징</h3>
               <table className="w-full text-sm">
                 <tbody>
-                  {product.features.map((features, idx) => (
-                    <tr key={idx} className="border-b">
-                      <td className="py-2">{features}</td>
-                    </tr>
-                  ))}
+                 {(product.features || []).map((features, idx) => (
+  <tr key={idx} className="border-b">
+    <td className="py-2">{features}</td>
+  </tr>
+))}
+
                 </tbody>
               </table>
             </div>
@@ -364,7 +371,8 @@ export default function ProductDetailPage() {
 
           {activeTab === "reviews" && (
             <>
-              {product.reviews.length === 0 ? (
+            {(product.reviews || []).length === 0 ? (
+
                 <div className="text-gray-500 text-sm mb-4">등록된 리뷰가 없습니다.</div>
               ) : (
                 <>
@@ -462,7 +470,8 @@ export default function ProductDetailPage() {
           )}
   {activeTab === "qna" && (
         <>
-          {product.questions.length === 0 && (
+        {(product.questions || []).length === 0 && (
+
             <div className="text-gray-500 text-sm mb-4">등록된 문의가 없습니다.</div>
           )}
 
