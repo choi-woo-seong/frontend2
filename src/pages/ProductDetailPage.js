@@ -401,28 +401,28 @@ setProduct(prev => ({
                     )
                   })()}
 
-                  <div className="space-y-4 mb-4">
-           {product.reviews.map(r => (
-  <div key={r.id} className="border-b pb-4">
-    <div className="flex items-center mb-1">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={`h-3 w-3 ${
-            i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-          }`}
-        />
-      ))}
-      <span className="text-sm ml-2">{r.userName}</span>  {/* 매핑된 userName */}
-      <span className="text-xs text-gray-500 ml-auto">
-        {formatDate(r.createdAt)}
-      </span>
+           <div className="space-y-4 mb-4">
+  {product.reviews.map(r => (
+    <div key={r.id} className="border-b pb-4">
+      <div className="flex items-center mb-1">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={`h-4 w-4 ${
+              i < r.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+            }`}
+          />
+        ))}
+        <span className="text-sm font-medium ml-2">{r.userName}</span>
+        <span className="text-xs text-gray-500 ml-auto">
+          {formatDate(r.createdAt)}
+        </span>
+      </div>
+      <p className="text-sm whitespace-pre-wrap">{r.content}</p>
     </div>
-    <p className="text-sm">{r.content}</p>
-  </div>
-))}
+  ))}
+</div>
 
-                  </div>
                 </>
               )}
 
