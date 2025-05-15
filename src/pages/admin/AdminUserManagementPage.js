@@ -68,7 +68,7 @@ const AdminUserManagementPage = () => {
       alert("회원 탈퇴 처리에 실패했습니다.");
     }
   };
-
+  console.log(filteredMembers)
   return (
     <Layout>
       <div className="admin-facilities-list max-w-6xl mx-auto px-4">

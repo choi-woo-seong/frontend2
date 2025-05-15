@@ -191,6 +191,23 @@ function SignupForm() {
             </p>
           )}
         </div>
+
+        {/* 아이디 */}
+        <div className="space-y-2">
+          <Label>이름</Label>
+          <Input
+            name="name"
+            placeholder="이름 입력"
+            value={formData.name}
+            onChange={handleChange}
+            className={errors.name ? "border-red-500" : ""}
+          />
+          {errors.userId && (
+            <p className="text-sm text-red-500 mt-1 flex items-center">
+              <AlertCircle className="w-4 h-4 mr-1" /> {errors.userId}
+            </p>
+          )}
+        </div>
   
         {/* 이메일 */}
         <div className="space-y-2">
