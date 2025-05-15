@@ -1,11 +1,13 @@
+// src/pages/FacilityDetailPage.js
 "use client";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import { useAuth } from "../hooks/use-auth";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import {
   Tabs,
@@ -13,7 +15,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "../components/ui/Tabs";
-import Badge from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Star, ChevronLeft, Heart, Phone } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -23,22 +24,26 @@ import "../styles/FacilityDetailPage.css";
 export default function FacilityDetailPage() {
   const API_BASE_URL = process.env.REACT_APP_API_URL;
   const { id } = useParams();
-  const navigate = useNavigate();
-
+  const { user } = useAuth();
+  const [facilityReviews, setFacilityReviews] = useState([]);
+  const [newReviewRating, setNewReviewRating] = useState(1);
+  const [newReviewContent, setNewReviewContent] = useState("");
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newQuestionContent, setNewQuestionContent] = useState("");
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
+  const [questions, setQuestions] = useState([]);
   const [facility, setFacility] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
-
   const dummyCostImage = "/images/sample-cost-info.png";
 
   useEffect(() => {
     const fetchFacility = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${API_BASE_URL}/facility/${id}`); // ✅ 실제 API 호출
-        console.log("디테일 응답 데이터 확인:", res.data); // 🔥 확인 포인트
+        const res = await axios.get(`${API_BASE_URL}/facility/${id}`);
         setFacility(res.data);
       } catch (err) {
         console.error(err);
@@ -47,61 +52,137 @@ export default function FacilityDetailPage() {
         setLoading(false);
       }
     };
-
     fetchFacility();
   }, [id]);
 
-  // 찜목록 가져오기
-useEffect(() => {
-  const fetchBookmarks = async () => {
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/facility-reviews/${id}`);
+        setFacilityReviews(res.data);
+      } catch (err) {
+        console.error("리뷰 불러오기 실패", err);
+      }
+    };
+    fetchReviews();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const likedIds = res.data.map((item) => item.facilityId);
+        setIsFavorite(likedIds.includes(Number(id)));
+      } catch (err) {
+        console.error("찜한 시설 불러오기 실패", err);
+      }
+    };
+    fetchBookmarks();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/questions/facility/${id}`);
+        setQuestions(res.data);
+      } catch (err) {
+        console.error("문의 불러오기 실패", err);
+      }
+    };
+    fetchQuestions();
+  }, [id]);
+
+  const handleQuestionSubmit = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const likedIds = res.data.map((item) => item.facilityId);
-      setIsFavorite(likedIds.includes(Number(id))); // ✅ 현재 facilityId 기준 찜 여부
-    } catch (err) {
-      console.error("찜한 시설 불러오기 실패", err);
+      const response = await axios.post(
+        `${API_BASE_URL}/questions`,
+        {
+          content: newQuestionContent,
+          facilityId: Number(id),
+          title: `시설(${facility.name}) 문의`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setQuestions((prev) => [...prev, response.data]);
+      setNewQuestionContent("");
+      setShowQuestionForm(false);
+    } catch (error) {
+      console.error("❌ 문의 등록 실패:", error);
+      if (error.response) {
+        alert(`문의 등록 실패: ${error.response.data.message || '알 수 없는 오류'}`);
+      } else {
+        alert("네트워크 오류 또는 서버에 접근할 수 없습니다.");
+      }
     }
   };
 
-  fetchBookmarks();
-}, [id]);
-
-
-  // click 이벤트 (찜하기)
-const handleToggleFavorite = async () => {
-  const token = localStorage.getItem("accessToken");
-  try {
-    if (isFavorite) {
-      await axios.delete(`${API_BASE_URL}/bookmarks/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setIsFavorite(false);
-    } else {
-      await axios.post(
-        `${API_BASE_URL}/bookmarks/${id}`,
-        {},
-        {
+  const handleToggleFavorite = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      if (isFavorite) {
+        await axios.delete(`${API_BASE_URL}/bookmarks/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsFavorite(false);
+      } else {
+        await axios.post(`${API_BASE_URL}/bookmarks/${id}`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsFavorite(true);
+      }
+    } catch (err) {
+      console.error("찜 토글 에러", err);
+    }
+  };
+
+  const handleReviewSubmit = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `${API_BASE_URL}/facility-reviews`,
+        {
+          facilityId: Number(id),
+          rating: newReviewRating,
+          content: newReviewContent,
+          userName: user?.name || "익명",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
-      setIsFavorite(true);
+      setFacilityReviews([...facilityReviews, response.data]);
+      setShowReviewForm(false);
+      setNewReviewRating(1);
+      setNewReviewContent("");
+    } catch (error) {
+      console.error("리뷰 등록 실패", error);
+      alert("리뷰 등록에 실패했습니다.");
     }
-  } catch (err) {
-    console.error("찜 토글 에러", err);
-  }
-};
+  };
 
+  const avgRating = facilityReviews.length > 0
+    ? (facilityReviews.reduce((sum, r) => sum + r.rating, 0) / facilityReviews.length).toFixed(1)
+    : 0;
 
   if (loading) return <div className="p-4 text-center">로딩 중...</div>;
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
-  if (!facility)
-    return <div className="p-4 text-center">시설 정보를 찾을 수 없습니다.</div>;
+  if (!facility) return <div className="p-4 text-center">시설 정보를 찾을 수 없습니다.</div>;
 
   return (
-    <div className="facility-detail-container">
+   <div className="facility-detail-container overflow-y-auto">
+
       {/* 뒤로가기 */}
       <div className="back-button justify-start">
         <Link to="/search" className="flex items-center text-gray-500">
@@ -248,17 +329,179 @@ const handleToggleFavorite = async () => {
         </TabsContent>
 
         {/* 리뷰 탭 */}
-        <TabsContent value="review" className="bg-white rounded-lg shadow p-6">
-          <p>리뷰 기능은 준비중입니다.</p>
-        </TabsContent>
+      <TabsContent value="review" className="bg-white rounded-lg shadow p-6 overflow-auto">
 
-        {/* 문의 탭 */}
-        <TabsContent
-          value="question"
-          className="bg-white rounded-lg shadow p-6"
+        <div className="flex items-center mb-4">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-5 w-5 mr-1 ${
+                i < Math.round(avgRating)
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+          <span className="ml-2 text-lg font-medium">{avgRating}</span>
+          <span className="ml-1 text-gray-500">({facilityReviews.length}개)</span>
+        </div>
+
+        <div className="space-y-4 mb-4">
+          {facilityReviews.map((r) => (
+            <div key={r.id} className="border-b pb-4">
+              <div className="flex items-center mb-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 ${
+                      i < r.rating
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+                <span className="text-sm ml-2 font-medium">{r.userName}</span>
+                <span className="text-xs text-gray-500 ml-auto">
+                  {new Date(r.createdAt).toLocaleString("ko-KR", {
+                    year: "numeric", month: "2-digit", day: "2-digit",
+                    hour: "2-digit", minute: "2-digit"
+                  })}
+                </span>
+              </div>
+              <p className="text-sm whitespace-pre-wrap">{r.content}</p>
+            </div>
+          ))}
+        </div>
+
+        {showReviewForm ? (
+          <div className="p-4 mb-4 bg-gray-50 rounded">
+            <h4 className="font-medium mb-2">리뷰 작성하기</h4>
+            <div className="flex mb-2">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`cursor-pointer h-5 w-5 ${
+                    i < newReviewRating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                  onClick={() => setNewReviewRating(i + 1)}
+                />
+              ))}
+            </div>
+            <textarea
+              className="w-full border p-2 mb-2 rounded"
+              rows={3}
+              placeholder="리뷰를 작성하세요"
+              value={newReviewContent}
+              onChange={(e) => setNewReviewContent(e.target.value)}
+            />
+            <div className="flex gap-2">
+              <Button
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+                onClick={handleReviewSubmit}
+              >
+                등록
+              </Button>
+              <Button
+                className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
+                onClick={() => setShowReviewForm(false)}
+              >
+                취소
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+            onClick={() => setShowReviewForm(true)}
+          >
+            리뷰 작성
+          </Button>
+        )}
+      </TabsContent>
+    
+
+<TabsContent value="question" className="bg-white rounded-lg shadow p-6 overflow-auto">
+  {questions.filter(q => q.userId === user?.id).length > 0 ? (
+    <div className="space-y-4 mb-4">
+      {questions
+        .filter(q => q.userId === user?.id)
+        .map((q) => (
+          <div key={q.id} className="border-b pb-4">
+            <div className="flex items-center mb-1">
+              <span className="text-sm font-medium">{q.userId}</span>
+              <span className="text-xs text-gray-500 ml-auto">
+                {new Date(q.createdAt).toLocaleString("ko-KR", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+            <p className="text-sm whitespace-pre-wrap">{q.content}</p>
+
+            {q.answer && (
+              <div className="mt-2 p-3 bg-gray-50 rounded">
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="font-medium text-sm">답변</h4>
+                  <span className="text-xs text-gray-500">
+                    {new Date(q.answer.createdAt).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <p className="text-sm whitespace-pre-wrap">{q.answer.content}</p>
+              </div>
+            )}
+          </div>
+        ))}
+    </div>
+  ) : (
+    <div className="text-gray-500 text-sm mb-4">등록된 문의가 없습니다.</div>
+  )}
+
+  {/* 문의 작성 폼 */}
+  {showQuestionForm ? (
+    <div className="p-4 mb-4 bg-gray-50 rounded">
+      <h4 className="font-medium mb-2">문의 작성하기</h4>
+      <textarea
+        className="w-full border p-2 mb-2 rounded"
+        rows={3}
+        placeholder="문의 내용을 입력하세요"
+        value={newQuestionContent}
+        onChange={(e) => setNewQuestionContent(e.target.value)}
+      />
+      <div className="flex gap-2">
+        <Button
+          className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2"
+          onClick={handleQuestionSubmit}
         >
-          <p>문의 기능은 준비중입니다.</p>
-        </TabsContent>
+          등록
+        </Button>
+        <Button
+          className="border border-gray-300 text-gray-700 rounded px-4 py-2 hover:bg-gray-100"
+          onClick={() => setShowQuestionForm(false)}
+        >
+          취소
+        </Button>
+      </div>
+    </div>
+  ) : (
+    <Button
+      className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+      onClick={() => setShowQuestionForm(true)}
+    >
+      문의 작성
+    </Button>
+  )}
+</TabsContent>
+
+
       </Tabs>
 
       {/* 전화 버튼 */}
