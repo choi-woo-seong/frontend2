@@ -191,7 +191,12 @@ const InquiriesPage = () => {
                 <tbody>
                   {currentInquiries.map((inquiry) => (
                     <tr key={inquiry.id} className="h-16">
-                      <td className="inquiry-title">{inquiry.title}</td>
+                      <td className="inquiry-title">
+                        {inquiry.title}
+                        <div className="text-xs text-gray-400">
+                          ({inquiry.targetType === 'product' ? '상품' : inquiry.targetType === 'facility' ? '시설' : '기타'}: {inquiry.targetName})
+                        </div>
+                      </td>
                       <td>{inquiry.userName}</td>
                       <td>{getStatusBadge(inquiry.status)}</td>
                       <td>{formatDate(inquiry.createdAt)}</td>
