@@ -13,26 +13,30 @@ import Layout from "../components/Layout"
 import RecommendedSection from "../components/RecommendedSection"
 import { useAuth } from "../hooks/use-auth" // ✅ 로그인 사용자 정보 사용
 
+
+
+
 export default function ProductDetailPage() {
   const formatDate = isoString =>
     new Date(isoString).toLocaleString("ko-KR", {
       year: "numeric", month: "2-digit", day: "2-digit",
       hour: "2-digit", minute: "2-digit"
     })
-
-  const { user } = useAuth() // ✅ 현재 로그인 사용자 정보
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [quantity, setQuantity] = useState(1)
-  const [activeTab, setActiveTab] = useState("description")
-
-  const [showReviewForm, setShowReviewForm] = useState(false)
-  const [newReviewContent, setNewReviewContent] = useState("")
-  const [newReviewRating, setNewReviewRating] = useState(1)
-
-  const [showQuestionForm, setShowQuestionForm] = useState(false)
-  const [newQuestionContent, setNewQuestionContent] = useState("")
+    
+    const { user } = useAuth() // ✅ 현재 로그인 사용자 정보
+    const { id } = useParams()
+    const [product, setProduct] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [quantity, setQuantity] = useState(1)
+    const [activeTab, setActiveTab] = useState("description")
+    
+    const [showReviewForm, setShowReviewForm] = useState(false)
+    const [newReviewContent, setNewReviewContent] = useState("")
+    const [newReviewRating, setNewReviewRating] = useState(1)
+    
+    const [showQuestionForm, setShowQuestionForm] = useState(false)
+    const [newQuestionContent, setNewQuestionContent] = useState("")
+    const hasToken = !!localStorage.getItem("accessToken");
 
   const fetchProduct = async () => {
     try {
@@ -160,7 +164,7 @@ setProduct(prev => ({
           },
           body: JSON.stringify({
             productId: product.id,
-            userName:  user?.user_name || " ",
+            userName:  user?.user_name || "익명",
             rating:    newReviewRating,
             content:   newReviewContent,
           })
@@ -460,11 +464,18 @@ setProduct(prev => ({
                 </div>
               ) : (
                 <Button
-                  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
-                  onClick={() => setShowReviewForm(true)}
-                >
-                  리뷰 작성
-                </Button>
+  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+  onClick={() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("리뷰 작성은 로그인 후 이용 가능합니다.");
+      return;
+    }
+    setShowReviewForm(true);
+  }}
+>
+  리뷰 작성
+</Button>
               )}
             </>
           )}
@@ -529,11 +540,18 @@ setProduct(prev => ({
             </div>
           ) : (
             <Button
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
-              onClick={() => setShowQuestionForm(true)}
-            >
-              문의 작성
-            </Button>
+            className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+            onClick={() => {
+              const token = localStorage.getItem("accessToken");
+              if (!token) {
+                alert("문의 작성은 로그인 후 이용 가능합니다.");
+                return;
+              }
+              setShowQuestionForm(true);
+            }}
+          >
+            문의 작성
+          </Button>
           )}
         </>
       )}

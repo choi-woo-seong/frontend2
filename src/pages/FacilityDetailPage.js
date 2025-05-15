@@ -36,6 +36,7 @@ export default function FacilityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState("info");
   const dummyCostImage = "/images/sample-cost-info.png";
 
@@ -56,16 +57,40 @@ export default function FacilityDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/facility-reviews/${id}`);
-        setFacilityReviews(res.data);
-      } catch (err) {
-        console.error("리뷰 불러오기 실패", err);
-      }
-    };
-    fetchReviews();
-  }, [id]);
+  const fetchCurrentUser = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+
+      const res = await axios.get(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setCurrentUser(res.data); // userId, name 등 포함된 객체
+    } catch (error) {
+      console.error("현재 사용자 정보를 불러오는 데 실패했습니다:", error);
+    }
+  };
+
+  fetchCurrentUser();
+}, []);
+
+ useEffect(() => {
+  const fetchReviews = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/facility-reviews/${id}`);
+      const data = res.data;
+      setFacilityReviews(Array.isArray(data) ? data : []); // ⬅ 안전 처리
+    } catch (err) {
+      console.error("리뷰 불러오기 실패", err);
+      setFacilityReviews([]); // ⬅ 실패해도 배열로 유지
+    }
+  };
+  fetchReviews();
+}, [id]);
+
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -92,6 +117,7 @@ export default function FacilityDetailPage() {
         console.error("문의 불러오기 실패", err);
       }
     };
+    
     fetchQuestions();
   }, [id]);
 
@@ -180,45 +206,49 @@ export default function FacilityDetailPage() {
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
   if (!facility) return <div className="p-4 text-center">시설 정보를 찾을 수 없습니다.</div>;
 
-  return (
-   <div className="facility-detail-container overflow-y-auto">
 
-      {/* 뒤로가기 */}
-      <div className="back-button justify-start">
-        <Link to="/search" className="flex items-center text-gray-500">
-          <ChevronLeft className="h-5 w-5" />
-          <span>시설 목록</span>
-        </Link>
-      </div>
+console.log(questions)
+console.log(user)
+ return (
+  <div className="container mx-auto px-4 py-4">
 
-      {/* 이미지 */}
-     <div className="image-container relative">
-  {facility.imageUrls?.length > 0 ? (
-    <Swiper
-      modules={[Navigation]}
-      navigation={true}
-      spaceBetween={10}
-      slidesPerView={1}
-      loop={true}
-      className="rounded-lg"
-    >
-      {facility.imageUrls.map((url, index) => (
-        <SwiperSlide key={index}>
-          <img
-            src={url}
-            alt={`시설 이미지 ${index + 1}`}
-            className="w-full h-64 object-cover rounded-lg"
-          />
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  ) : (
-    <img
-      src="/placeholder.svg"
-      alt="기본 이미지"
-      className="w-full h-64 object-cover rounded-lg"
-    />
-  )}
+    {/* 뒤로가기 */}
+    <div className="flex items-center mt-4 mb-4">
+      <Link to="/search" className="flex items-center text-gray-500">
+        <ChevronLeft className="h-5 w-5" />
+        <span className="text-lg font-semibold ml-1">시설 목록</span>
+      </Link>
+    </div>
+
+    {/* 이미지 */}
+    <div className="image-container relative">
+      {facility.imageUrls?.length > 0 ? (
+        <Swiper
+          modules={[Navigation]}
+          navigation={true}
+          spaceBetween={10}
+          slidesPerView={1}
+          loop={true}
+          className="rounded-lg"
+        >
+          {facility.imageUrls.map((url, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={url}
+                alt={`시설 이미지 ${index + 1}`}
+                className="w-full h-64 object-cover rounded-lg"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <img
+          src="/placeholder.svg"
+          alt="기본 이미지"
+          className="w-full h-64 object-cover rounded-lg"
+        />
+      )}
+
 
   {/* 즐겨찾기 버튼 */}
 <button
@@ -411,20 +441,27 @@ export default function FacilityDetailPage() {
           </div>
         ) : (
           <Button
-            className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
-            onClick={() => setShowReviewForm(true)}
-          >
-            리뷰 작성
-          </Button>
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+              onClick={() => {
+                const token = localStorage.getItem("accessToken");
+                if (!token) {
+                  alert("리뷰 작성은 로그인 후 이용 가능합니다.");
+                  return;
+                }
+                setShowReviewForm(true);
+              }}
+            >
+              리뷰 작성
+            </Button>
+
         )}
       </TabsContent>
     
-
 <TabsContent value="question" className="bg-white rounded-lg shadow p-6 overflow-auto">
-  {questions.filter(q => q.userId === user?.id).length > 0 ? (
+  {questions.filter(q => q.userId === currentUser?.userId).length > 0 ? (
     <div className="space-y-4 mb-4">
       {questions
-        .filter(q => q.userId === user?.id)
+        .filter(q => q.userId === currentUser?.userId)
         .map((q) => (
           <div key={q.id} className="border-b pb-4">
             <div className="flex items-center mb-1">
@@ -492,16 +529,22 @@ export default function FacilityDetailPage() {
       </div>
     </div>
   ) : (
-    <Button
-      className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
-      onClick={() => setShowQuestionForm(true)}
-    >
-      문의 작성
-    </Button>
+<Button
+  className="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 text-sm"
+  onClick={() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("문의 작성은 로그인 후 이용 가능합니다.");
+      return;
+    }
+    setShowQuestionForm(true);
+  }}
+>
+  문의 작성
+</Button>
+
   )}
 </TabsContent>
-
-
       </Tabs>
 
       {/* 전화 버튼 */}
