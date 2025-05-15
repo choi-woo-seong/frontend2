@@ -9,6 +9,8 @@ import { Label } from "../components/ui/Label"
 import axios from "axios"
 import '../styles/ForgotPassword.css'
 
+const API_BASE_URL = process.env.REACT_APP_API_URL
+
 function ForgotPasswordPage() {
   const [step, setStep] = useState(1)
   const [email, setEmail] = useState("")
@@ -28,7 +30,10 @@ function ForgotPasswordPage() {
     setIsLoading(true)
     setError("")
     try {
-      const response = await axios.post("/api/auth/forgot-password", { email })
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/forgot-password`,
+        { email }
+      )
       if (response.data.success) {
         setIsCodeSent(true)
         setStep(2)
@@ -52,10 +57,10 @@ function ForgotPasswordPage() {
     setIsLoading(true)
     setError("")
     try {
-      const response = await axios.post("/api/auth/verify-reset-code", {
-        email,
-        code: verificationCode,
-      })
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/verify-reset-code`,
+        { email, code: verificationCode }
+      )
       if (response.data.valid) {
         setStep(3)
       } else {
@@ -82,11 +87,10 @@ function ForgotPasswordPage() {
     setIsLoading(true)
     setError("")
     try {
-      const response = await axios.post("/api/auth/reset-password", {
-        email,
-        code: verificationCode,
-        newPassword,
-      })
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/reset-password`,
+        { email, code: verificationCode, newPassword }
+      )
       if (response.data.success) {
         setStep(4)
       } else {
@@ -155,7 +159,9 @@ function ForgotPasswordPage() {
           {step === 2 && (
             <form onSubmit={handleVerifyCode} className="forgot-form">
               <h2 className="text-xl font-semibold mb-4">인증 코드 확인</h2>
-              <p className="text-sm text-gray-600 mb-4">{email}로 전송된 인증 코드를 입력해주세요.</p>
+              <p className="text-sm text-gray-600 mb-4">
+                {email}로 전송된 인증 코드를 입력해주세요.
+              </p>
 
               <div className="space-y-2">
                 <Label htmlFor="verificationCode">인증 코드</Label>
