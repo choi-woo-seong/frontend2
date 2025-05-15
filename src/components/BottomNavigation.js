@@ -13,7 +13,7 @@ function BottomNavigation() {
 
   useEffect(() => {
     fetchFavorites();
-  }, [favorites]);
+  }, []);
 
   // 찜한 목록 개수 가져오기
   const fetchFavorites = async () => {
