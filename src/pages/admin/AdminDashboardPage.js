@@ -160,6 +160,11 @@ const AdminDashboardPage = () => {
       </Layout>
     )
   }
+  const increaseRate = stats.revenue.lastMonth > 0
+  ? Math.round(((stats.revenue.thisMonth - stats.revenue.lastMonth) / stats.revenue.lastMonth) * 100)
+  : 0;
+
+const revenueUp = stats.revenue.thisMonth > stats.revenue.lastMonth;
 const dayLabels = Array.from({ length: 7 }).map((_, i) => {
   const d = new Date();
   d.setDate(d.getDate() - (6 - i));              // 6일 전부터 오늘까지
@@ -171,18 +176,29 @@ const revenueChartData = {
   datasets: [{
     label: "일별 매출",
     data: dayLabels.map((_, idx) => dailyRevenue[idx]?.amount || 0),
-    borderColor: "#8b5cf6",
-    backgroundColor: "transparent",
-    tension: 0.3,
+    borderColor: "#9775FA",
+    backgroundColor: (context) => {
+      const chart = context.chart;
+      const {ctx, chartArea} = chart;
+      if (!chartArea) return null; // 초기 렌더링 대응
+
+      const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+      gradient.addColorStop(0, "rgba(151, 117, 250, 0.1)");  // 라벤더 투명도 배경
+      gradient.addColorStop(1, "rgba(151, 117, 250, 0.35)");
+
+      return gradient;
+    },
+    tension: 0.4,
     borderWidth: 2,
     pointRadius: 5,
     pointBackgroundColor: "#fff",
-    pointBorderColor: "#8b5cf6",
+    pointBorderColor: "#9775FA",
     pointBorderWidth: 2,
     pointHoverRadius: 7,
-    fill: false,
+    fill: true, // ✅ fill true로 해야 배경 보임
   }],
 };
+
 
 const chartOptions = {
   responsive: true,
@@ -192,12 +208,18 @@ const chartOptions = {
       display: true,
       position: "top",
       align: "center",
-      labels: {
-        boxWidth: 20,
-        boxHeight: 12,
-        color: "#8b5cf6",
-        padding: 16,
-      },
+   labels: {
+  boxWidth: 20,
+  boxHeight: 12,
+  color: "#6B4EFF", // 💜 라벤더 느낌의 보라색 텍스트
+  padding: 16,
+  animation: {
+  duration: 1000,
+  easing: 'easeOutQuart'
+},
+
+},
+
     },
   },
   scales: {
@@ -217,22 +239,20 @@ const chartOptions = {
     },
   },
 };
-
 const userChartData = {
   labels: dayLabels,
   datasets: [{
     label: "일별 사용자 증가",
     data: dayLabels.map((_, i) => dailyUserGrowth[i]?.count || 0),
-    borderColor: "#3b82f6",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#D0BFFF",  // 💜 라벤더 파스텔
+    borderColor: "#9775FA",      // 💜 진한 포인트
+    borderWidth: 2,
     barPercentage: 0.6,
     categoryPercentage: 0.8,
-    tension: 0.3,
-    borderWidth: 2,
-    pointRadius: 5,
-    fill: false,
+    borderRadius: 8,
   }],
 };
+
 
 const userChartOptions = {
   responsive: true,
@@ -242,20 +262,33 @@ const userChartOptions = {
       display: true,
       position: "top",
       align: "center",
-      labels: { color: "#3b82f6", boxWidth: 12, boxHeight: 12 }
+      labels: {
+        color: "#6B4EFF",         // 💜 라벤더 포인트 컬러
+        boxWidth: 12,
+        boxHeight: 12
+      }
     }
   },
   scales: {
-    x: { grid: { display: false }, ticks: { color: "#6B7280" } },
+    x: {
+      grid: { display: false },
+      ticks: { color: "#5E5873" }  // 진보라 느낌의 회색
+    },
     y: {
       beginAtZero: true,
-      grid: { color: "#E5E7EB" },
-      ticks: { stepSize: 1,                  // 1단위 눈금
-        callback: (v) => v.toString(),// 소수점 없이 표시
-        color: "#6B7280", }
+      grid: { color: "#E6E6F8" },  // 아주 연한 라벤더 배경선
+      ticks: {
+        stepSize: 1,
+        callback: (v) => v.toString(),
+        color: "#5E5873"
+      }
     }
   }
 };
+
+
+
+
 
 const labels = facilityTypeStats.map(f => facilityTypeMap[f.type] || f.type)
 
@@ -264,14 +297,15 @@ const facilityTypeData = {
   datasets: [{
     data: facilityTypeStats.map(f => f.count),
     backgroundColor: [
-      '#6366F1', // 요양원
-      '#60A5FA', // 요양병원
-      '#34D399', // 실버타운
+      '#7FB3D5', // Soft Blue - 요양병원
+      '#F5B7B1', // Peach Pink - 요양원
+      '#A2D9CE', // Light Mint - 실버타운
     ],
     borderWidth: 0,
     cutout: '60%',
   }]
 }
+
 
 const facilityTypeOptions = {
   responsive: true,
@@ -291,27 +325,42 @@ const facilityTypeOptions = {
       <div className="admin-dashboard">
         {/* 통계 카드 */}
         <div className="admin-dashboard-stats grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="admin-stat-card">
-            <h3>시설</h3>
-            <p>{facilityCount}</p>
-          </div>
-          <div className="admin-stat-card">
-            <h3>상품</h3>
-            <p>{stats.products.total}</p>
-          </div>
-          <div className="admin-stat-card">
-            <h3>사용자</h3>
-            <p>{userStats.totalUsers}</p>
-            <div className="mt-2 text-sm text-gray-600">신규: {userStats.dailyGrowth.at(-1)?.count ?? 0}</div>
-          </div>
-          <div className="admin-stat-card">
-            <h3>매출</h3>
-            <p>{formatCurrency(stats.revenue.total)}</p>
-            <div className="mt-2 text-sm text-gray-600">
-              오늘: {formatCurrency(stats.revenue.thisMonth)}<br />
-              어제: {formatCurrency(stats.revenue.lastMonth)}
-            </div>
-          </div>
+      <div className="admin-stat-card">
+  <div className="admin-stat-title">시설</div>
+  <div className="admin-stat-value">{facilityCount}</div>
+
+</div>
+
+<div className="admin-stat-card">
+  <div className="admin-stat-title">상품</div>
+  <div className="admin-stat-value">{stats.products.total}</div>
+ 
+</div>
+
+<div className="admin-stat-card">
+  <div className="admin-stat-title">사용자</div>
+  <div className="admin-stat-value">{userStats.totalUsers}</div>
+  <div className="admin-stat-subinfo">
+    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+  </div>
+</div>
+
+
+<div className="admin-stat-card">
+  <div className="admin-stat-title">매출</div>
+  <div className="admin-stat-value">{formatCurrency(stats.revenue.total)}</div>
+  <div className="admin-stat-subinfo">
+    <span>이번 달: {formatCurrency(stats.revenue.thisMonth)}</span>
+    <span>지난 달: {formatCurrency(stats.revenue.lastMonth)}</span>
+  </div>
+  <div className="admin-stat-subinfo">
+    <span style={{ color: revenueUp ? "#10B981" : "#EF4444" }}>
+      {increaseRate >= 0 ? `+${increaseRate}%` : `${increaseRate}%`}
+    </span>
+  </div>
+</div>
+
+
         </div>
 
         {/* 메인 콘텐츠 */}
@@ -373,16 +422,16 @@ const facilityTypeOptions = {
           <div className="admin-quick-actions">
             <h3>빠른 작업</h3>
             <div className="grid grid-cols-2 gap-2">
-  <Button onClick={() => handleQuickAction("facility-list")} className="hover:bg-blue-500">
+  <Button onClick={() => handleQuickAction("facility-list")}>
     시설 목록
   </Button>
-  <Button onClick={() => handleQuickAction("product-list")} className="hover:bg-blue-500">
+  <Button onClick={() => handleQuickAction("product-list")}>
     상품 목록
   </Button>
-  <Button onClick={() => handleQuickAction("notice-write")} className="hover:bg-blue-500">
+  <Button onClick={() => handleQuickAction("notice-write")} >
     공지사항 작성
   </Button>
-  <Button onClick={() => handleQuickAction("inquiry-answer")} className="hover:bg-blue-500">
+  <Button onClick={() => handleQuickAction("inquiry-answer")}>
     문의 답변
   </Button>
 </div>
