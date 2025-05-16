@@ -58,8 +58,12 @@ function FavoritesPage() {
     })
   );
 
-  const handleClearAll = () => {
-    alert("전체 삭제 기능은 현재 개발 중입니다.");
+  const handleClearAll = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/bookmarks/deleteAll`);
+    } catch (error) {
+      console.error("찜 전체 삭제 실패:", error);
+    }
   };
 
   return (

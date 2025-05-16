@@ -180,7 +180,6 @@ const ChatbotWindow = ({ onClose, onMinimize }) => {
                     acc.push(
                       <div key={i} style={{ marginBottom: "12px" }}>
                         <span role="img" aria-label="link">
-                          🔗
                         </span>
                         <a
                           href={url}
