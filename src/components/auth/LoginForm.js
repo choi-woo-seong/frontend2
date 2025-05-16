@@ -16,7 +16,6 @@ function LoginForm() {
   const [loginData, setLoginData] = useState({
     userId: "",
     password: "",
-    rememberMe: false,
   })
 
   const [error, setError] = useState(null)
@@ -30,17 +29,9 @@ function LoginForm() {
     })
   }
 
-  const handleCheckboxChange = (e) => {
-    setLoginData({
-      ...loginData,
-      rememberMe: e.target.checked,
-    })
-  }
-
   const handleLogin = async (e) => {
     e.preventDefault();
-  
-    // 입력값 유효성 검사
+
     if (!loginData.userId && !loginData.password) {
       setError("아이디와 비밀번호를 모두 입력해주세요.");
       return;
@@ -53,28 +44,19 @@ function LoginForm() {
       setError("비밀번호를 입력해주세요.");
       return;
     }
-  
+
     setIsLoading(true);
     setError(null);
-  
+
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         userId: loginData.userId,
         password: loginData.password,
       });
-  
+
       const { token, admin } = response.data;
       if (token) {
         localStorage.setItem("accessToken", token);
-  
-        if (loginData.rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-          localStorage.setItem("savedUserId", loginData.userId);
-        } else {
-          localStorage.removeItem("rememberMe");
-          localStorage.removeItem("savedUserId");
-        }
-  
         if (admin) navigate("/admin/dashboard");
         else navigate("/");
       } else {
@@ -86,8 +68,7 @@ function LoginForm() {
     } finally {
       setIsLoading(false);
     }
-  };
-  
+  }
 
   const handleSocialLogin = (provider) => {
     window.location.href = `${API_BASE_URL.replace('/api','')}/oauth2/authorization/${provider}`
@@ -134,23 +115,6 @@ function LoginForm() {
             className="login-input"
           />
         </div>
-
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            checked={loginData.rememberMe}
-            onChange={handleCheckboxChange}
-            className="w-4 h-4"
-          />
-          <label
-            htmlFor="rememberMe"
-            className="text-sm text-gray-600 cursor-pointer relative top-[1px]"
-          >
-            로그인 상태 유지
-          </label>
-        </div>
-
 
         <Button type="submit" className="login-btn w-full bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
           {isLoading ? "로그인 중..." : "로그인"}
