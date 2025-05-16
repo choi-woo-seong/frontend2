@@ -36,6 +36,8 @@ function FavoritesPage() {
     fetchFavorites(token);
   }, [navigate]);
 
+
+
   const fetchFavorites = async (token) => {
     try {
       const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
@@ -70,8 +72,13 @@ function FavoritesPage() {
     items: favorites.filter((f) => typeKorMap[f.type] === category),
   }));
 
-  const handleClearAll = () => {
-    alert("전체 삭제 기능은 현재 개발 중입니다.");
+   const handleClearAll = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/bookmarks/deleteAll`);
+      window.location.reload();
+    } catch (error) {
+      console.error("찜 전체 삭제 실패:", error);
+    }
   };
 
   return (
