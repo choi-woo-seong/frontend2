@@ -222,7 +222,7 @@ const ProductsListPage = () => {
             <button
               onClick={() => navigate("/admin/sales")}
               className="flex-1 py-2 px-4 text-sm font-medium text-center text-gray-800 hover:bg-gray-100 transition-colors"
-            >구매 현황</button>
+            >판매 현황</button>
           </div>
         </div>
 

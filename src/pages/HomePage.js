@@ -1,12 +1,11 @@
-// src/pages/HomePage.jsx
 "use client";
 import "../styles/HomePage.css";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 import { Swiper, SwiperSlide } from "swiper/react";
- import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
@@ -24,13 +23,16 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
   const [isLoggin, setIsLoggin] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     setIsLoggin(!!token);
   }, []);
-
-  const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -40,9 +42,6 @@ function HomePage() {
       navigate("/");
     }
   };
-
-  const [products, setProducts] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
 
   const fetchProducts = async () => {
     try {
@@ -112,20 +111,6 @@ function HomePage() {
       <main className="main-content">
         <NoticeBar />
 
-        {/* 검색창 */}
-        <div className="search-section">
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="시설명, 지역명으로 검색하세요"
-              className="search-input"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-              <Search className="w-5 h-5" />
-            </div>
-          </div>
-        </div>
-
         {/* 슬라이드 배너 */}
         <div className="hero-section">
           <Swiper
@@ -134,11 +119,9 @@ function HomePage() {
             spaceBetween={20}
             slidesPerView={1}
             loop={true}
-            autoplay={{
-              delay: 4000,
-              disableOnInteraction: false,
-            }}
+            autoplay={{ delay: 4000, disableOnInteraction: false }}
           >
+            
             <SwiperSlide>
               <div className="hero-banner">
                 <div className="hero-text">
@@ -149,14 +132,9 @@ function HomePage() {
                   </div>
                   <h1 className="hero-title">함께 소통해요!</h1>
                 </div>
-                <img
-                  src="/images/compassionate-elder-care-chat.png"
-                  alt="배너1"
-                  className="hero-image"
-                />
+                <img src="/images/compassionate-elder-care-chat.png" alt="배너1" className="hero-image" />
               </div>
             </SwiperSlide>
-
             <SwiperSlide>
               <div className="hero-banner bg-yellow-300">
                 <div className="hero-text">
@@ -167,14 +145,9 @@ function HomePage() {
                   </div>
                   <h1 className="hero-title">함께 소통해요 😊</h1>
                 </div>
-                <img
-                  src="/mnt/data/90d7b929-9f8b-422e-ad95-979a334f8256.png"
-                  alt="배너2"
-                  className="hero-image"
-                />
+                <img src="/mnt/data/90d7b929-9f8b-422e-ad95-979a334f8256.png" alt="배너2" className="hero-image" />
               </div>
             </SwiperSlide>
-
             <SwiperSlide>
               <div className="hero-banner bg-green-200">
                 <div className="hero-text">
@@ -183,14 +156,9 @@ function HomePage() {
                   </div>
                   <h1 className="hero-title">설레는 봄 기획전</h1>
                 </div>
-                <img
-                  src="/mnt/data/e2bb653e-c1c8-4deb-bd0a-d5f4a1d343cf.png"
-                  alt="배너3"
-                  className="hero-image"
-                />
+                <img src="/mnt/data/e2bb653e-c1c8-4deb-bd0a-d5f4a1d343cf.png" alt="배너3" className="hero-image" />
               </div>
             </SwiperSlide>
-
             <SwiperSlide>
               <div className="hero-banner bg-pink-200">
                 <div className="hero-text">
@@ -199,11 +167,7 @@ function HomePage() {
                   </div>
                   <h1 className="hero-title">선물대전 기획전</h1>
                 </div>
-                <img
-                  src="/mnt/data/78bbcca7-e8e6-42e2-bd3c-fab0cd979f80.png"
-                  alt="배너4"
-                  className="hero-image"
-                />
+                <img src="/mnt/data/78bbcca7-e8e6-42e2-bd3c-fab0cd979f80.png" alt="배너4" className="hero-image" />
               </div>
             </SwiperSlide>
           </Swiper>
@@ -212,7 +176,6 @@ function HomePage() {
         {/* 시설 타입 그리드 */}
         <div className="facility-grid-section">
           <div className="facility-card">
-            <div className="facility-card-header"></div>
             <FacilityTypeGrid />
           </div>
         </div>
@@ -238,61 +201,50 @@ function HomePage() {
                 </Link>
               </div>
             </div>
-<div className="products-grid">
-  {loadingProducts ? (
-    <div>상품 로딩 중...</div>
-  ) : (
-    products.slice(0, 3).map((product) => {
-      const originalPrice = parseInt(product.price.replace(/,/g, ""));
-      const discountPrice = parseInt(product.discountPrice);
-      const discountPercent = product.discount;
 
-      return (
-        <Link
-          key={product.id}
-          to={`/products/${product.id}`}
-          className="product-card"
-        >
-          <div className="home-product-image-box">
-            <img
-              src={product.images || "/images/placeholder.svg"}
-              alt={product.name}
-              className="home-product-image"
-            />
-          </div>
+            <div className="products-grid">
+              {loadingProducts ? (
+                <div>상품 로딩 중...</div>
+              ) : (
+                products.slice(0, 3).map((product) => {
+                  const originalPrice = parseInt(product.price.replace(/,/g, ""));
+                  const discountPrice = parseInt(product.discountPrice);
+                  const discountPercent = product.discount;
 
-          <div className="product-info mt-2">
-            <div className="product-name text-base font-medium text-gray-800 truncate">
-              {product.name}
+                  return (
+                    <Link key={product.id} to={`/products/${product.id}`} className="product-card">
+                      <div className="home-product-image-box">
+                        <img
+                          src={product.images || "/images/placeholder.svg"}
+                          alt={product.name}
+                          className="home-product-image"
+                        />
+                      </div>
+                      <div className="product-info mt-2">
+                        <div className="product-name text-base font-medium text-gray-800 truncate">
+                          {product.name}
+                        </div>
+                        {discountPrice ? (
+                          <>
+                            <div className="text-sm text-gray-400">
+                              <span className="line-through">{originalPrice.toLocaleString("ko-KR")}원</span>
+                              <span className="ml-2 text-blue-600 font-semibold">{discountPercent}</span>
+                            </div>
+                            <div className="text-lg font-bold text-black">
+                              {discountPrice.toLocaleString("ko-KR")}원
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-lg font-bold text-black">
+                            {originalPrice.toLocaleString("ko-KR")}원
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  );
+                })
+              )}
             </div>
-
-            {discountPrice ? (
-              <>
-                <div className="text-sm text-gray-400">
-                  <span className="line-through">
-                    {originalPrice.toLocaleString("ko-KR")}원
-                  </span>
-                  <span className="ml-2 text-blue-600 font-semibold">
-                    {discountPercent}
-                  </span>
-                </div>
-                <div className="text-lg font-bold text-black">
-                  {discountPrice.toLocaleString("ko-KR")}원
-                </div>
-              </>
-            ) : (
-              <div className="text-lg font-bold text-black">
-                {originalPrice.toLocaleString("ko-KR")}원
-              </div>
-            )}
-          </div>
-        </Link>
-      );
-    })
-  )}
-</div>
-
-
           </div>
         </div>
 

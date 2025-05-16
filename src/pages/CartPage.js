@@ -1,12 +1,14 @@
 // src/pages/CartPage.jsx
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom"
 import BottomNavigation from "../components/BottomNavigation"
 import { Button } from "../components/ui/Button"
 import { ChevronLeft } from "lucide-react"
 import "../styles/CartPage.css"
+import { useNavigate } from "react-router-dom"
+
 
 const API_BASE_URL = process.env.REACT_APP_API_URL
 
@@ -16,39 +18,53 @@ const API_BASE_URL = process.env.REACT_APP_API_URL
 function CartPage() {
   const [cart, setCart] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
+   const alertedRef = useRef(false); // ✅ 중복 방지
+
 
   // 백엔드에서 장바구니 아이템 가져오기
-  useEffect(() => {
+ useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      if (!alertedRef.current) {
+        alert("로그인 후 이용 가능합니다.");
+        alertedRef.current = true;
+        navigate("/");
+      }
+      return;
+    }
+
     const fetchCart = async () => {
       try {
-        setIsLoading(true)
-        const token = localStorage.getItem("accessToken")
+        setIsLoading(true);
         const res = await fetch(`${API_BASE_URL}/cart`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        })
-        if (!res.ok) throw new Error("장바구니 로딩 실패")
-        const data = await res.json()
-      console.log(data)
+        });
+        if (!res.ok) throw new Error("장바구니 로딩 실패");
+        const data = await res.json();
         setCart(
-          data.map(item => ({
+          data.map((item) => ({
             id: item.productId,
             name: item.productName,
             image: item.imageUrls?.[0] || "/placeholder.svg",
             quantity: item.quantity,
-            price: item.unitPrice.toLocaleString("ko-KR") + "원"
+            price: item.unitPrice.toLocaleString("ko-KR") + "원",
           }))
-        )
+        );
       } catch (err) {
-        console.error(err)
+        console.error(err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchCart()
-  }, [])
+    };
+
+    fetchCart();
+  }, [navigate]);
+
 
   // 장바구니 항목 삭제
   const removeFromCart = async (productId) => {

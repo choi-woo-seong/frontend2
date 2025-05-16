@@ -8,12 +8,14 @@ function BottomNavigation() {
   const API_BASE_URL = process.env.REACT_APP_API_URL;
   const { pathname } = useLocation();
   const [favorites, setFavorites] = useState([]);
+  const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const isActive = (path) => (pathname === path ? "active" : "inactive");
 
   useEffect(() => {
     fetchFavorites();
-  }, []);
+    fetchCart();
+  }, [pathname]);
 
   // 찜한 목록 개수 가져오기
   const fetchFavorites = async () => {
@@ -26,6 +28,24 @@ function BottomNavigation() {
       });
       console.log("찜 목록:", res.data);
       setFavorites(res.data);
+    } catch (err) {
+      console.error("찜한 시설 목록 불러오기 실패:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 장바구니 개수 가져오기
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.get(`${API_BASE_URL}/cart`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("장바구니 목록:", res.data);
+      setCart(res.data);
     } catch (err) {
       console.error("찜한 시설 목록 불러오기 실패:", err);
     } finally {
@@ -86,7 +106,7 @@ function BottomNavigation() {
               className={`bottom-navigation-icon ${isActive("/cart")}`}
             />
             <span className={`bottom-navigation-text ${isActive("/cart")}`}>
-              장바구니
+              장바구니({cart.length})
             </span>
           </Link>
         </div>

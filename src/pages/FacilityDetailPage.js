@@ -547,13 +547,7 @@ console.log(user)
 </TabsContent>
       </Tabs>
 
-      {/* 전화 버튼 */}
-      <a
-        href={`tel:${facility.phone}`}
-        className="call-button fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-8 py-3 rounded-full shadow-lg hover:bg-blue-600"
-      >
-        <Phone className="inline-block mr-2" /> 전화문의
-      </a>
+     
     </div>
   );
 }

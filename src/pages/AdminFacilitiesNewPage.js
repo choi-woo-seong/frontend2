@@ -188,7 +188,8 @@ const AdminFacilitiesNewPage = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="facility-form">
+<form onSubmit={handleSubmit} className="facility-form bg-white shadow-md rounded-xl p-6">
+
         <div className="form-section">
           <div className="form-group">
             <label>시설명 *</label>
