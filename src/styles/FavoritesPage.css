@@ -19,6 +19,14 @@
   align-items: center;
 }
 
+.facility-tag {
+  font-size: 1rem; /* = 16px */
+/* ✅ 기존보다 한 단계 크게 */
+  font-weight: bold;
+  color: #4b5563;
+  margin-left: 0.5rem;
+}
+
 .back-button {
   margin-right: 1rem;
   color: #333;
@@ -245,6 +253,12 @@
 .empty-search-button:hover {
   background-color: #1565c0; /* hover 시 조금 더 진한 파랑 */
 }
+/* 등급 태그만 파란색으로 강조 */
+.facility-tag.grade-tag {
+  color: #2563eb; /* Tailwind 기준 text-blue-600 */
+  font-weight: 600;
+}
+
 
 
 /* 반응형 스타일 */

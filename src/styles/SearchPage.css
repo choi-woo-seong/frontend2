@@ -128,6 +128,14 @@
   gap: 6px;
   margin-bottom: 8px;
 }
+/* 등급 태그 스타일 */
+.grade-tag {
+  color: #3b82f6; /* Tailwind 기준 text-blue-500 */
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
 
 .facility-tag {
   background-color: #f0f0f0;
@@ -146,29 +154,44 @@
 }
 
 .facility-image-container {
-  width: 80px;
-  height: 80px;
   position: relative;
+  width: 120px;
+  height: 90px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
+/* 이미지 자체 스타일 */
 .facility-image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 0.5rem;
 }
 
 .like-button {
   position: absolute;
-  bottom: -22px;
-  right: -8px;
-  padding: 6px;
+  bottom: 6px;
+  right: 6px;
+  background: white;
+  border-radius: 9999px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  cursor: pointer;
+  border: none;
 }
 
-.like-button:hover {
-  color: #ff6b6b; /* 호버할 때 연한 빨간색 */
+.like-button svg {
+  width: 16px;
+  height: 16px;
+  color: #f87171; /* 빨간색 계열 */
 }
 
 .like-button .liked {
-  color: #ff0000; /* 찜한 하트는 진한 빨간색 */
+  color: #ef4444; /* 더 진한 빨강 */
 }

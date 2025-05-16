@@ -112,56 +112,57 @@ function FavoritesPage() {
         <h3 className="text-lg font-semibold my-4">{group.category}</h3>
         <ul className="facility-list">
           {group.items.map((fac) => (
-           <li
+        <li
   key={fac.facilityId}
   className="facility-item flex justify-between items-start gap-6 py-6 border-b"
-  onClick={() =>
-    (window.location.href = `/facility/${fac.facilityId}`)
-  }
+  onClick={() => (window.location.href = `/facility/${fac.facilityId}`)}
   style={{ cursor: "pointer" }}
 >
   <div className="facility-info flex-1">
-  {/* 제목 + 삭제 버튼 */}
-  <div className="flex justify-between items-start mb-2">
+    {/* 병원 이름 */}
     <h3 className="text-lg font-semibold">{fac.name}</h3>
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        removeFavorite(fac.facilityId);
-      }}
-      className="text-red-500 text-sm px-2 py-1 hover:underline"
-    >
-      삭제
-    </button>
+
+    {/* 병원이름 밑에 태그 정렬 */}
+    <div className="flex items-center flex-wrap gap-2 mt-1 mb-2">
+      {fac.grade && (
+        <span className="facility-tag grade-tag text-blue-600">등급: {fac.grade}</span>
+      )}
+      {fac.facilitySize && (
+        <span className="facility-tag">규모: {fac.facilitySize}</span>
+      )}
+      {fac.establishedYear && (
+        <span className="facility-tag">
+          설립 {new Date().getFullYear() - fac.establishedYear}년
+        </span>
+      )}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          removeFavorite(fac.facilityId);
+        }}
+        className="text-red-500 text-sm hover:underline ml-4"
+      >
+        삭제
+      </button>
+    </div>
+
+    {/* 주소 */}
+    <p className="facility-address">{fac.address}</p>
   </div>
 
-  {/* ✅ 태그 묶음을 제목 아래로 이동 */}
-  <div className="facility-tags mb-2">
-    {fac.grade && <span className="facility-tag">등급: {fac.grade}</span>}
-    {fac.facilitySize && <span className="facility-tag">규모: {fac.facilitySize}</span>}
-    {fac.establishedYear && (
-      <span className="facility-tag">
-        설립 {new Date().getFullYear() - fac.establishedYear}년
-      </span>
-    )}
-  </div>
-
-  {/* 주소는 아래 유지 */}
-  <p className="facility-address">{fac.address}</p>
+<div className="w-32 h-32 flex-shrink-0">  {/* ✅ 기존 24 → 32 (8rem) */}
+  <img
+    src={fac.imageUrls || "/placeholder.svg"}
+    onError={(e) => {
+      e.target.src = "/placeholder.svg";
+    }}
+    alt={fac.name}
+    className="w-full h-full object-cover rounded"
+  />
 </div>
 
-
-  <div className="w-24 h-24 flex-shrink-0">
-    <img
-      src={fac.imageUrls || "/placeholder.svg"}
-      onError={(e) => {
-        e.target.src = "/placeholder.svg";
-      }}
-      alt={fac.name}
-      className="w-full h-full object-cover rounded"
-    />
-  </div>
 </li>
+
 
           ))}
         </ul>
