@@ -373,11 +373,20 @@ const facilityTypeOptions = {
           <div className="admin-quick-actions">
             <h3>빠른 작업</h3>
             <div className="grid grid-cols-2 gap-2">
-              <Button onClick={() => handleQuickAction("facility-list")}>시설 목록</Button>
-              <Button onClick={() => handleQuickAction("product-list")}>상품 목록</Button>
-              <Button onClick={() => handleQuickAction("notice-write")}>공지사항 작성</Button>
-              <Button onClick={() => handleQuickAction("inquiry-answer")}>문의 답변</Button>
-            </div>
+  <Button onClick={() => handleQuickAction("facility-list")} className="hover:bg-blue-500">
+    시설 목록
+  </Button>
+  <Button onClick={() => handleQuickAction("product-list")} className="hover:bg-blue-500">
+    상품 목록
+  </Button>
+  <Button onClick={() => handleQuickAction("notice-write")} className="hover:bg-blue-500">
+    공지사항 작성
+  </Button>
+  <Button onClick={() => handleQuickAction("inquiry-answer")} className="hover:bg-blue-500">
+    문의 답변
+  </Button>
+</div>
+
           </div>
         </div>
       </div>
