@@ -4,13 +4,14 @@
 import Layout from "../../components/Layout"
 import { useState, useEffect } from "react"
 import { Button } from "../../components/ui/Button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "../../../src/styles/AdminSalesManagementPage.css"
 import axios from "axios"
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const SalesManagementPage = () => {
+  const navigate = useNavigate(); // ✅ 추가
   const [orders, setOrders] = useState([])
   const [salesSummary, setSalesSummary] = useState({
     totalSales: 0,
@@ -46,9 +47,12 @@ const SalesManagementPage = () => {
   return (
     <Layout>
       <div className="admin-sales-management max-w-6xl mx-auto px-4">
-        <div className="admin-header ">
+        <div className="admin-header">
           <h1>상품 관리</h1>
-          <Button variant="primary" onClick={() => {}}>
+          <Button
+            variant="primary"
+            onClick={() => navigate("/admin/products/new")} // ✅ 수정됨
+          >
             새 상품 등록
           </Button>
         </div>

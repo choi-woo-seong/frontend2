@@ -196,15 +196,21 @@ const AdminFacilitiesEditPage = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="facility-form">
-        <div className="form-section">
+      <div
+  className="form-section"
+  style={{ backgroundColor: "#ffffff", borderRadius: "8px", padding: "1.5rem" }}
+>
+
           <div className="form-group">
             <label>시설명 *</label>
-            <Input
-              name="name"
-              placeholder="시설 이름을 입력하세요"
-              value={formData.name}
-              onChange={handleChange}
-            />
+           <Input
+  name="name"
+  placeholder="시설 이름을 입력하세요"
+  value={formData.name}
+  onChange={handleChange}
+  style={{ backgroundColor: "#fff", borderRadius: "6px" }} // 👈 여기
+/>
+
           </div>
 
           <div className="form-group">
@@ -218,23 +224,30 @@ const AdminFacilitiesEditPage = () => {
           </div>
 
           <div className="form-group address-row">
-            <label>주소 *</label>
-            <div className="address-input-group">
-              <Input
-                name="address"
-                placeholder="시설 주소를 입력하세요"
-                value={formData.address}
-                onChange={handleChange}
-              />
-              <Button
-                type="button"
-                onClick={() => setShowAddressSearch(true)}
-                className="address-search-button"
-              >
-                주소 찾기
-              </Button>
-            </div>
-          </div>
+  <label>주소 *</label>
+  <div className="address-input-group">
+    <Input
+      name="address"
+      placeholder="시설 주소를 입력하세요"
+      value={formData.address}
+      onChange={handleChange}
+    />
+  <Button
+  type="button"
+  onClick={() => setShowAddressSearch(true)}
+  className="facility-action-button facility-submit-button"
+  style={{
+    borderRadius: "8px",         // ✅ 둥글기
+    padding: "0.5rem 1rem",      // ✅ 버튼 안 여백
+    fontWeight: "500",
+  }}
+>
+  주소 찾기
+</Button>
+
+  </div>
+</div>
+
 
           <div className="form-row">
             <div className="form-group">
@@ -355,103 +368,134 @@ const AdminFacilitiesEditPage = () => {
           </div>
         </div>
 
-        <div className="form-section1">
-          <h2>시설 이미지</h2>
-          <div
-            className="image-upload-area"
-            onClick={() =>
-              document.getElementById("image-upload-input").click()
-            }
-          >
-            <img
-              src="/icons/upload-photo.png"
-              alt="사진 업로드"
-              className="image-upload-icon-img"
-            />
-            <div className="image-upload-text">
-              이미지를 업로드하세요 (최대 5MB)
-            </div>
-            <input
-              id="image-upload-input"
-              type="file"
-              accept="image/*"
-              multiple
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const files = Array.from(e.target.files);
-                const newImages = files.map((file) => ({
-                  file,
-                  preview: URL.createObjectURL(file),
-                }));
-                setFormData((prev) => ({
-                  ...prev,
-                  images: [...prev.images, ...newImages],
-                }));
-              }}
-            />
-          </div>
-          {formData.images.length > 0 && (
-            <div
-              className="image-preview-list"
-              style={{
-                display: "flex",
-                gap: "0.5rem",
-                flexWrap: "wrap",
-                marginTop: "1rem",
-              }}
-            >
-              {formData.images.map((image, index) => (
-                <div key={index} style={{ position: "relative" }}>
-                  <img
-                    src={image.preview}
-                    alt="업로드 이미지"
-                    className="uploaded-image"
-                    style={{
-                      width: "120px",
-                      height: "120px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    style={{
-                      position: "absolute",
-                      top: "4px",
-                      right: "4px",
-                      background: "transparent",
-                      border: "none",
-                      padding: 0,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <X className="w-5 h-5 text-red-500" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+       <div
+  className="form-section1"
+  style={{
+    backgroundColor: "#ffffff", // ✅ 전체 박스 흰 배경
+    borderRadius: "8px",
+    padding: "1.5rem",
+    marginTop: "2rem",
+  }}
+>
+  <h2>시설 이미지</h2>
 
-        <div
-          className="form-actions"
-          style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}
-        >
-          <Button
+  {/* 업로드 박스 */}
+  <div
+    className="image-upload-area"
+    style={{
+      backgroundColor: "#ffffff",
+      border: "1px dashed #ccc",
+      borderRadius: "8px",
+      padding: "1.5rem",
+      textAlign: "center",
+      cursor: "pointer",
+    }}
+    onClick={() =>
+      document.getElementById("image-upload-input").click()
+    }
+  >
+    <img
+      src="/icons/upload-photo.png"
+      alt="사진 업로드"
+      className="image-upload-icon-img"
+      style={{ margin: "0 auto", width: "48px", height: "48px" }}
+    />
+    <div
+      className="image-upload-text"
+      style={{ color: "#666", marginTop: "0.5rem", fontSize: "0.9rem" }}
+    >
+      이미지를 업로드하세요 (최대 5MB)
+    </div>
+    <input
+      id="image-upload-input"
+      type="file"
+      accept="image/*"
+      multiple
+      style={{ display: "none" }}
+      onChange={(e) => {
+        const files = Array.from(e.target.files);
+        const newImages = files.map((file) => ({
+          file,
+          preview: URL.createObjectURL(file),
+        }));
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...newImages],
+        }));
+      }}
+    />
+  </div>
+
+  {/* 이미지 미리보기 */}
+  {formData.images.length > 0 && (
+    <div
+      className="image-preview-list"
+      style={{
+        display: "flex",
+        gap: "0.5rem",
+        flexWrap: "wrap",
+        marginTop: "1rem",
+      }}
+    >
+      {formData.images.map((image, index) => (
+        <div key={index} style={{ position: "relative" }}>
+          <img
+            src={image.preview}
+            alt="업로드 이미지"
+            className="uploaded-image"
+            style={{
+              width: "120px",
+              height: "120px",
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
+          />
+          <button
             type="button"
-            onClick={() => navigate("/admin/facilities")}
-            className="facility-action-button facility-cancel-button"
+            onClick={() => handleRemoveImage(index)}
+            style={{
+              position: "absolute",
+              top: "4px",
+              right: "4px",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
           >
-            취소
-          </Button>
-          <Button
-            type="submit"
-            className="facility-action-button facility-submit-button"
-          >
-            시설 수정
-          </Button>
+            <X className="w-5 h-5 text-red-500" />
+          </button>
         </div>
+      ))}
+    </div>
+  )}
+
+  {/* 버튼 영역 포함 */}
+  <div
+    className="form-actions"
+    style={{
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: "0.5rem",
+      marginTop: "2rem",
+    }}
+  >
+    <Button
+      type="button"
+      onClick={() => navigate("/admin/facilities")}
+      className="facility-action-button facility-cancel-button"
+    >
+      취소
+    </Button>
+    <Button
+      type="submit"
+      className="facility-action-button facility-submit-button"
+    >
+      시설 수정
+    </Button>
+  </div>
+</div>
+
       </form>
 
       {showAddressSearch && (

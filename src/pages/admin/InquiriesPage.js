@@ -173,178 +173,187 @@ useEffect(() => {
       </Layout>
     )
   }
+return (
+  <Layout>
+    <div className="admin-inquiries max-w-6xl mx-auto px-4">
 
-  return (
-    <Layout>
-      <div className="admin-inquiries max-w-6xl mx-auto px-4">
-        <div className="mt-4 mb-6">
-  <div className="bg-gray-50 rounded-md flex overflow-hidden">
-    <button
-      onClick={() => setActiveTab("all")}
-      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
-        activeTab === "all"
-          ? "bg-white shadow-sm text-gray-900"
-          : "text-gray-800 hover:bg-gray-100"
-      }`}
-    >
-      전체
-    </button>
-    <button
-      onClick={() => setActiveTab("product")}
-      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
-        activeTab === "product"
-          ? "bg-white shadow-sm text-gray-900"
-          : "text-gray-800 hover:bg-gray-100"
-      }`}
-    >
-      상품 문의
-    </button>
-    <button
-      onClick={() => setActiveTab("facility")}
-      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
-        activeTab === "facility"
-          ? "bg-white shadow-sm text-gray-900"
-          : "text-gray-800 hover:bg-gray-100"
-      }`}
-    >
-      시설 문의
-    </button>
-  </div>
-</div>
-
-
-        <div className="admin-filters flex flex-col sm:flex-row sm:items-center sm:gap-4">
-          <div className="admin-search flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">
-            <FaSearch className="text-gray-400 mr-2 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="질문 검색"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="outline-none text-sm placeholder-gray-400 bg-transparent"
-            />
-          </div>
-          <div className="admin-filter-group flex gap-4 mt-2 sm:mt-0">
-            <select
-              value={filterStatus}
-              onChange={handleStatusFilterChange}
-              className="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white text-gray-800 focus:outline-none"
-            >
-              <option value="all">모든 상태</option>
-              <option value="pending">대기중</option>
-              <option value="answered">답변완료</option>
-            </select>
-          </div>
-        </div>
-
-        {filteredInquiries.length === 0 ? (
-          <div className="admin-empty-state">
-            <p>검색 조건에 맞는 문의가 없습니다.</p>
-          </div>
-        ) : (
-          <>
-            <div className="admin-table-container mt-4">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>상태</th>
-                    <th>작성일</th>
-                    <th>관리</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentInquiries.map((inquiry) => (
-                    <tr key={inquiry.id} className="h-16">
-                      <td className="inquiry-title">
-                        {inquiry.title}
-                        <div className="text-xs text-gray-400">
-                          ({inquiry.targetType === "product"
-                            ? "상품"
-                            : inquiry.targetType === "facility"
-                            ? "시설"
-                            : "기타"}
-                          : {inquiry.targetName})
-                        </div>
-                      </td>
-                      <td>{inquiry.userName}</td>
-                      <td>{getStatusBadge(inquiry.status)}</td>
-                      <td>{formatDate(inquiry.createdAt)}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-start items-center gap-5">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleViewDetail(inquiry.id)}
-                          >
-                            <MessageSquare className="w-5 h-5 text-green-600" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDeleteInquiry(inquiry.id)}
-                          >
-                            <Trash2 className="w-5 h-5 text-red-500" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {totalFilteredPages > 1 && (
-              <div className="admin-pagination mt-4 flex justify-center items-center gap-2">
-  <button
-    onClick={() => handlePageChange(currentPage - 1)}
-    disabled={currentPage === 1}
-    className={`px-3 py-1 text-sm rounded-md border ${
-      currentPage === 1
-        ? "text-gray-400 border-gray-300 cursor-not-allowed"
-        : "text-gray-700 border-gray-300 hover:bg-gray-100"
-    }`}
-  >
-    이전
-  </button>
-
-  {[...Array(totalFilteredPages)].map((_, i) => {
-    const page = i + 1
-    const isActive = page === currentPage
-    return (
-      <button
-        key={page}
-        onClick={() => handlePageChange(page)}
-        className={`px-3 py-1 text-sm rounded-md border ${
-          isActive
-            ? "bg-blue-600 text-white border-blue-600"
-            : "text-gray-700 border-gray-300 hover:bg-gray-100"
-        }`}
-      >
-        {page}
-      </button>
-    )
-  })}
-
-  <button
-    onClick={() => handlePageChange(currentPage + 1)}
-    disabled={currentPage === totalFilteredPages}
-    className={`px-3 py-1 text-sm rounded-md border ${
-      currentPage === totalFilteredPages
-        ? "text-gray-400 border-gray-300 cursor-not-allowed"
-        : "text-gray-700 border-gray-300 hover:bg-gray-100"
-    }`}
-  >
-    다음
-  </button>
-</div>
-
-            )}
-          </>
-        )}
+      {/* ✅ 상단 제목 */}
+      <div className="admin-header mt-6 mb-4">
+        <h1 className="text-xl font-semibold">질문/답변 관리</h1>
       </div>
-    </Layout>
-  )
+
+      {/* ✅ 탭 영역 */}
+      <div className="mt-4 mb-6">
+        <div className="bg-gray-50 rounded-md flex overflow-hidden">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+              activeTab === "all"
+                ? "bg-white shadow-sm text-gray-900"
+                : "text-gray-800 hover:bg-gray-100"
+            }`}
+          >
+            전체
+          </button>
+          <button
+            onClick={() => setActiveTab("product")}
+            className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+              activeTab === "product"
+                ? "bg-white shadow-sm text-gray-900"
+                : "text-gray-800 hover:bg-gray-100"
+            }`}
+          >
+            상품 문의
+          </button>
+          <button
+            onClick={() => setActiveTab("facility")}
+            className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+              activeTab === "facility"
+                ? "bg-white shadow-sm text-gray-900"
+                : "text-gray-800 hover:bg-gray-100"
+            }`}
+          >
+            시설 문의
+          </button>
+        </div>
+      </div>
+
+      {/* ✅ 필터 및 검색 영역 */}
+      <div className="admin-filters flex flex-col sm:flex-row sm:items-center sm:gap-4">
+        <div className="admin-search flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">
+          <FaSearch className="text-gray-400 mr-2 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="질문 검색"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="outline-none text-sm placeholder-gray-400 bg-transparent"
+          />
+        </div>
+        <div className="admin-filter-group flex gap-4 mt-2 sm:mt-0">
+          <select
+            value={filterStatus}
+            onChange={handleStatusFilterChange}
+            className="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white text-gray-800 focus:outline-none"
+          >
+            <option value="all">모든 상태</option>
+            <option value="pending">대기중</option>
+            <option value="answered">답변완료</option>
+          </select>
+        </div>
+      </div>
+
+      {/* ✅ 테이블 or Empty 결과 */}
+      {filteredInquiries.length === 0 ? (
+        <div className="admin-empty-state mt-6 text-center text-gray-500">
+          <p>검색 조건에 맞는 문의가 없습니다.</p>
+        </div>
+      ) : (
+        <>
+          <div className="admin-table-container mt-4">
+            <table className="admin-table w-full">
+              <thead>
+                <tr>
+                  <th>제목</th>
+                  <th>작성자</th>
+                  <th>상태</th>
+                  <th>작성일</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentInquiries.map((inquiry) => (
+                  <tr key={inquiry.id} className="h-16">
+                    <td className="inquiry-title">
+                      {inquiry.title}
+                      <div className="text-xs text-gray-400">
+                        ({inquiry.targetType === "product"
+                          ? "상품"
+                          : inquiry.targetType === "facility"
+                          ? "시설"
+                          : "기타"}
+                        : {inquiry.targetName})
+                      </div>
+                    </td>
+                    <td>{inquiry.userName}</td>
+                    <td>{getStatusBadge(inquiry.status)}</td>
+                    <td>{formatDate(inquiry.createdAt)}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-start items-center gap-5">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewDetail(inquiry.id)}
+                        >
+                          <MessageSquare className="w-5 h-5 text-green-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteInquiry(inquiry.id)}
+                        >
+                          <Trash2 className="w-5 h-5 text-red-500" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ✅ 페이지네이션 */}
+          {totalFilteredPages > 1 && (
+            <div className="admin-pagination mt-6 flex justify-center items-center gap-2">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 text-sm rounded border transition ${
+                  currentPage === 1
+                    ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                이전
+              </button>
+
+              {[...Array(totalFilteredPages)].map((_, i) => {
+                const page = i + 1;
+                const isActive = page === currentPage;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-4 py-2 text-sm rounded border transition ${
+                      isActive
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalFilteredPages}
+                className={`px-4 py-2 text-sm rounded border transition ${
+                  currentPage === totalFilteredPages
+                    ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                다음
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  </Layout>
+);
+
 }
 
 export default InquiriesPage
