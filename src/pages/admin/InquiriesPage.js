@@ -5,13 +5,11 @@ import { useNavigate } from "react-router-dom"
 import Layout from "../../components/Layout"
 import { Button } from "../../components/ui/Button"
 import Skeleton from "../../components/ui/Skeleton"
-import Badge from "../../components/ui/Badge"
-import "./AdminInquiriesPage.css"
 import { FaSearch } from "react-icons/fa"
 import { MessageSquare, Trash2 } from "lucide-react"
+import "./AdminInquiriesPage.css"
 
-
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL = process.env.REACT_APP_API_URL
 
 const InquiriesPage = () => {
   const navigate = useNavigate()
@@ -21,40 +19,54 @@ const InquiriesPage = () => {
   const [filterStatus, setFilterStatus] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [activeTab, setActiveTab] = useState("all")
+useEffect(() => {
+  const fetchInquiries = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return navigate("/login");
 
-  useEffect(() => {
-    const fetchInquiries = async () => {
-      const token = localStorage.getItem("accessToken")
-      if (!token) return navigate("/login")
-      try {
-        const res = await fetch(`${API_BASE_URL}/questions`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        if (res.status === 401) return navigate("/login")
-        if (!res.ok) throw new Error("문의 목록 로드 실패")
-        const data = await res.json()
-        const formatted = data.map((q) => ({
-          id: q.id,
-          title: q.title,
-          content: q.content,
-          userName: q.userName || "",
-          userEmail: q.userEmail || "",
-          status: q.answer != null ? 'answered' : 'pending',
-          createdAt: q.createdAt,
-          answeredAt: q.answer?.createdAt || null,
-        }))
-        setInquiries(formatted)
-        setTotalPages(Math.ceil(formatted.length / 10))
-      } catch (err) {
-        console.error("문의 목록 로드 중 오류 발생:", err)
-      } finally {
-        setIsLoading(false)
+    try {
+      setIsLoading(true);
+      
+      // ✅ 탭에 따라 API 경로 결정
+      let url = `${API_BASE_URL}/questions`;
+      if (activeTab === "product" || activeTab === "facility") {
+        url += `/type/${activeTab}`;
       }
+
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 401) return navigate("/login");
+      if (!res.ok) throw new Error("문의 목록 로드 실패");
+
+      const data = await res.json();
+      const formatted = data.map((q) => ({
+        id: q.id,
+        title: q.title,
+        content: q.content,
+        userName: q.userId || "",
+        userDbId: q.userDbId || 0,
+        status: q.answer ? "answered" : "pending",
+        createdAt: q.createdAt,
+        answeredAt: q.answer?.createdAt || null,
+        targetType: q.targetType || "unknown",
+        targetName: q.targetName || "N/A",
+      }));
+
+      setInquiries(formatted);
+      setTotalPages(Math.ceil(formatted.length / 10));
+    } catch (err) {
+      console.error("문의 목록 로드 중 오류 발생:", err);
+    } finally {
+      setIsLoading(false);
     }
-    fetchInquiries()
-  }, [navigate])
+  };
+
+  fetchInquiries();
+}, [navigate, activeTab]); // ✅ activeTab이 바뀌면 다시 호출되도록
+
 
   const handleViewDetail = (id) => navigate(`/admin/questions/${id}`)
 
@@ -93,7 +105,11 @@ const InquiriesPage = () => {
       q.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
       q.userName.toLowerCase().includes(searchTerm.toLowerCase())
     const matchStatus = filterStatus === "all" || q.status === filterStatus
-    return matchSearch && matchStatus
+    const matchType =
+      activeTab === "all" ||
+      (activeTab === "product" && q.targetType === "product") ||
+      (activeTab === "facility" && q.targetType === "facility")
+    return matchSearch && matchStatus && matchType
   })
 
   const itemsPerPage = 10
@@ -107,27 +123,42 @@ const InquiriesPage = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case "answered":
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">답변완료</span>
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+            답변완료
+          </span>
+        )
       case "pending":
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">미답변</span>
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+            미답변
+          </span>
+        )
       default:
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">알 수 없음</span>
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            알 수 없음
+          </span>
+        )
     }
   }
 
-  const formatDate = (date) => new Date(date).toLocaleString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
+  const formatDate = (date) =>
+    new Date(date).toLocaleString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
 
   if (isLoading) {
     return (
       <Layout>
         <div className="admin-inquiries max-w-6xl mx-auto px-4">
-          <div className="admin-header"><h1>질문/답변 관리</h1></div>
+          <div className="admin-header">
+            <h1>질문/답변 관리</h1>
+          </div>
           <div className="admin-filters">
             <Skeleton className="admin-search-skeleton" />
             <Skeleton className="admin-filter-skeleton" />
@@ -146,7 +177,42 @@ const InquiriesPage = () => {
   return (
     <Layout>
       <div className="admin-inquiries max-w-6xl mx-auto px-4">
-        <div className="admin-header"><h1>질문/답변 관리</h1></div>
+        <div className="mt-4 mb-6">
+  <div className="bg-gray-50 rounded-md flex overflow-hidden">
+    <button
+      onClick={() => setActiveTab("all")}
+      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+        activeTab === "all"
+          ? "bg-white shadow-sm text-gray-900"
+          : "text-gray-800 hover:bg-gray-100"
+      }`}
+    >
+      전체
+    </button>
+    <button
+      onClick={() => setActiveTab("product")}
+      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+        activeTab === "product"
+          ? "bg-white shadow-sm text-gray-900"
+          : "text-gray-800 hover:bg-gray-100"
+      }`}
+    >
+      상품 문의
+    </button>
+    <button
+      onClick={() => setActiveTab("facility")}
+      className={`flex-1 py-2 px-4 text-sm font-medium text-center ${
+        activeTab === "facility"
+          ? "bg-white shadow-sm text-gray-900"
+          : "text-gray-800 hover:bg-gray-100"
+      }`}
+    >
+      시설 문의
+    </button>
+  </div>
+</div>
+
+
         <div className="admin-filters flex flex-col sm:flex-row sm:items-center sm:gap-4">
           <div className="admin-search flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">
             <FaSearch className="text-gray-400 mr-2 w-4 h-4" />
@@ -177,7 +243,7 @@ const InquiriesPage = () => {
           </div>
         ) : (
           <>
-            <div className="admin-table-container">
+            <div className="admin-table-container mt-4">
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -194,7 +260,12 @@ const InquiriesPage = () => {
                       <td className="inquiry-title">
                         {inquiry.title}
                         <div className="text-xs text-gray-400">
-                          ({inquiry.targetType === 'product' ? '상품' : inquiry.targetType === 'facility' ? '시설' : '기타'}: {inquiry.targetName})
+                          ({inquiry.targetType === "product"
+                            ? "상품"
+                            : inquiry.targetType === "facility"
+                            ? "시설"
+                            : "기타"}
+                          : {inquiry.targetName})
                         </div>
                       </td>
                       <td>{inquiry.userName}</td>
@@ -205,7 +276,7 @@ const InquiriesPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleViewDetail(inquiry.id)}  
+                            onClick={() => handleViewDetail(inquiry.id)}
                           >
                             <MessageSquare className="w-5 h-5 text-green-600" />
                           </Button>
@@ -224,34 +295,50 @@ const InquiriesPage = () => {
               </table>
             </div>
             {totalFilteredPages > 1 && (
-              <div className="admin-pagination">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  이전
-                </Button>
-                {[...Array(totalFilteredPages)].map((_, i) => (
-                  <Button
-                    key={i + 1}
-                    variant={currentPage === i + 1 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </Button>
-                ))}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalFilteredPages}
-                >
-                  다음
-                </Button>
-              </div>
+              <div className="admin-pagination mt-4 flex justify-center items-center gap-2">
+  <button
+    onClick={() => handlePageChange(currentPage - 1)}
+    disabled={currentPage === 1}
+    className={`px-3 py-1 text-sm rounded-md border ${
+      currentPage === 1
+        ? "text-gray-400 border-gray-300 cursor-not-allowed"
+        : "text-gray-700 border-gray-300 hover:bg-gray-100"
+    }`}
+  >
+    이전
+  </button>
+
+  {[...Array(totalFilteredPages)].map((_, i) => {
+    const page = i + 1
+    const isActive = page === currentPage
+    return (
+      <button
+        key={page}
+        onClick={() => handlePageChange(page)}
+        className={`px-3 py-1 text-sm rounded-md border ${
+          isActive
+            ? "bg-blue-600 text-white border-blue-600"
+            : "text-gray-700 border-gray-300 hover:bg-gray-100"
+        }`}
+      >
+        {page}
+      </button>
+    )
+  })}
+
+  <button
+    onClick={() => handlePageChange(currentPage + 1)}
+    disabled={currentPage === totalFilteredPages}
+    className={`px-3 py-1 text-sm rounded-md border ${
+      currentPage === totalFilteredPages
+        ? "text-gray-400 border-gray-300 cursor-not-allowed"
+        : "text-gray-700 border-gray-300 hover:bg-gray-100"
+    }`}
+  >
+    다음
+  </button>
+</div>
+
             )}
           </>
         )}
@@ -260,4 +347,4 @@ const InquiriesPage = () => {
   )
 }
 
-export default InquiriesPage;
+export default InquiriesPage

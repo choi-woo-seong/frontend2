@@ -226,34 +226,42 @@ const mappedProducts = productData.map((p) => ({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-          {products.map((p) => (
-           <Link
-           key={p.id}
-           to={`/products/${p.id}`}
-           className="bg-white rounded-lg shadow overflow-hidden group"
-         >
-           <div className="aspect-square w-full overflow-hidden">
-             <img
-               src={p.images}
-               alt={p.name}
-               className="w-full h-full object-cover transition group-hover:scale-105"
-             />
-           </div>
-           <div className="p-4 space-y-2">
-             <div className="text-xs text-gray-500">{p.category}</div>
-             <div className="text-sm font-medium line-clamp-2">{p.name}</div>
-             <div className="flex items-center justify-between gap-2">
-               {p.discount && (
-                 <span className="text-sm text-gray-400 line-through">
-                   {p.priceOriginal}
-                 </span>
-               )}
-               <span className="text-blue-500 font-semibold">{p.priceDiscounted}</span>
-             </div>
-           </div>
-         </Link>
-         
-          ))}
+       {products.map((p) => (
+  <Link
+    key={p.id}
+    to={`/products/${p.id}`}
+    className="bg-white rounded-lg shadow overflow-hidden group"
+  >
+    <div className="aspect-square w-full overflow-hidden">
+      <img
+        src={p.images}
+        alt={p.name}
+        className="w-full h-full object-cover transition group-hover:scale-105"
+      />
+    </div>
+    <div className="p-4 space-y-2">
+      <div className="text-xs text-gray-500">{p.category}</div>
+      <div className="text-sm font-medium line-clamp-2">{p.name}</div>
+
+      {p.discount ? (
+        <>
+          <div className="flex items-baseline space-x-2">
+            <span className="text-sm text-gray-400 line-through">
+              {p.priceOriginal}
+            </span>
+            <span className="text-sm text-blue-500 font-semibold">
+              {p.discount}
+            </span>
+          </div>
+          <div className="text-lg font-bold text-black">{p.priceDiscounted}</div>
+        </>
+      ) : (
+        <div className="text-lg font-bold text-black">{p.priceOriginal}</div>
+      )}
+    </div>
+  </Link>
+))}
+
         </div>
       )}
     </div>
