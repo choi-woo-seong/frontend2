@@ -328,12 +328,19 @@ const facilityTypeOptions = {
       <div className="admin-stat-card">
   <div className="admin-stat-title">시설</div>
   <div className="admin-stat-value">{facilityCount}</div>
+  <div className="admin-stat-subinfo">
+    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+  </div>
 
 </div>
 
 <div className="admin-stat-card">
   <div className="admin-stat-title">상품</div>
   <div className="admin-stat-value">{stats.products.total}</div>
+  <div className="admin-stat-subinfo">
+    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+  </div>
+  
  
 </div>
 
