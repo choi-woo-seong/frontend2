@@ -22,7 +22,7 @@ import { useAuth } from "../hooks/use-auth";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
-  const { isLoggedIn, logout, loading } = useAuth();
+  const { isLoggedIn, logout } = useAuth()
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const navigate = useNavigate();
@@ -74,10 +74,6 @@ function HomePage() {
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  if (loading) {
-    return null  // 혹은 화면 상단에 스켈레톤이나 로딩 표시
-  }
 
   return (
     <div className="home-container">

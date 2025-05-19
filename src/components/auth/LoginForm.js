@@ -51,20 +51,23 @@ function LoginForm() {
     setError(null);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-        userId: loginData.userId,
-        password: loginData.password,
-      });
+     // 1) 실제 로그인 API 호출
+     const { data } = await axios.post(`${API_BASE_URL}/auth/login`, {
+       userId: loginData.userId,
+       password: loginData.password,
+    })
+     const { token, user: userObj, admin } = data
 
-      const { token, admin } = response.data;
-      await login({ userId: loginData.userId, password: loginData.password });
-      if (token) {
-        localStorage.setItem("accessToken", token);
-        if (admin) navigate("/admin/dashboard");
-        else navigate("/");
-      } else {
-        setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
-      }
+     // 2) 컨텍스트 로그인 메서드로 한 번에 저장
+     login({
+       token,
+       user: userObj || { userId: loginData.userId },
+       role: admin ? "ADMIN" : "USER",
+     })
+
+     // 3) 로그인 후 리디렉션
+     if (admin) navigate("/admin/dashboard")
+     else navigate("/")
     } catch (err) {
       console.error("로그인 에러:", err);
       setError(err.response?.data || "로그인에 실패했습니다.");

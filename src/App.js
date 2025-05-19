@@ -64,61 +64,54 @@ function MainLayout() {
 }
 
 function App() {
-  localStorage.removeItem("accessToken")
-  localStorage.removeItem("user")
-  localStorage.removeItem("userRole")
   return (
-    <Router>
-      <AuthProvider>
-        <FavoritesProvider>
-          <CartProvider>
-            <Routes>
-              {/* 공통 레이아웃 */}
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/products/:id" element={<ProductDetailPage />} />
-                <Route path="/products/:id/question" element={<ProductDetailPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-                <Route path="/facility/:id" element={<FacilityDetailPage />} />
-                <Route path="/facility/:id/cost" element={<FacilityCostPage />} />
-                <Route path="/facility/:id/review" element={<FacilityReviewPage />} />
-                <Route path="/facility/:id/question" element={<FacilityQuestionPage />} />
-                <Route path="/favorites" element={<FavoritesPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/payment/result" element={<PaymentResultPage />} />
-                <Route path="/notices" element={<NoticesPage />} />
-                <Route path="/notices/:id" element={<NoticeDetailPage />} />
-                <Route path="/welfare-news" element={<WelfareNewsPage />} />
-                <Route path="/government-programs" element={<GovernmentProgramsPage />} />
-                <Route path="/videos" element={<VideosPage />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/care-grade-test" element={<CareGradeTestPage />} />
-                <Route path="/map" element={<NaverMapPage />} />
-                <Route path="/recommend" element={<CareFacilityRecommendPage />} />
-              </Route>
+    <FavoritesProvider>
+      <CartProvider>
+        <Routes>
+          {/* 공통 레이아웃 */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/:id" element={<ProductDetailPage />} />
+            <Route path="/products/:id/question" element={<ProductDetailPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/facility/:id" element={<FacilityDetailPage />} />
+            <Route path="/facility/:id/cost" element={<FacilityCostPage />} />
+            <Route path="/facility/:id/review" element={<FacilityReviewPage />} />
+            <Route path="/facility/:id/question" element={<FacilityQuestionPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/payment/result" element={<PaymentResultPage />} />
+            <Route path="/notices" element={<NoticesPage />} />
+            <Route path="/notices/:id" element={<NoticeDetailPage />} />
+            <Route path="/welfare-news" element={<WelfareNewsPage />} />
+            <Route path="/government-programs" element={<GovernmentProgramsPage />} />
+            <Route path="/videos" element={<VideosPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/care-grade-test" element={<CareGradeTestPage />} />
+            <Route path="/map" element={<NaverMapPage />} />
+            <Route path="/recommend" element={<CareFacilityRecommendPage />} />
+          </Route>
 
-              {/* 관리자 전용 라우트 */}
-              <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-              <Route path="/admin/facilities" element={<FacilitiesListPage />} />
-              <Route path="/admin/products" element={<ProductsListPage />} />
-              <Route path="/admin/sales" element={<SalesManagementPage />} />
-              <Route path="/admin/notices/new" element={<NoticeCreatePage />} />
-              <Route path="/admin/questions" element={<InquiriesPage />} />
-              <Route path="/admin/products/new" element={<AdminProductsNewPage />} />
-              <Route path="/admin/products/:id/edit" element={<AdminProductsEditPage />} />
-              <Route path="/admin/facilities/new" element={<AdminFacilitiesNewPage />} />
-              <Route path="/admin/facilities/:id/edit" element={<AdminFacilitiesEditPage />} />
-              <Route path="/admin/questions/:id" element={<AdminQuestionsDetailPage />} />
-              <Route path="/admin/users" element={<AdminUserManagementPage />} />
-            </Routes>
-          </CartProvider>
-        </FavoritesProvider>
-      </AuthProvider>
-    </Router>
+          {/* 관리자 전용 라우트 */}
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/facilities" element={<FacilitiesListPage />} />
+          <Route path="/admin/products" element={<ProductsListPage />} />
+          <Route path="/admin/sales" element={<SalesManagementPage />} />
+          <Route path="/admin/notices/new" element={<NoticeCreatePage />} />
+          <Route path="/admin/questions" element={<InquiriesPage />} />
+          <Route path="/admin/products/new" element={<AdminProductsNewPage />} />
+          <Route path="/admin/products/:id/edit" element={<AdminProductsEditPage />} />
+          <Route path="/admin/facilities/new" element={<AdminFacilitiesNewPage />} />
+          <Route path="/admin/facilities/:id/edit" element={<AdminFacilitiesEditPage />} />
+          <Route path="/admin/questions/:id" element={<AdminQuestionsDetailPage />} />
+          <Route path="/admin/users" element={<AdminUserManagementPage />} />
+        </Routes>
+      </CartProvider>
+    </FavoritesProvider>
   );
 }
 

@@ -54,20 +54,19 @@ function ProductsPage() {
 
         const productData = await productRes.json();
         const categoryData = await categoryRes.json();
-console.log(productData)
-const mappedProducts = productData.map((p) => ({
-  id: p.id,
-  name: p.name,
-  priceOriginal: p.price.toLocaleString("ko-KR") + "원", // 정가
-  priceDiscounted: p.discountPrice
-    ? p.discountPrice.toLocaleString("ko-KR") + "원"
-    : p.price.toLocaleString("ko-KR") + "원", // 할인된 가격 (없으면 정가 사용)
-  discount: p.discountPrice
-    ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
-    : null,
-  images: p.images?.[0] || "/images/default-product.png",
-  category: p.categoryName || "기타",
-}))
+        const mappedProducts = productData.map((p) => ({
+          id: p.id,
+          name: p.name,
+          priceOriginal: p.price.toLocaleString("ko-KR") + "원", // 정가
+          priceDiscounted: p.discountPrice
+            ? p.discountPrice.toLocaleString("ko-KR") + "원"
+            : p.price.toLocaleString("ko-KR") + "원", // 할인된 가격 (없으면 정가 사용)
+          discount: p.discountPrice
+            ? Math.round((1 - p.discountPrice / p.price) * 100) + "%"
+            : null,
+          images: p.images?.[0] || "/images/default-product.png",
+          category: p.categoryName || "기타",
+        }))
 
         setAllProducts(mappedProducts)
         setCategories([{ id: "all", name: "전체" }, ...categoryData.map(cat => ({ id: cat.name, name: cat.name }))])
