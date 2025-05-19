@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
       // 관리자 계정 확인
       if (userId === "admin" && password === "admin123") {
         const adminUser = { id: 1, name: "관리자", email: "admin@example.com", role: "ADMIN" }
-        localStorage.setItem("token", "dummy-admin-token")
+        localStorage.setItem("accessToken", "dummy-admin-token")
         localStorage.setItem("user", JSON.stringify(adminUser))
         localStorage.setItem("userRole", "ADMIN")
 
@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
       // 일반 사용자 로그인 (더미 데이터)
       if (userId && password) {
         const normalUser = { id: 2, name: "일반사용자", email: `${userId}@example.com`, role: "USER" }
-        localStorage.setItem("token", "dummy-user-token")
+        localStorage.setItem("accessToken", "dummy-user-token")
         localStorage.setItem("user", JSON.stringify(normalUser))
         localStorage.setItem("userRole", "USER")
 
