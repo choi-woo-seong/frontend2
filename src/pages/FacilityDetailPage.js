@@ -108,20 +108,18 @@ export default function FacilityDetailPage() {
     fetchBookmarks();
   }, [id]);
 
- useEffect(() => {
-  const fetchQuestions = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/questions/facility/${id}`);
-      const data = res.data;
-      setQuestions(Array.isArray(data) ? data : []); // ✅ 배열 확인 후 설정
-    } catch (err) {
-      console.error("문의 불러오기 실패", err);
-      setQuestions([]); // ✅ 실패 시 빈 배열로
-    }
-  };
-  fetchQuestions();
-}, [id]);
-
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/questions/facility/${id}`);
+        setQuestions(res.data);
+      } catch (err) {
+        console.error("문의 불러오기 실패", err);
+      }
+    };
+    
+    fetchQuestions();
+  }, [id]);
 
   const handleQuestionSubmit = async () => {
     try {
@@ -458,14 +456,45 @@ console.log(user)
 
         )}
       </TabsContent>
- <TabsContent value="question" className="bg-white rounded-lg shadow p-6 overflow-auto">
+    
+<TabsContent value="question" className="bg-white rounded-lg shadow p-6 overflow-auto">
   {Array.isArray(questions) && questions.filter(q => q.userId === currentUser?.userId).length > 0 ? (
     <div className="space-y-4 mb-4">
       {questions
         .filter(q => q.userId === currentUser?.userId)
         .map((q) => (
           <div key={q.id} className="border-b pb-4">
-            ...
+            <div className="flex items-center mb-1">
+              <span className="text-sm font-medium">{q.userId}</span>
+              <span className="text-xs text-gray-500 ml-auto">
+                {new Date(q.createdAt).toLocaleString("ko-KR", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+            <p className="text-sm whitespace-pre-wrap">{q.content}</p>
+
+            {q.answer && (
+              <div className="mt-2 p-3 bg-gray-50 rounded">
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="font-medium text-sm">답변</h4>
+                  <span className="text-xs text-gray-500">
+                    {new Date(q.answer.createdAt).toLocaleString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <p className="text-sm whitespace-pre-wrap">{q.answer.content}</p>
+              </div>
+            )}
           </div>
         ))}
     </div>
