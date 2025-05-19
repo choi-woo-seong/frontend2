@@ -71,15 +71,20 @@ function FavoritesPage() {
     category,
     items: favorites.filter((f) => typeKorMap[f.type] === category),
   }));
+const handleClearAll = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    await axios.delete(`${API_BASE_URL}/bookmarks/deleteAll`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setFavorites([]); // ✅ 상태 비워서 UI도 즉시 갱신
+  } catch (error) {
+    console.error("찜 전체 삭제 실패:", error);
+  }
+};
 
-   const handleClearAll = async () => {
-    try {
-      await axios.delete(`${API_BASE_URL}/bookmarks/deleteAll`);
-      window.location.reload();
-    } catch (error) {
-      console.error("찜 전체 삭제 실패:", error);
-    }
-  };
 
   return (
     <div className="favorites-page">
