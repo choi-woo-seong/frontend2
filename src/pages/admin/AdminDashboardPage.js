@@ -169,13 +169,20 @@ const dayLabels = Array.from({ length: 7 }).map((_, i) => {
   const d = new Date();
   d.setDate(d.getDate() - (6 - i));              // 6일 전부터 오늘까지
   return `${d.getMonth() + 1}/${d.getDate()}`;   // e.g. "5/14"
-});
+}); 
+
+const salesByDate = dailyRevenue.reduce((acc, { date, amount }) => {
+   const d = new Date(date);
+   const key = `${d.getMonth() + 1}/${d.getDate()}`;  // e.g. "5/14"
+   acc[key] = amount;
+   return acc;
+ }, {});
 
 const revenueChartData = {
   labels: dayLabels,
   datasets: [{
     label: "일별 매출",
-    data: dayLabels.map((_, idx) => dailyRevenue[idx]?.amount || 0),
+    data: dayLabels.map((label) => salesByDate[label] ?? 0),
     borderColor: "#9775FA",
     backgroundColor: (context) => {
       const chart = context.chart;
@@ -239,11 +246,20 @@ const chartOptions = {
     },
   },
 };
+
+const signupByDate = dailyUserGrowth.reduce((acc, { date, count }) => {
+   const d = new Date(date);
+   const key = `${d.getMonth() + 1}/${d.getDate()}`;  // "5/14"
+   acc[key] = count;
+   return acc;
+ }, {});
+
+
 const userChartData = {
   labels: dayLabels,
   datasets: [{
     label: "일별 사용자 증가",
-    data: dayLabels.map((_, i) => dailyUserGrowth[i]?.count || 0),
+    data: dayLabels.map(label => signupByDate[label] ?? 0),
     backgroundColor: "#D0BFFF",  // 💜 라벤더 파스텔
     borderColor: "#9775FA",      // 💜 진한 포인트
     borderWidth: 2,
@@ -319,6 +335,8 @@ const facilityTypeOptions = {
     },
   },
 }
+
+console.log(userChartData)
   return (
     <Layout>
       <div className="admin-dashboard">
@@ -328,7 +346,7 @@ const facilityTypeOptions = {
   <div className="admin-stat-title">시설</div>
   <div className="admin-stat-value">{facilityCount}</div>
   <div className="admin-stat-subinfo">
-    <span>신규(이번 달): {facilityCount}</span>
+    <span>신규: {facilityCount}</span>
   </div>
 
 </div>
@@ -337,7 +355,7 @@ const facilityTypeOptions = {
   <div className="admin-stat-title">상품</div>
   <div className="admin-stat-value">{stats.products.total}</div>
   <div className="admin-stat-subinfo">
-    <span>신규(이번 달): {stats.products.total}</span>
+    <span>신규: {stats.products.total}</span>
   </div>
   
  
@@ -347,7 +365,7 @@ const facilityTypeOptions = {
   <div className="admin-stat-title">사용자</div>
   <div className="admin-stat-value">{userStats.totalUsers}</div>
   <div className="admin-stat-subinfo">
-    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+    <span>신규: {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
   </div>
 </div>
 

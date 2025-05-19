@@ -64,7 +64,9 @@ function MainLayout() {
 }
 
 function App() {
-
+  localStorage.removeItem("accessToken")
+  localStorage.removeItem("user")
+  localStorage.removeItem("userRole")
   return (
     <Router>
       <AuthProvider>

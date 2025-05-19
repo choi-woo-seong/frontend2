@@ -16,22 +16,31 @@ export function AuthProvider({ children }) {
 
   // 초기 인증 상태 확인
   useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem("accessToken")
-      const userData = localStorage.getItem("user")
-      const userRole = localStorage.getItem("userRole")
+    const token = localStorage.getItem("accessToken")
+    const userData = localStorage.getItem("user")
 
-      if (token && userData) {
-        setUser(JSON.parse(userData))
-        setIsLoggedIn(true)
-        setIsAdmin(userRole === "ADMIN")
-      }
-
-      setLoading(false)
+    if (token && userData) {
+      // 정상 로그인 정보가 모두 있을 때만
+      setUser(JSON.parse(userData))
+      setIsLoggedIn(true)
+      setIsAdmin(localStorage.getItem("userRole")==="ADMIN")
+    } else {
+      // 토큰만 남아 있거나 둘 다 없으면 모두 지워 버리기
+      localStorage.removeItem("accessToken")
+      localStorage.removeItem("user")
+      localStorage.removeItem("userRole")
+      setUser(null)
+      setIsLoggedIn(false)
+      setIsAdmin(false)
     }
+    setLoading(false)
+   }, [])
 
-    checkAuth()
-  }, [])
+  // 로딩 중일 땐 children 렌더링을 잠시 멈춰 주세요.
+  if (loading) {
+    return null // 혹은 <LoadingSpinner /> 같은 컴포넌트
+  }
+
 
   // 로그인 함수
   const login = async (credentials) => {
