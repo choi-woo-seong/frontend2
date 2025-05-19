@@ -78,25 +78,16 @@ const handleClearAll = async () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      
     });
+      window.location.reload();
     setFavorites([]); // ✅ 상태 비워서 UI도 즉시 갱신
   } catch (error) {
     console.error("찜 전체 삭제 실패:", error);
   }
 };
 
-<<<<<<< HEAD
 
-  const handleClearAll = async () => {
-    try {
-      await axios.delete(`${API_BASE_URL}/bookmarks/deleteAll`);
-      window.location.reload();
-    } catch (error) {
-      console.error("찜 전체 삭제 실패:", error);
-    }
-  };
-=======
->>>>>>> d074b31c504aa5dbccc242aaafac01615388e09c
 
   return (
     <div className="favorites-page">
