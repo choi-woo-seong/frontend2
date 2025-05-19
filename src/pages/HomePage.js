@@ -22,21 +22,16 @@ import { useAuth } from "../hooks/use-auth";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
-  const [isLoggin, setIsLoggin] = useState(false);
+
+  const { isLoggedIn, logout } = useAuth();
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
   const navigate = useNavigate();
-  const { logout } = useAuth();
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    setIsLoggin(!!token);
-  }, []);
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      setIsLoggin(false);
       localStorage.removeItem("accessToken");
       alert("로그아웃 되었습니다.");
       navigate("/");
@@ -90,8 +85,8 @@ function HomePage() {
             <img src={logo} alt="로고" className="logo" />
           </div>
           <div className="auth-buttons flex items-center space-x-2">
-            {isLoggin ? (
-              <Button variant="ghost" size="sm" className="auth-button" onClick={handleLogout}>
+            {isLoggedIn  ? (
+              <Button variant="ghost" size="sm" className="auth-button" onClick={logout}>
                 로그아웃
               </Button>
             ) : (

@@ -7,11 +7,13 @@ import axios from "axios"
 import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
+import { useAuth } from "../../hooks/use-auth"
 import "./login.css"
 
 const API_BASE_URL = process.env.REACT_APP_API_URL
 
 function LoginForm() {
+  const { login } = useAuth();
   const navigate = useNavigate()
   const [loginData, setLoginData] = useState({
     userId: "",
@@ -55,6 +57,7 @@ function LoginForm() {
       });
 
       const { token, admin } = response.data;
+      await login({ userId: loginData.userId, password: loginData.password });
       if (token) {
         localStorage.setItem("accessToken", token);
         if (admin) navigate("/admin/dashboard");
