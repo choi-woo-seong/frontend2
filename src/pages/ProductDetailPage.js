@@ -164,7 +164,7 @@ setProduct(prev => ({
           },
           body: JSON.stringify({
             productId: product.id,
-            userName:  user?.user_name || "익명",
+             userId: user?.userId || "익명", // ✅ 수정된 부분
             rating:    newReviewRating,
             content:   newReviewContent,
           })
@@ -413,7 +413,8 @@ setProduct(prev => ({
             }`}
           />
         ))}
-        <span className="text-sm font-medium ml-2">{r.userName}</span>
+       <span className="text-sm font-medium ml-2">{r.userId}</span>  // ✅ 기존 userName → userId
+
         <span className="text-xs text-gray-500 ml-auto">
           {formatDate(r.createdAt)}
         </span>
