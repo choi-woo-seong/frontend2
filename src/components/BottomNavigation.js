@@ -18,40 +18,50 @@ function BottomNavigation() {
   }, [pathname]);
 
   // 찜한 목록 개수 가져오기
-  const fetchFavorites = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("찜 목록:", res.data);
-      setFavorites(res.data);
-    } catch (err) {
-      console.error("찜한 시설 목록 불러오기 실패:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const fetchFavorites = async () => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    setFavorites([]); // 로그인 안 했으면 그냥 빈 배열로 설정
+    return;
+  }
+  try {
+    const res = await axios.get(`${API_BASE_URL}/bookmarks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("찜 목록:", res.data);
+    setFavorites(res.data);
+  } catch (err) {
+    console.error("찜한 시설 목록 불러오기 실패:", err);
+    setFavorites([]); // 에러나면 일단 비워버리기
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // 장바구니 개수 가져오기
-  const fetchCart = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await axios.get(`${API_BASE_URL}/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("장바구니 목록:", res.data);
-      setCart(res.data);
-    } catch (err) {
-      console.error("찜한 시설 목록 불러오기 실패:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const fetchCart = async () => {
+  const token = localStorage.getItem("accessToken");
+  if (!token) {
+    setCart([]); // 로그인 안 했으면 장바구니도 비우기
+    return;
+  }
+  try {
+    const res = await axios.get(`${API_BASE_URL}/cart`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("장바구니 목록:", res.data);
+    setCart(res.data);
+  } catch (err) {
+    console.error("장바구니 목록 불러오기 실패:", err);
+    setCart([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <>
