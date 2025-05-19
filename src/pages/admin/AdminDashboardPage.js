@@ -319,7 +319,6 @@ const facilityTypeOptions = {
     },
   },
 }
-
   return (
     <Layout>
       <div className="admin-dashboard">
@@ -329,7 +328,7 @@ const facilityTypeOptions = {
   <div className="admin-stat-title">시설</div>
   <div className="admin-stat-value">{facilityCount}</div>
   <div className="admin-stat-subinfo">
-    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+    <span>신규(이번 달): {facilityCount}</span>
   </div>
 
 </div>
@@ -338,7 +337,7 @@ const facilityTypeOptions = {
   <div className="admin-stat-title">상품</div>
   <div className="admin-stat-value">{stats.products.total}</div>
   <div className="admin-stat-subinfo">
-    <span>신규(이번 달): {userStats.dailyGrowth.reduce((sum, u) => sum + u.count, 0)}</span>
+    <span>신규(이번 달): {stats.products.total}</span>
   </div>
   
  
