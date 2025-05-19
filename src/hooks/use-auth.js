@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   // 초기 인증 상태 확인
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("accessToken")
       const userData = localStorage.getItem("user")
       const userRole = localStorage.getItem("userRole")
 
@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
 
   // 로그아웃 함수
   const logout = () => {
-    localStorage.removeItem("token")
+    localStorage.removeItem("accessToken")
     localStorage.removeItem("user")
     localStorage.removeItem("userRole")
 
