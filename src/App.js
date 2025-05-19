@@ -44,6 +44,7 @@ import "./App.css";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
 import { FavoritesProvider } from "./hooks/use-favorites";
+import CareFacilityRecommendPage from "./pages/CareFacilityRecommendPage";
 
 /**
  * 메인 레이아웃: Outlet + BottomNavigation + Chatbot
@@ -95,6 +96,7 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/care-grade-test" element={<CareGradeTestPage />} />
                 <Route path="/map" element={<NaverMapPage />} />
+                <Route path="/recommend" element={<CareFacilityRecommendPage />} />
               </Route>
 
               {/* 관리자 전용 라우트 */}
