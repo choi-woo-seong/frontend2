@@ -23,6 +23,7 @@ function SignupForm() {
   const [currentStep, setCurrentStep] = useState(SignupStep.BasicInfo)
   const [formData, setFormData] = useState({
     userId: "",
+    name: "",
     email: "",
     phone: "",
     password: "",
@@ -38,6 +39,7 @@ function SignupForm() {
   })
   const [errors, setErrors] = useState({
     userId: "",
+    name:"",
     email: "",
     phone: "",
   })
@@ -60,6 +62,7 @@ function SignupForm() {
         // ✅ 서버로 회원가입 데이터 전송
         await axios.post(`${API_BASE_URL}/auth/signup`, {
           userId: formData.userId,
+          name: formData.name,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
@@ -192,7 +195,7 @@ function SignupForm() {
           )}
         </div>
 
-        {/* 아이디 */}
+        {/* 이름 */}
         <div className="space-y-2">
           <Label>이름</Label>
           <Input
@@ -202,9 +205,9 @@ function SignupForm() {
             onChange={handleChange}
             className={errors.name ? "border-red-500" : ""}
           />
-          {errors.userId && (
+          {errors.name && (
             <p className="text-sm text-red-500 mt-1 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-1" /> {errors.userId}
+              <AlertCircle className="w-4 h-4 mr-1" /> {errors.name}
             </p>
           )}
         </div>
