@@ -22,13 +22,10 @@ import { useAuth } from "../hooks/use-auth";
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 function HomePage() {
-
   const { isLoggedIn, logout } = useAuth();
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-
   const navigate = useNavigate();
-
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -51,7 +48,6 @@ function HomePage() {
           typeof p.discountPrice === "number"
             ? p.discountPrice
             : parseInt(p.discountPrice);
-
         const discount =
           price && discountPrice
             ? Math.round((1 - discountPrice / price) * 100) + "%"
@@ -85,7 +81,7 @@ function HomePage() {
             <img src={logo} alt="로고" className="logo" />
           </div>
           <div className="auth-buttons flex items-center space-x-2">
-            {isLoggedIn  ? (
+            {isLoggedIn ? (
               <Button variant="ghost" size="sm" className="auth-button" onClick={logout}>
                 로그아웃
               </Button>
@@ -106,65 +102,27 @@ function HomePage() {
       <main className="main-content">
         <NoticeBar />
 
-        {/* 슬라이드 배너 */}
+        {/* ✅ 슬라이드 배너 전체 너비 꽉 차도록 수정 */}
         <div className="hero-section">
           <Swiper
             modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
-            spaceBetween={20}
+            spaceBetween={0}
             slidesPerView={1}
             loop={true}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
           >
-            
-            <SwiperSlide>
-              <div className="hero-banner">
-                <div className="hero-text">
-                  <div className="hero-tags">
-                    <span className="tag yellow">요양 고민</span>
-                    <span className="tag pink">상담</span>
-                    <span className="tag blue">정보</span>
-                  </div>
-                  <h1 className="hero-title">함께 소통해요!</h1>
+            {[1, 2, 3, 4].map((n) => (
+              <SwiperSlide key={n}>
+                <div className="w-full h-64 sm:h-80 md:h-[400px] lg:h-[500px] overflow-hidden">
+                  <img
+                    src={`/images/사진${n}.png`}
+                    alt={`배너${n}`}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <img src="/images/compassionate-elder-care-chat.png" alt="배너1" className="hero-image" />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="hero-banner bg-yellow-300">
-                <div className="hero-text">
-                  <div className="hero-tags">
-                    <span className="tag yellow">요양 고민</span>
-                    <span className="tag pink">상담</span>
-                    <span className="tag blue">정보</span>
-                  </div>
-                  <h1 className="hero-title">함께 소통해요 😊</h1>
-                </div>
-                <img src="/mnt/data/90d7b929-9f8b-422e-ad95-979a334f8256.png" alt="배너2" className="hero-image" />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="hero-banner bg-green-200">
-                <div className="hero-text">
-                  <div className="hero-tags">
-                    <span className="tag blue">복지용구</span>
-                  </div>
-                  <h1 className="hero-title">설레는 봄 기획전</h1>
-                </div>
-                <img src="/mnt/data/e2bb653e-c1c8-4deb-bd0a-d5f4a1d343cf.png" alt="배너3" className="hero-image" />
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="hero-banner bg-pink-200">
-                <div className="hero-text">
-                  <div className="hero-tags">
-                    <span className="tag pink">가정의 달</span>
-                  </div>
-                  <h1 className="hero-title">선물대전 기획전</h1>
-                </div>
-                <img src="/mnt/data/78bbcca7-e8e6-42e2-bd3c-fab0cd979f80.png" alt="배너4" className="hero-image" />
-              </div>
-            </SwiperSlide>
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
 
