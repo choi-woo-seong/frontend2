@@ -413,7 +413,8 @@ setProduct(prev => ({
             }`}
           />
         ))}
-       <span className="text-sm font-medium ml-2">{r.userId}</span>  // ✅ 기존 userName → userId
+     <span className="text-sm font-medium ml-2">{r.userName}</span>
+
 
         <span className="text-xs text-gray-500 ml-auto">
           {formatDate(r.createdAt)}
