@@ -64,7 +64,7 @@ function LoginForm() {
       }
     } catch (err) {
       console.error("로그인 에러:", err);
-      setError(err.response?.data?.message || "로그인에 실패했습니다.");
+      setError(err.response?.data || "로그인에 실패했습니다.");
     } finally {
       setIsLoading(false);
     }

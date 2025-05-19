@@ -559,7 +559,6 @@ setProduct(prev => ({
         </div>
       </div>
 
-      <RecommendedSection />
     </div>
   )
 }
