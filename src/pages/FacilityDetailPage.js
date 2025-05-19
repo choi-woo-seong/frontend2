@@ -169,34 +169,35 @@ export default function FacilityDetailPage() {
       console.error("찜 토글 에러", err);
     }
   };
+const handleReviewSubmit = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.post(
+      `${API_BASE_URL}/facility-reviews`,
+      {
+        facilityId: Number(id),
+        rating: newReviewRating,
+        content: newReviewContent,
+       userName: user?.userId || "익명", // ✅ 사용자 ID로 보내기
 
-  const handleReviewSubmit = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.post(
-        `${API_BASE_URL}/facility-reviews`,
-        {
-          facilityId: Number(id),
-          rating: newReviewRating,
-          content: newReviewContent,
-          userName: user?.name || "익명",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setFacilityReviews([...facilityReviews, response.data]);
-      setShowReviewForm(false);
-      setNewReviewRating(1);
-      setNewReviewContent("");
-    } catch (error) {
-      console.error("리뷰 등록 실패", error);
-      alert("리뷰 등록에 실패했습니다.");
-    }
-  };
+      }
+    );
+    setFacilityReviews([...facilityReviews, response.data]);
+    setShowReviewForm(false);
+    setNewReviewRating(1);
+    setNewReviewContent("");
+  } catch (error) {
+    console.error("리뷰 등록 실패", error);
+    alert("리뷰 등록에 실패했습니다.");
+  }
+};
+
 
   const avgRating = facilityReviews.length > 0
     ? (facilityReviews.reduce((sum, r) => sum + r.rating, 0) / facilityReviews.length).toFixed(1)
