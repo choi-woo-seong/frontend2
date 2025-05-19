@@ -64,7 +64,20 @@ const RegionSelectorModal = ({ isOpen, onClose, onSelectRegion }) => {
  return (
   <div className={`region-modal-overlay ${isOpen ? "visible" : "hidden"}`}>
     <div className="region-modal-container">
-      <button onClick={onClose} className="region-close-btn">×</button>
+     <button
+  onClick={() => {
+    if (activeTab === "시/군/구") {
+      setActiveTab("전체");
+      setSelectedDistrict(null);
+    } else {
+      onClose();
+    }
+  }}
+  className="region-close-btn"
+>
+  ×
+</button>
+
 
       <div className="region-title">지역 선택</div>
       <hr className="region-divider" />
