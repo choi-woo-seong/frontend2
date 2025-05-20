@@ -208,8 +208,7 @@ const handleReviewSubmit = async () => {
   if (!facility) return <div className="p-4 text-center">시설 정보를 찾을 수 없습니다.</div>;
 
 
-console.log(questions)
-console.log(user)
+console.log("시설 정보 : ",facility)
  return (
   <div className="container mx-auto px-4 py-4">
 

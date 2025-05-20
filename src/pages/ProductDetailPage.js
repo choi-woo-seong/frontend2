@@ -139,6 +139,12 @@ setProduct(prev => ({
         alert("장바구니는 로그인 후 이용 가능합니다.");
         return;
       }
+
+      if(product.stockQuantity === 0){
+        alert("재고가 없습니다. 관리자에게 문의하세요.");
+        return;
+      }
+      
       const res = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
         method: "POST",
         headers: {

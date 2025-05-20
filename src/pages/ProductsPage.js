@@ -57,6 +57,7 @@ function ProductsPage() {
         const mappedProducts = productData.map((p) => ({
           id: p.id,
           name: p.name,
+          stockQuantity: p.stockQuantity,
           priceOriginal: p.price.toLocaleString("ko-KR") + "원", // 정가
           priceDiscounted: p.discountPrice
             ? p.discountPrice.toLocaleString("ko-KR") + "원"
@@ -216,6 +217,7 @@ function ProductsPage() {
         </div>
       )}
 
+       {/* ─── 상품 리스트 ─── */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
           {[1, 2, 3].map((i) => (
@@ -224,43 +226,58 @@ function ProductsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {products.map((p) => {
+            console.log(p)
+            const isSoldOut = p.stockQuantity <= 0   // ← 품절 여부 판단
 
-       {products.map((p) => (
-  <Link
-    key={p.id}
-    to={`/products/${p.id}`}
-    className="bg-white rounded-lg shadow overflow-hidden group"
-  >
-    <div className="aspect-square w-full overflow-hidden">
-      <img
-        src={p.images}
-        alt={p.name}
-        className="w-full h-full object-cover transition group-hover:scale-105"
-      />
-    </div>
-    <div className="p-4 space-y-2">
-      <div className="text-xs text-gray-500">{p.category}</div>
-      <div className="text-sm font-medium line-clamp-2">{p.name}</div>
+            return (
+              <Link
+                key={p.id}
+                to={`/products/${p.id}`}
+                className={`relative bg-white rounded-lg shadow overflow-hidden group
+                  ${isSoldOut ? "opacity-50 pointer-events-none" : ""}`}
+              >
+                {/* 품절 뱃지 */}
+                {isSoldOut && (
+                  <span className="absolute top-2 right-2 z-20 bg-red-600 text-white text-sm font-bold uppercase px-3 py-1 rounded-full shadow-md ring-2 ring-white">
+                    품절
+                  </span>
+                )}
 
-      {p.discount ? (
-        <>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-sm text-gray-400 line-through">
-              {p.priceOriginal}
-            </span>
-            <span className="text-sm text-blue-500 font-semibold">
-              {p.discount}
-            </span>
-          </div>
-          <div className="text-lg font-bold text-black">{p.priceDiscounted}</div>
-        </>
-      ) : (
-        <div className="text-lg font-bold text-black">{p.priceOriginal}</div>
-      )}
-    </div>
-  </Link>
-))}
+                <div className="aspect-square w-full overflow-hidden">
+                  <img
+                    src={p.images}
+                    alt={p.name}
+                    className="w-full h-full object-cover transition group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-4 space-y-2">
+                  <div className="text-xs text-gray-500">{p.category}</div>
+                  <div className="text-sm font-medium line-clamp-2">{p.name}</div>
 
+                  {p.discount ? (
+                    <>
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-sm text-gray-400 line-through">
+                          {p.priceOriginal}
+                        </span>
+                        <span className="text-sm text-blue-500 font-semibold">
+                          {p.discount}
+                        </span>
+                      </div>
+                      <div className="text-lg font-bold text-black">
+                        {p.priceDiscounted}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-lg font-bold text-black">
+                      {p.priceOriginal}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            )
+          })}
         </div>
       )}
     </div>
