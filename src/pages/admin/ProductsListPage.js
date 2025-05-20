@@ -154,10 +154,26 @@ const ProductsListPage = () => {
 
   // 재고 상태에 따른 배지
   const getStockBadge = (stock) => {
-    if (stock === 0) return <Badge variant="danger">품절</Badge>;
-    if (stock < 10) return <Badge variant="warning">부족</Badge>;
-    return <Badge variant="success">충분</Badge>;
-  }
+  if (stock === 0) {
+      return (
+        <span className="inline-block bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+          품절
+        </span>
+      );
+    }
+    if (stock < 10) {
+      return (
+        <span className="inline-block bg-yellow-400 text-black text-xs font-semibold px-2 py-1 rounded">
+          부족
+        </span>
+      );
+    }
+    return (
+      <span className="inline-block bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded">
+        충분
+      </span>
+    );
+  };
 
   // 가격 포맷팅
   const formatPrice = (price) => {
@@ -251,7 +267,7 @@ const ProductsListPage = () => {
             </select>
           </div>
         </div>
-
+        
         {filteredProducts.length === 0 ? (
           <div className="admin-empty-state">
             <p>검색 조건에 맞는 상품이 없습니다.</p>
@@ -275,10 +291,11 @@ const ProductsListPage = () => {
                       <td>{product.name}</td>
                       <td>{product.category}</td>
                       <td>{formatPrice(product.price)}</td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-800">{product.stock}개</div>
-                      </td>
-                      <td className="px-6 py-4">
+                      {/* 재고 뱃지 표시 */}
+                     <td className="px-6 py-4 align-middle">
+                      <span className="text-sm text-gray-700">{product.stock}개</span>
+                    </td>
+                     <td className="px-6 py-4">
                         <div className="flex justify-start items-center gap-5">
                           <Button variant="ghost" size="icon" onClick={() => handleEdit(product.id)}>
                             <Pencil className="w-5 h-5 text-orange-500" />
@@ -286,6 +303,7 @@ const ProductsListPage = () => {
                           <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
                             <Trash2 className="w-5 h-5 text-red-500" />
                           </Button>
+                          {getStockBadge(product.stock)}
                         </div>
                       </td>
                     </tr>
@@ -293,7 +311,7 @@ const ProductsListPage = () => {
                 </tbody>
               </table>
             </div>
-
+            <p>※ 재고 기준은 10개 입니다. 10개 초과이면 '충분', 10개 미만이면 '부족'</p>
             {totalFilteredPages > 1 && (
               <div className="admin-pagination">
                 <Button

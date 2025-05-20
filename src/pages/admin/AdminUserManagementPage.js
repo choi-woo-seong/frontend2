@@ -111,7 +111,7 @@ const AdminUserManagementPage = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredMembers.map((member) => (
                   <tr key={member.id} className="h-14">
-                    <td className="px-6 py-2">{member.id}</td>
+                    <td className="px-6 py-2">{member.userId || member.oauthId} </td>
                     <td className="px-6 py-2 font-medium text-gray-900">{member.name ?? '-'}</td>
                     <td className="px-6 py-2 text-gray-700">{member.email ?? '-'}</td>
                     <td className="px-6 py-2 text-gray-700">{member.phone ?? '-'}</td>

@@ -78,14 +78,19 @@ const SalesManagementPage = () => {
         <h1>판매 현황 관리</h1>
 
         {/* ✅ 요약 카드 */}
-        <div className="sales-summary">
-          <div className="summary-card">
-            <h3>총 매출</h3>
-            <p className="summary-value">{formatCurrency(salesSummary.totalSales)}</p>
+        <div className="sales-summary grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          {/* 카드 공통 스타일: bg-white, 패딩, 둥근 모서리, 그림자, 텍스트 중앙 */}
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-600 mb-2">총 매출</h3>
+            <p className="text-3xl font-bold text-gray-900">
+              {formatCurrency(salesSummary.totalSales)}
+            </p>
           </div>
-          <div className="summary-card">
-            <h3>총 주문 수</h3>
-            <p className="summary-value">{salesSummary.totalOrders}건</p>
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-600 mb-2">총 주문 수</h3>
+            <p className="text-3xl font-bold text-gray-900">
+              {salesSummary.totalOrders}건
+            </p>
           </div>
         </div>
 
@@ -94,7 +99,7 @@ const SalesManagementPage = () => {
           <table className="admin-table">
             <thead>
               <tr>
-                <th className="px-6 py-4">주문 ID</th>
+                <th className="px-6 py-4">번호</th>
                 <th className="px-6 py-4">주문자</th>
                 <th className="px-6 py-4">상품명</th>
                 <th className="px-6 py-4">수량</th>
@@ -104,9 +109,10 @@ const SalesManagementPage = () => {
             </thead>
             <tbody>
               {orders.length > 0 ? (
-                orders.map((order) => (
+                orders.map((order, idx) => (
                   <tr key={order.orderId} className="h-16">
-                    <td className="px-6 py-4">{order.orderId}</td>
+                    {/* idx + 1 사용 */}
+                    <td className="px-6 py-4">{idx + 1}</td>
                     <td className="px-6 py-4">{order.userName}</td>
                     <td className="px-6 py-4">
                       {order.productName.split(",").map((name, idx) => (
