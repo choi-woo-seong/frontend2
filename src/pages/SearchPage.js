@@ -31,6 +31,31 @@ const typeMap = {
   요양원: "nursing_home",
   실버타운: "silver_town",
 };
+function convertGradeToLetter(grade) {
+  const trimmed = (grade || "").trim();
+  const map = {
+    "1등급": "A",
+    "2등급": "B",
+    "3등급": "C",
+    "4등급": "D",
+    "5등급": "E",
+    "등급제외": "등급제외",
+  };
+  return map[trimmed] || trimmed;
+}
+
+function convertLetterToNumberGrade(letter) {
+  const map = {
+    A: "1등급",
+    B: "2등급",
+    C: "3등급",
+    D: "4등급",
+    E: "5등급",
+    등급제외: "등급제외",
+  };
+  return map[letter] || letter;
+}
+
 
 const gradeMap = {
   "1등급": "1등급",
@@ -110,64 +135,71 @@ function SearchPage() {
 
   fetchBookmarks();
 }, []); 
+const sortMap = {
+  추천순: "recent",      // 기본 정렬 (백엔드에서 최신순 정렬해주는 경우)
+  조회순: "view",
+  상담많은순: "consult",
+  찜많은순: "like",
+};
 
-  const fetchFacilities = async () => {
-    setLoading(true);
-    try {
-      const queryParams = new URLSearchParams();
 
-      if (typeMap[category]) {
-        queryParams.append("type", typeMap[category]);
-      }
+const fetchFacilities = async () => {
+  setLoading(true);
+  try {
+    const queryParams = new URLSearchParams();
 
-      if (selectedRegion && selectedRegion !== "전체") {
-        queryParams.append("region", selectedRegion);
-      }
-
-      if (selectedFacilityType !== "시설규모") {
-        queryParams.append(
-          "facilitySize",
-          facilitySizeMap[selectedFacilityType]
-        );
-      }
-
-      if (selectedEvaluationGrade !== "평가등급") {
-        queryParams.append("grade", gradeMap[selectedEvaluationGrade]);
-      }
-
-      if (selectedSort) {
-        queryParams.append("sort", selectedSort); // 예: view / consult / like
-      }
-
-      const url = `${API_BASE_URL}/facility/search?${queryParams.toString()}`;
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const sorted = data
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // 🔥 최신순 정렬
-        .map((fac) => ({
-          id: fac.id,
-          name: fac.name,
-          address: fac.address,
-          category: category,
-          imgSrc: fac.imageUrls?.[0] || "/placeholder.svg",
-          grade: fac.grade || null,
-          facilitySize: fac.facilitySize || null,
-          establishedYear: fac.establishedYear || null,
-          rating: fac.rating || 4.3,
-          reviewCount: fac.reviewCount || 0,
-        }));
-
-      setFacilities(sorted);
-      setError(null);
-    } catch (err) {
-      console.error("시설 불러오기 실패:", err);
-      setError("시설 정보를 불러올 수 없습니다.");
-    } finally {
-      setLoading(false);
+    if (typeMap[category]) {
+      queryParams.append("type", typeMap[category]);
     }
-  };
+
+    if (selectedRegion && selectedRegion !== "전체") {
+      queryParams.append("region", selectedRegion);
+    }
+
+    if (selectedFacilityType !== "시설규모") {
+      queryParams.append(
+        "facilitySize",
+        facilitySizeMap[selectedFacilityType]
+      );
+    }
+
+    if (selectedEvaluationGrade !== "평가등급") {
+      queryParams.append("grade", selectedEvaluationGrade); // ✅ 알파벳 그대로 전달
+    }
+
+  if (selectedSort && sortMap[selectedSort]) {
+   queryParams.append("sort", sortMap[selectedSort]);
+ }
+
+    const url = `${API_BASE_URL}/facility/search?${queryParams.toString()}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const sorted = data
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .map((fac) => ({
+        id: fac.id,
+        name: fac.name,
+        address: fac.address,
+        category: category,
+        imgSrc: fac.imageUrls?.[0] || "/placeholder.svg",
+        grade: fac.grade || null,
+        facilitySize: fac.facilitySize || null,
+        establishedYear: fac.establishedYear || null,
+        rating: fac.rating || 4.3,
+        reviewCount: fac.reviewCount || 0,
+      }));
+
+    setFacilities(sorted);
+    setError(null);
+  } catch (err) {
+    console.error("시설 불러오기 실패:", err);
+    setError("시설 정보를 불러올 수 없습니다.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // click 이벤트 (viewCount +1)
   const handleIncreaseView = async (id) => {
@@ -224,12 +256,14 @@ function SearchPage() {
       return false;
     }
 
-    if (
-      selectedEvaluationGrade !== "평가등급" &&
-      f.grade !== gradeMap[selectedEvaluationGrade]
-    ) {
-      return false;
-    }
+if (
+  selectedEvaluationGrade !== "평가등급" &&
+  convertGradeToLetter(f.grade).toUpperCase() !== selectedEvaluationGrade.toUpperCase()
+) {
+  return false;
+}
+
+
 
     return true;
   });
@@ -355,11 +389,12 @@ function SearchPage() {
                   <div className="facility-text">
                     <h3>{fac.name}</h3>
                     <p>{fac.address}</p>
-                    {fac.grade && (
-                      <span className="facility-tag grade-tag">
-                        등급: {fac.grade}
-                      </span>
-                    )}
+                   {fac.grade && (
+  <span className="facility-tag grade-tag">
+    등급: {convertGradeToLetter(fac.grade)}
+  </span>
+)}
+
                     {fac.facilitySize && (
                       <span className="facility-tag size-tag">
                         규모: {fac.facilitySize}
@@ -410,19 +445,16 @@ function SearchPage() {
           onClose={() => setFacilitySizeModalOpen(false)}
         />
       )}
-      {evaluationGradeModalOpen && (
-        <FilterModal
-          title="평가등급"
-          options={
-            category === "요양병원"
-              ? ["1등급", "2등급", "3등급", "4등급", "5등급", "등급제외"]
-              : ["A", "B", "C", "D", "E", "등급제외"]
-          }
-          selectedOption={selectedEvaluationGrade}
-          onApply={(opt) => setSelectedEvaluationGrade(opt || "평가등급")}
-          onClose={() => setEvaluationGradeModalOpen(false)}
-        />
-      )}
+  {evaluationGradeModalOpen && (
+  <FilterModal
+    title="평가등급"
+    options={["A", "B", "C", "D", "E", "등급제외"]}
+    selectedOption={selectedEvaluationGrade}
+    onApply={(opt) => setSelectedEvaluationGrade(opt || "평가등급")}
+    onClose={() => setEvaluationGradeModalOpen(false)}
+  />
+)}
+
       {sortModalOpen && (
         <FilterModal
           title="정렬방식"

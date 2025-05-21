@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function FilterModal({ title, options, selectedOption, onSelect, onApply, onClose }) {
+function FilterModal({ title, options, selectedOption, onApply, onClose }) {
   const [tempSelected, setTempSelected] = useState(selectedOption);
 
   const handleOptionClick = (option) => {
@@ -14,6 +14,8 @@ function FilterModal({ title, options, selectedOption, onSelect, onApply, onClos
 
   const handleReset = () => {
     setTempSelected(null);
+    onApply(null);  // 초기화 적용
+    onClose();      // 모달 닫기
   };
 
   return (
@@ -32,7 +34,9 @@ function FilterModal({ title, options, selectedOption, onSelect, onApply, onClos
               key={option}
               onClick={() => handleOptionClick(option)}
               className={`border rounded-md px-2 py-2 text-sm ${
-                tempSelected === option ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-700"
+                tempSelected?.toUpperCase() === option.toUpperCase()
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "bg-white text-gray-700"
               }`}
             >
               {option}

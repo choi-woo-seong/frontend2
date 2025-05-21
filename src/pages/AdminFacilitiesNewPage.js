@@ -260,11 +260,7 @@ const AdminFacilitiesNewPage = () => {
                 className="form-control"
               >
                 <option value="">등급을 선택하세요</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+          
                 <option value="A">A</option>
                 <option value="B">B</option>
                 <option value="C">C</option>
