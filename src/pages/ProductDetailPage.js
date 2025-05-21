@@ -144,6 +144,11 @@ setProduct(prev => ({
         alert("재고가 없습니다. 관리자에게 문의하세요.");
         return;
       }
+
+      if(product.stockQuantity < quantity){
+        alert("선택하신 수량보다 재고가 부족합니다.\n아래 재고 수량을 확인해주세요.");
+        return;
+      }
       
       const res = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
         method: "POST",
