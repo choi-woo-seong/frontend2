@@ -458,7 +458,7 @@ if (
       {sortModalOpen && (
         <FilterModal
           title="정렬방식"
-          options={["조회순", "상담많은순", "찜많은순"]}
+          options={["조회순", "리뷰순", "찜많은순"]}
           selectedOption={selectedSort}
           onApply={(opt) => setSelectedSort(opt || "조회순")}
           onClose={() => setSortModalOpen(false)}
