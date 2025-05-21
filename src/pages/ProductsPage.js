@@ -13,7 +13,10 @@ import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import Layout from "../components/Layout"
 
-const parsePrice = (str) => parseInt(str.replace(/[^0-9]/g, ""))
+const parsePrice = (price) => {
+  if (!price || typeof price !== 'string') return 0;
+  return Number(price.replace(/,/g, ''));
+};
 
 function ProductsPage() {
   const [products, setProducts] = useState([])
