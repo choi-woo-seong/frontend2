@@ -1,43 +1,34 @@
-import { ChevronRight, Play } from "lucide-react"
+import { useState, useEffect } from 'react'
+import { ChevronRight, Play } from 'lucide-react'
 
-// ✅ 유튜브 썸네일 자동 추출 함수
-const getYoutubeThumbnail = (url) => {
-  const match = url.match(/(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/)
-  const videoId = match?.[1]
-  return videoId
-    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-    : "/placeholder.svg"
-}
-
-// 비디오 데이터
-const videos = [
-  {
-    id: 1,
-    title: "노인 복지 시설 종류와 특징",
-    duration: "5:30",
-    videoUrl: "https://www.youtube.com/watch?v=_QUQK4zs8dM",
-  },
-  {
-    id: 2,
-    title: "노인 복지 시설 이용 방법",
-    duration: "7:15",
-    videoUrl: "https://www.youtube.com/watch?v=YXkftby8yE8",
-  },
-  {
-    id: 3,
-    title: "실버타운과 요양원의 차이점",
-    duration: "6:45",
-    videoUrl: "https://www.youtube.com/watch?v=bl42kcYfdrg",
-  },
-  {
-    id: 4,
-    title: "노인 복지 정책 발표",
-    duration: "8:20",
-    videoUrl: "https://www.youtube.com/watch?v=RERvwQvRvGU",
-  },
-]
+// 환경변수로 API 베이스 URL 설정
+const API_BASE_URL = process.env.REACT_APP_API_URL
 
 function VideoSection() {
+  const [videos, setVideos] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`${API_BASE_URL}/videos`)
+        if (!res.ok) throw new Error('영상 정보를 불러오지 못했습니다.')
+        const data = await res.json()
+        // 최신 순으로 정렬 후 최대 4개만 저장
+        const latestFour = data
+          .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+          .slice(0, 4)
+        setVideos(latestFour)
+      } catch (error) {
+        console.error('영상 불러오기 오류:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchVideos()
+  }, [])
+
   return (
     <div className="mx-auto max-w-[1280px] px-4 py-6">
       <div className="bg-white rounded-xl p-4 shadow-sm">
@@ -48,40 +39,47 @@ function VideoSection() {
           </a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {videos.map((video) => (
-            <a
-              key={video.id}
-              href={video.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <div className="relative rounded-lg overflow-hidden">
-                {/* ✅ 유튜브 썸네일 자동 연동 */}
-                <img
-                  src={getYoutubeThumbnail(video.videoUrl)}
-                  alt={video.title}
-                  className="w-full aspect-video object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                  <div className="bg-white bg-opacity-80 rounded-full p-2">
-                    <Play className="h-4 w-4 text-blue-500" />
+        {loading ? (
+          <div className="loading-spinner text-center py-8">로딩 중…</div>
+        ) : videos.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {videos.map((video) => (
+              <a
+                key={video.videoId}
+                href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <div className="relative rounded-lg overflow-hidden">
+                  <img
+                    src={video.thumbnailUrl}
+                    alt={video.title}
+                    className="w-full aspect-video object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <div className="bg-white bg-opacity-80 rounded-full p-2">
+                      <Play className="h-4 w-4 text-blue-500" />
+                    </div>
                   </div>
                 </div>
-                <div className="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
-                  {video.duration}
+                <div className="mt-2">
+                  <p className="text-xs font-medium line-clamp-2">{video.title}</p>
                 </div>
-              </div>
-              <div className="mt-2">
-                <p className="text-xs font-medium line-clamp-2">{video.title}</p>
-              </div>
-            </a>
-          ))}
-        </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state text-center py-8 text-gray-500">
+            <div className="empty-icon">
+              <Play className="h-6 w-6" />
+            </div>
+            <h2 className="text-sm font-medium mt-2">영상이 없습니다</h2>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-export default VideoSection
+export default VideoSection;
