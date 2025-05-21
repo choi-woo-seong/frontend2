@@ -266,6 +266,11 @@ const AdminFacilitiesNewPage = () => {
                 <option value="C">C</option>
                 <option value="D">D</option>
                 <option value="E">E</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
                 <option value="등급제외">등급제외</option>
               </select>
             </div>
