@@ -308,7 +308,6 @@ console.log("시설 정보 : ",facility)
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-4 mb-4">
           <TabsTrigger value="info">시설 설명</TabsTrigger>
-          <TabsTrigger value="cost">비용 안내</TabsTrigger>
           <TabsTrigger value="review">리뷰</TabsTrigger>
           <TabsTrigger value="question">문의</TabsTrigger>
         </TabsList>
@@ -340,22 +339,6 @@ console.log("시설 정보 : ",facility)
               title="구글 지도"
             />
           </div>
-        </TabsContent>
-
-        {/* 비용 안내 탭 */}
-        <TabsContent
-          value="cost"
-          className="bg-white rounded-lg shadow p-6 text-center"
-        >
-          <h2 className="text-xl font-semibold mb-4">비용 안내</h2>
-          <img
-            src={dummyCostImage}
-            alt="비용안내"
-            className="rounded-lg inline-block"
-          />
-          <p className="mt-4 text-gray-500">
-            ※ 자세한 비용은 추후 백엔드 연동 예정입니다.
-          </p>
         </TabsContent>
 
         {/* 리뷰 탭 */}
