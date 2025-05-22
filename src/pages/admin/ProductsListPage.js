@@ -313,31 +313,54 @@ const ProductsListPage = () => {
             </div>
             <p>※ 재고 기준은 10개 입니다. 10개 초과이면 '충분', 10개 미만이면 '부족'</p>
             {totalFilteredPages > 1 && (
-              <div className="admin-pagination">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >이전</Button>
+  <div className="flex justify-center items-center gap-2 mt-6">
+    {/* 이전 버튼 */}
+    <button
+      onClick={() => handlePageChange(currentPage - 1)}
+      disabled={currentPage === 1}
+      className={`px-4 py-2 rounded-md border text-sm transition ${
+        currentPage === 1
+          ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+      }`}
+    >
+      이전
+    </button>
 
-                {[...Array(totalFilteredPages)].map((_, i) => (
-                  <Button
-                    key={i + 1}
-                    variant={currentPage === i + 1 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handlePageChange(i + 1)}
-                  >{i + 1}</Button>
-                ))}
+    {/* 페이지 숫자 버튼 */}
+    {Array.from({ length: totalFilteredPages }, (_, i) => {
+      const page = i + 1;
+      const isActive = page === currentPage;
+      return (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-4 py-2 rounded-md border text-sm transition ${
+            isActive
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+          }`}
+        >
+          {page}
+        </button>
+      );
+    })}
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalFilteredPages}
-                >다음</Button>
-              </div>
-            )}
+    {/* 다음 버튼 */}
+    <button
+      onClick={() => handlePageChange(currentPage + 1)}
+      disabled={currentPage === totalFilteredPages}
+      className={`px-4 py-2 rounded-md border text-sm transition ${
+        currentPage === totalFilteredPages
+          ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+      }`}
+    >
+      다음
+    </button>
+  </div>
+)}
+
           </>
         )}
       </div>

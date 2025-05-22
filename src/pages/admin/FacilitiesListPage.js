@@ -226,36 +226,55 @@ const FacilitiesListPage = () => {
               </table>
             </div>
 
-            {totalFilteredPages > 1 && (
-              <div className="admin-pagination flex gap-2 mt-4">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                >
-                  이전
-                </Button>
-                {Array.from({ length: totalFilteredPages }, (_, i) => (
-                  <Button
-                    key={i + 1}
-                    size="sm"
-                    variant={currentPage === i + 1 ? "default" : "outline"}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </Button>
-                ))}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={currentPage === totalFilteredPages}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                >
-                  다음
-                </Button>
-              </div>
-            )}
+           {totalFilteredPages > 1 && (
+  <div className="flex justify-center items-center gap-2 mt-6">
+    {/* 이전 버튼 */}
+    <button
+      onClick={() => handlePageChange(currentPage - 1)}
+      disabled={currentPage === 1}
+      className={`px-4 py-2 rounded-md border text-sm transition ${
+        currentPage === 1
+          ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+      }`}
+    >
+      이전
+    </button>
+
+    {/* 페이지 숫자 버튼 */}
+    {Array.from({ length: totalFilteredPages }, (_, i) => {
+      const page = i + 1;
+      const isActive = page === currentPage;
+      return (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-4 py-2 rounded-md border text-sm transition ${
+            isActive
+              ? "bg-blue-600 text-white border-blue-600"
+              : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+          }`}
+        >
+          {page}
+        </button>
+      );
+    })}
+
+    {/* 다음 버튼 */}
+    <button
+      onClick={() => handlePageChange(currentPage + 1)}
+      disabled={currentPage === totalFilteredPages}
+      className={`px-4 py-2 rounded-md border text-sm transition ${
+        currentPage === totalFilteredPages
+          ? "bg-white text-gray-400 border-gray-300 cursor-not-allowed"
+          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+      }`}
+    >
+      다음
+    </button>
+  </div>
+)}
+
           </>
         )}
       </div>
