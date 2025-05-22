@@ -14,9 +14,11 @@ const NoticeDetailPage = () => {
       try {
         // ✅ 조회수 증가 요청
         await fetch(`${process.env.REACT_APP_API_URL}/notices/${id}/view`, {
-          method: "PATCH"
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+          }
         })
-
         // ✅ 공지사항 상세 정보 가져오기
         const response = await fetch(`${process.env.REACT_APP_API_URL}/notices/${id}`)
         if (!response.ok) throw new Error("공지사항 조회 실패")
